@@ -107,25 +107,21 @@ class DeviceDiscovery:
         start_time = time.time()
         try:
             # Initialize SSH client with both Linux and network device commands
-            command_string = (
-                'cat /etc/*release* && hostnamectl && lscpu && free -h && df -h && echo "#\n#\n#\n"\n'
-                "term len 0\n"
-                "terminal length 0\n"
-                "no page\n"
-                "no paging\n"
-                "set cli pager off\n"
-                "show version\n"
-            )
+            command_string = '''cat /etc/*release* && hostnamectl && lscpu && free -h && df -h && echo "#\n#\n#\n",term len 0,terminal length 0,no page,,no paging,set cli pager off,show version'''
+
+
 
             ssh = SSHClientWrapper(
                 host=host,
                 user=username,
                 password=password,
                 cmds=command_string,
-                timeout=ssh_timeout,
-                quiet=not self.verbose,
+                timeout=int(ssh_timeout) / 10,
+                quiet=False,
                 invoke_shell=True,
-                prompt_count=6
+                prompt="#",
+                delay=1,
+                prompt_count=20
             )
 
             ssh.connect()

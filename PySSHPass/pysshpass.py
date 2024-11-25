@@ -154,8 +154,38 @@ class SSHClientWrapper:
             for cmd in command_list:
                 aggregate_output += self.run_command(cmd)
 
+        aggregate_output = aggregate_output.replace('\U0001f5b3', '')
         return aggregate_output
 
+    def safe_decode_stream(self, byte_stream):
+        """
+        Safely decode a byte stream to UTF-8, skipping invalid characters.
+
+        Args:
+            byte_stream (bytes): The input byte stream to decode
+
+        Returns:
+            str: The decoded string with invalid characters removed
+        """
+        result = []
+        i = 0
+        while i < len(byte_stream):
+            try:
+                # Try to decode one character at a time
+                char = byte_stream[i:i + 1].decode('utf-8')
+                result.append(char)
+                i += 1
+            except UnicodeDecodeError:
+                # If we can't decode this byte, skip it
+                i += 1
+                continue
+            except Exception as e:
+                # Handle any other unexpected errors
+                print(f"Unexpected error while decoding at position {i}: {str(e)}")
+                i += 1
+                continue
+
+        return ''.join(result)
     def read_shell_output(self):
         """Read the output from the shell without using threading."""
         output = ""
@@ -168,9 +198,14 @@ class SSHClientWrapper:
                 while time.time() < end_time:
                     rlist, _, _ = select.select([self.shell_channel], [], [], self.timeout)
                     if rlist:
-                        output_chunk = self.shell_channel.recv(buffer_size).decode('utf-8').replace('\r', '')
+                        # output_chunk = self.shell_channel.recv(buffer_size)
+                        output_chunk = self.shell_channel.recv(buffer_size)
+                        decoded_text = self.safe_decode_stream(output_chunk)
+                        output_chunk = decoded_text
                         f.write(output_chunk)
                         f.flush()
+                        # .decode('utf-8').replace('\r', '')
+
                         output += output_chunk
 
                         # Check for prompt
