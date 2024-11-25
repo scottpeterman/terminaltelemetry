@@ -18,6 +18,7 @@ class MapViewer(tk.Toplevel):
     def __init__(self, parent, image_path):
         super().__init__(parent)
         self.title("Network Map Viewer")
+        self.zoom_level = 1.0  # Add this line to fix the zoom functionality
 
         # Make window fullscreen
         self.state('zoomed')
