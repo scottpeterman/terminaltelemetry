@@ -1,0 +1,22 @@
+Value Required DISTRIB_DESCRIPTION (.+?)
+Value Required HOSTNAME (\S+)
+Value Required OS (.+? LTS)
+Value Required KERNEL ([^"\n]+)
+Value Required HARDWARE_VENDOR ([^"\n]+)
+Value Required HARDWARE_MODEL ([^"\n]+)
+Value Required CPU_MODEL ([^"\n]+)
+Value Required CPU_CORES (\d+)
+Value Required CPU_THREADS (\d+)
+Value Required CPU_MAX_MHZ ([\d.]+)
+
+Start
+  ^DISTRIB_DESCRIPTION=\"${DISTRIB_DESCRIPTION}\"
+  ^\s*Static hostname:\s+${HOSTNAME}
+  ^Operating System:\s+${OS}
+  ^\s*Kernel:\s+${KERNEL}
+  ^\s*Hardware Vendor:\s+${HARDWARE_VENDOR}
+  ^\s*Hardware Model:\s+${HARDWARE_MODEL}
+  ^\s*Model name:\s+${CPU_MODEL}
+  ^\s*Core\(s\) per socket:\s+${CPU_CORES}
+  ^\s*Thread\(s\) per core:\s+${CPU_THREADS}
+  ^\s*CPU max MHz:\s+${CPU_MAX_MHZ} -> Record
