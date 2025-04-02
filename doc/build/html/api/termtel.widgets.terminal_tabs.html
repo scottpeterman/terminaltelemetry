@@ -1,0 +1,371 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets.terminal_tabs module &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="termtel.widgets.theme_editor module" href="termtel.widgets.theme_editor.html" />
+    <link rel="prev" title="termtel.widgets.terminal_app_wrapper module" href="termtel.widgets.terminal_app_wrapper.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="termtel.widgets.html">termtel.widgets package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="termtel.widgets.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html">termtel.widgets.TelemetryWidget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html">termtel.widgets.credential_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.dialogs.html">termtel.widgets.dialogs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html">termtel.widgets.diff_tool_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html">termtel.widgets.game_integration_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html">termtel.widgets.lmtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html">termtel.widgets.map_preview module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html">termtel.widgets.nbtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html">termtel.widgets.new_session_dialog module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html">termtel.widgets.notepad_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html">termtel.widgets.qtssh_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.sclite_widget.html">termtel.widgets.sclite_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html">termtel.widgets.session_editor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html">termtel.widgets.session_navigator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.setup.html">termtel.widgets.setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html">termtel.widgets.space_debris module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html">termtel.widgets.terminal_app_wrapper module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">termtel.widgets.terminal_tabs module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.terminal_tabs.DoomWrapper"><code class="docutils literal notranslate"><span class="pre">DoomWrapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.terminal_tabs.GameWrapper"><code class="docutils literal notranslate"><span class="pre">GameWrapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.terminal_tabs.SerialTerminalWrapper"><code class="docutils literal notranslate"><span class="pre">SerialTerminalWrapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.terminal_tabs.TerminalTabWidget"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html">termtel.widgets.theme_editor module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="termtel.html">termtel package</a></li>
+          <li class="breadcrumb-item"><a href="termtel.widgets.html">termtel.widgets package</a></li>
+      <li class="breadcrumb-item active">termtel.widgets.terminal_tabs module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/termtel.widgets.terminal_tabs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-termtel.widgets.terminal_tabs">
+<span id="termtel-widgets-terminal-tabs-module"></span><h1>termtel.widgets.terminal_tabs module<a class="headerlink" href="#module-termtel.widgets.terminal_tabs" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.DoomWrapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.terminal_tabs.</span></span><span class="sig-name descname"><span class="pre">DoomWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doom_widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#DoomWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.DoomWrapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.DoomWrapper.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#DoomWrapper.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.DoomWrapper.cleanup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.GameWrapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.terminal_tabs.</span></span><span class="sig-name descname"><span class="pre">GameWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game_widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#GameWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.GameWrapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Wrapper class to standardize game interface</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.GameWrapper.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#GameWrapper.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.GameWrapper.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Handle cleanup when tab is closed</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.SerialTerminalWrapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.terminal_tabs.</span></span><span class="sig-name descname"><span class="pre">SerialTerminalWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">terminal_widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#SerialTerminalWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.SerialTerminalWrapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Wrapper class to standardize serial terminal interface</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.SerialTerminalWrapper.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#SerialTerminalWrapper.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.SerialTerminalWrapper.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Handle cleanup when tab is closed</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.terminal_tabs.</span></span><span class="sig-name descname"><span class="pre">TerminalTabWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QTabWidget</span></code></p>
+<p>Widget managing multiple terminal tabs.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.all_terminals_closed">
+<span class="sig-name descname"><span class="pre">all_terminals_closed</span></span><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.all_terminals_closed" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.apply_theme_to_terminal">
+<span class="sig-name descname"><span class="pre">apply_theme_to_terminal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">terminal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.apply_theme_to_terminal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.apply_theme_to_terminal" title="Link to this definition"></a></dt>
+<dd><p>Apply theme to a specific terminal instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.change_terminal_theme">
+<span class="sig-name descname"><span class="pre">change_terminal_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.change_terminal_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.change_terminal_theme" title="Link to this definition"></a></dt>
+<dd><p>Change theme for current terminal and save preference.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Cleanup method to properly close the terminal and free resources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.cleanup_all">
+<span class="sig-name descname"><span class="pre">cleanup_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.cleanup_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.cleanup_all" title="Link to this definition"></a></dt>
+<dd><p>Clean up all terminals on application exit.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.close_all_tabs">
+<span class="sig-name descname"><span class="pre">close_all_tabs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.close_all_tabs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.close_all_tabs" title="Link to this definition"></a></dt>
+<dd><p>Close all tabs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.close_other_tabs">
+<span class="sig-name descname"><span class="pre">close_other_tabs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.close_other_tabs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.close_other_tabs" title="Link to this definition"></a></dt>
+<dd><p>Close all tabs except the specified one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.close_tab">
+<span class="sig-name descname"><span class="pre">close_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.close_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.close_tab" title="Link to this definition"></a></dt>
+<dd><p>Handle tab close request.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.create_diff_tool_tab">
+<span class="sig-name descname"><span class="pre">create_diff_tool_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Diff</span> <span class="pre">Tool'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.create_diff_tool_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.create_diff_tool_tab" title="Link to this definition"></a></dt>
+<dd><p>Create a new diff tool tab</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.create_doom_tab">
+<span class="sig-name descname"><span class="pre">create_doom_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Doom'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.create_doom_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.create_doom_tab" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.create_game_tab">
+<span class="sig-name descname"><span class="pre">create_game_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Asteroids'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.create_game_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.create_game_tab" title="Link to this definition"></a></dt>
+<dd><p>Create a new game tab</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.create_serial_terminal_tab">
+<span class="sig-name descname"><span class="pre">create_serial_terminal_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Serial</span> <span class="pre">Terminal'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.create_serial_terminal_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.create_serial_terminal_tab" title="Link to this definition"></a></dt>
+<dd><p>Create a new serial terminal tab</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.create_telemetry_tab">
+<span class="sig-name descname"><span class="pre">create_telemetry_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Telemetry'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.create_telemetry_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.create_telemetry_tab" title="Link to this definition"></a></dt>
+<dd><p>Create a new telemetry tab</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.create_terminal">
+<span class="sig-name descname"><span class="pre">create_terminal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.create_terminal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.create_terminal" title="Link to this definition"></a></dt>
+<dd><p>Create a new terminal tab.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.create_text_editor_tab">
+<span class="sig-name descname"><span class="pre">create_text_editor_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Notepad'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.create_text_editor_tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.create_text_editor_tab" title="Link to this definition"></a></dt>
+<dd><p>Create a new text editor tab</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.get_mapped_terminal_theme">
+<span class="sig-name descname"><span class="pre">get_mapped_terminal_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyqt_theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.get_mapped_terminal_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.get_mapped_terminal_theme" title="Link to this definition"></a></dt>
+<dd><p>Map PyQt theme names to terminal theme names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.handle_theme_check">
+<span class="sig-name descname"><span class="pre">handle_theme_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_ready</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terminal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_js</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.handle_theme_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.handle_theme_check" title="Link to this definition"></a></dt>
+<dd><p>Handle the terminal readiness check for theme application.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.remove_session">
+<span class="sig-name descname"><span class="pre">remove_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.remove_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.remove_session" title="Link to this definition"></a></dt>
+<dd><p>Remove session from tracking.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.setup_ui">
+<span class="sig-name descname"><span class="pre">setup_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.setup_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.setup_ui" title="Link to this definition"></a></dt>
+<dd><p>Initialize the tab widget UI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.show_context_menu">
+<span class="sig-name descname"><span class="pre">show_context_menu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.show_context_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.show_context_menu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.terminal_closed">
+<span class="sig-name descname"><span class="pre">terminal_closed</span></span><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.terminal_closed" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.test_socket_connection">
+<span class="sig-name descname"><span class="pre">test_socket_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.test_socket_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.test_socket_connection" title="Link to this definition"></a></dt>
+<dd><p>Test if a socket connection can be established to the given host and port.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.update_all_theme_aware_widgets">
+<span class="sig-name descname"><span class="pre">update_all_theme_aware_widgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.update_all_theme_aware_widgets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.update_all_theme_aware_widgets" title="Link to this definition"></a></dt>
+<dd><p>Update theme for all widgets that support theming</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.terminal_tabs.TerminalTabWidget.update_theme">
+<span class="sig-name descname"><span class="pre">update_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/terminal_tabs.html#TerminalTabWidget.update_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.terminal_tabs.TerminalTabWidget.update_theme" title="Link to this definition"></a></dt>
+<dd><p>Update terminal themes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="termtel.widgets.terminal_app_wrapper.html" class="btn btn-neutral float-left" title="termtel.widgets.terminal_app_wrapper module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="termtel.widgets.theme_editor.html" class="btn btn-neutral float-right" title="termtel.widgets.theme_editor module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+Command output for memory_calc:
+
+                    Total: 67520028672
+                    Free: 5351186432
+                    Buffers: 4534607872
+                    Cached: 12537769984
+                    Used: 45096464384
+                    

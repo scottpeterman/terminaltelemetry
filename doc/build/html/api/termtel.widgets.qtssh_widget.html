@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets.qtssh_widget module &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="termtel.widgets.sclite_widget module" href="termtel.widgets.sclite_widget.html" />
+    <link rel="prev" title="termtel.widgets.notepad_widget module" href="termtel.widgets.notepad_widget.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="termtel.widgets.html">termtel.widgets package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="termtel.widgets.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html">termtel.widgets.TelemetryWidget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html">termtel.widgets.credential_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.dialogs.html">termtel.widgets.dialogs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html">termtel.widgets.diff_tool_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html">termtel.widgets.game_integration_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html">termtel.widgets.lmtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html">termtel.widgets.map_preview module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html">termtel.widgets.nbtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html">termtel.widgets.new_session_dialog module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html">termtel.widgets.notepad_widget module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">termtel.widgets.qtssh_widget module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.qtssh_widget.Ui_Terminal"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.sclite_widget.html">termtel.widgets.sclite_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html">termtel.widgets.session_editor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html">termtel.widgets.session_navigator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.setup.html">termtel.widgets.setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html">termtel.widgets.space_debris module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html">termtel.widgets.terminal_app_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html">termtel.widgets.terminal_tabs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html">termtel.widgets.theme_editor module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="termtel.html">termtel package</a></li>
+          <li class="breadcrumb-item"><a href="termtel.widgets.html">termtel.widgets package</a></li>
+      <li class="breadcrumb-item active">termtel.widgets.qtssh_widget module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/termtel.widgets.qtssh_widget.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-termtel.widgets.qtssh_widget">
+<span id="termtel-widgets-qtssh-widget-module"></span><h1>termtel.widgets.qtssh_widget module<a class="headerlink" href="#module-termtel.widgets.qtssh_widget" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.qtssh_widget.</span></span><span class="sig-name descname"><span class="pre">Ui_Terminal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connect_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Terminal class extending QWidget to enable SSH connections in a Qt widget.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.check_terminal_ready">
+<span class="sig-name descname"><span class="pre">check_terminal_ready</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.check_terminal_ready"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.check_terminal_ready" title="Link to this definition"></a></dt>
+<dd><p>Check if the terminal is ready, retry if not.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Cleanup method to properly close the terminal and free resources.
+Called when the terminal tab is being closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.clipboard_copy">
+<span class="sig-name descname"><span class="pre">clipboard_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.clipboard_copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.clipboard_copy" title="Link to this definition"></a></dt>
+<dd><p>Copy text to system clipboard</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.clipboard_paste">
+<span class="sig-name descname"><span class="pre">clipboard_paste</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.clipboard_paste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.clipboard_paste" title="Link to this definition"></a></dt>
+<dd><p>Get text from system clipboard and send it back to JS</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.delayed_method">
+<span class="sig-name descname"><span class="pre">delayed_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.delayed_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.delayed_method" title="Link to this definition"></a></dt>
+<dd><p>This method will be called after the web page load has finished.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.handle_load_finished">
+<span class="sig-name descname"><span class="pre">handle_load_finished</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.handle_load_finished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.handle_load_finished" title="Link to this definition"></a></dt>
+<dd><p>Handles actions after the web page load has finished.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.handle_resize_event">
+<span class="sig-name descname"><span class="pre">handle_resize_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.handle_resize_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.handle_resize_event" title="Link to this definition"></a></dt>
+<dd><p>Handles resize events of the terminal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> – event object containing event details.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.handle_terminal_check">
+<span class="sig-name descname"><span class="pre">handle_terminal_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_ready</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.handle_terminal_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.handle_terminal_check" title="Link to this definition"></a></dt>
+<dd><p>Handle the terminal readiness check result.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.notify">
+<span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.notify" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.retranslateUi">
+<span class="sig-name descname"><span class="pre">retranslateUi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.retranslateUi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.retranslateUi" title="Link to this definition"></a></dt>
+<dd><p>Retranslates the UI based on the current locale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>term</strong> – terminal widget instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.setupUi">
+<span class="sig-name descname"><span class="pre">setupUi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.setupUi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.setupUi" title="Link to this definition"></a></dt>
+<dd><p>Setups UI for the terminal widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>term</strong> – terminal widget instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.update_div_height">
+<span class="sig-name descname"><span class="pre">update_div_height</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.update_div_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.update_div_height" title="Link to this definition"></a></dt>
+<dd><p>Updates the div height of the terminal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.qtssh_widget.Ui_Terminal.write_initial_buffer">
+<span class="sig-name descname"><span class="pre">write_initial_buffer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/qtssh_widget.html#Ui_Terminal.write_initial_buffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.qtssh_widget.Ui_Terminal.write_initial_buffer" title="Link to this definition"></a></dt>
+<dd><p>Write the initial buffer to the terminal once it’s ready.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="termtel.widgets.notepad_widget.html" class="btn btn-neutral float-left" title="termtel.widgets.notepad_widget module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="termtel.widgets.sclite_widget.html" class="btn btn-neutral float-right" title="termtel.widgets.sclite_widget module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

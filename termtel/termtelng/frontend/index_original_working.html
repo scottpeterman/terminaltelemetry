@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SSH Terminal</title>
+    <style>
+        .hud-panel-content {
+            overflow-y: auto;
+            max-height: 100vh;
+            padding: 10px;
+            border-bottom: none;
+        }
+        .split {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Terminal section (now on left) */
+        .terminal-section {
+            flex: 1;
+            min-width: 400px;
+            height: 100%;
+            padding: 10px;
+        }
+
+        /* Right section for widgets */
+        .widgets-section {
+            min-width: 300px;
+            height: 100%;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Widget areas */
+        .widget-area {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* Compact top widget */
+        .top-widget-area {
+            flex: 0 0 auto;
+            max-height: 180px;
+        }
+
+        /* Middle widget gets more space */
+        .middle-widget-area {
+            flex: 1 0 auto;
+            min-height: 250px;
+        }
+
+        /* Bottom widget gets more space */
+        .bottom-widget-area {
+            flex: 1 0 auto;
+            min-height: 250px;
+        }
+
+        /* Scrollable content regions */
+        .scrollable-region {
+            height: 150px; /* Fixed height for consistent scrolling */
+            max-height: 100%;
+            overflow-y: auto;
+            border: 1px solid #0a4060;
+            background-color: rgba(0, 16, 32, 0.8);
+            padding: 5px;
+            margin: 5px 0;
+            /* Add a subtle cyan glow to match the cyberpunk theme */
+            box-shadow: 0 0 5px rgba(0, 176, 240, 0.3);
+        }
+
+        /* Make device info area shorter */
+        .device-info-grid .scrollable-region {
+            height: 100px;
+        }
+
+        /* Make system area taller to fit all stats */
+        #environment-panel-container.scrollable-region {
+            height: 200px;
+        }
+
+        /* Enable scrollbar styling for the cyberpunk theme */
+        .scrollable-region::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable-region::-webkit-scrollbar-track {
+            background: rgba(0, 20, 40, 0.3);
+        }
+
+        .scrollable-region::-webkit-scrollbar-thumb {
+            background: #00b0f0;
+            border-radius: 4px;
+        }
+
+        .scrollable-region::-webkit-scrollbar-thumb:hover {
+            background: #00d0ff;
+        }
+
+        /* Device info area styling */
+        .device-info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 20px;
+            padding: 0 10px;
+        }
+
+        /* Device icon area */
+        .device-icon-area {
+            grid-row: span 2;
+        }
+
+        /* Device details area */
+        .device-details {
+            display: flex;
+        }
+
+        .device-details ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .device-details li {
+            margin-bottom: 5px;
+        }
+
+        /* Controls area */
+        .controls-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        /* Combined panels styling */
+        .combined-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        /* Network widget area */
+        .network-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        /* Environment widget area */
+        .env-debug-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        /* No need for <br> tags between panels */
+        br {
+            display: none;
+        }
+
+        /* Keep existing styling intact */
+        #interfaces-panel .hud-panel-content {
+            max-height: none;
+            padding: 10px;
+            border-bottom: none;
+        }
+
+        #interfaces-panel .hud-panel-border,
+        #routing-panel .hud-panel-border,
+        #graph-panel .hud-panel-border {
+            border: none;
+        }
+
+        #network-graph {
+            width: 90%;
+            height: 90%;
+            padding: 1px;
+        }
+
+        /* Ensure panels fit their containers */
+        .hud-panel {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-panel .hud-panel-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Adjust environment panel */
+        .environment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="hud.css">
+    <link rel="stylesheet" href="session-overrides.css">
+    <link rel="stylesheet" href="xterm.css">
+</head>
+<body>
+<div class="split">
+    <!-- Terminal Section (now on left, 50% width) -->
+    <div class="terminal-section">
+        <div class="hud-panel">
+            <div class="hud-panel-background"></div>
+            <div class="hud-panel-border"></div>
+            <div class="hud-corner top-left">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                    <path d="M 0 45 L 35 10 M 45 10 L 95 10" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                    <circle cx="40" cy="10" r="2" fill="currentColor"/>
+                    <path d="M 55 10 L 65 0 M 75 10 L 85 0" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-panel-title">— TERMINAL —</div>
+            <div class="hud-panel-content">
+                <div id="terminal"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widgets Section (now consolidated on right) -->
+    <div class="widgets-section">
+        <!-- Top Widget Area: Device Info + Controls -->
+        <div class="widget-area top-widget-area">
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— DEVICE INFO & CONTROLS —</div>
+                <div class="hud-panel-content">
+                    <div class="device-info-grid">
+                        <!-- Device Icon Area -->
+                        <div class="device-icon-area">
+                            <div class="device-icon-container" style="width: 80%; margin: 0 auto;"></div>
+                        </div>
+
+                        <!-- Directly use the device-info-panel structure but make it visible -->
+                        <div id="device-info-panel" class="scrollable-region">
+                            <div class="device-details">
+                                <ul>
+                                    <li data-device="hostname">Hostname: <span></span></li>
+                                    <li data-device="model">Model: <span></span></li>
+                                    <li data-device="serial">Serial: <span></span></li>
+                                    <li data-device="os_version">OS Version: <span></span></li>
+                                    <li data-device="uptime">Uptime: <span></span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Controls Area -->
+                        <div class="controls-area">
+                            <button id="telemetry-connect" style="min-width: 5rem;">Connect</button>
+                            <select id="theme-select" class="mat" style="width: 8rem;">
+                                <option value="cyber">Cyber</option>
+                                <option value="crt-amber">CRT Amber</option>
+                                <option value="crt-green">CRT Green</option>
+                                <option value="forest-green">Forest</option>
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                                <option value="borland-light">Borland</option>
+                                <option value="solarized-dark">Solarized Dark</option>
+                                <option value="nord">Nord</option>
+                                <option value="gruvbox-dark">Gruvbox Dark</option>
+                            </select>
+                            <span>Zoom</span>
+                            <span class="zoom-controls">
+                                <button class="zoom-btn" id="zoom-in" title="Zoom In">+</button>
+                                <button class="zoom-btn" id="zoom-out" title="Zoom Out">-</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Widget Area: Interfaces + Network Info -->
+        <div class="widget-area middle-widget-area">
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— NETWORK INFO —</div>
+                <div class="hud-panel-content">
+                    <div class="network-grid">
+                        <!-- Interfaces Panel (Left) -->
+                        <div>
+                            <h3>Interfaces</h3>
+                            <!-- Use the actual interfaces-panel instead of a container -->
+                            <div id="interfaces-panel" class="scrollable-region">
+                                <div class="interface-grid">
+                                    <!-- Interface entries will be dynamically inserted here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Network Info (Right) -->
+                        <div class="network-info">
+                            <!-- Neighbors Section -->
+                            <div>
+                                <h3>Neighbors</h3>
+                                <!-- Use the actual neighbors-panel instead of a container -->
+                                <div id="neighbors-panel" class="scrollable-region">
+                                    <div class="tabs">
+                                        <div class="tab active">LLDP</div>
+                                    </div>
+                                    <div class="grid grid-cols-3">
+                                        <div class="text-cyan text-sm">LOCAL PORT</div>
+                                        <div class="text-cyan text-sm">NEIGHBOR</div>
+                                        <div class="text-cyan text-sm">REMOTE PORT</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Routing Section - Part of Neighbors in your markup -->
+                            <div style="margin-top: 10px;">
+                                <h3>Default Route</h3>
+                                <!-- Use the actual routing-panel instead of a container -->
+                                <div id="routing-panel" class="scrollable-region">
+                                    <div class="table-container">
+                                        <table class="routing-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Network</th>
+                                                    <th>Mask</th>
+                                                    <th>Next Hop</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Routing entries will be dynamically inserted here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Widget Area: Environment + Debug Log -->
+        <div class="widget-area bottom-widget-area">
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— ENVIRONMENT & DEBUG —</div>
+                <div class="hud-panel-content">
+                    <div class="env-debug-grid">
+                        <!-- Environment Panel (Left) -->
+                        <div>
+                            <h3>System</h3>
+                            <!-- Use the actual environment-panel instead of a container -->
+                            <div id="environment-panel" class="scrollable-region">
+                                <div class="environment-grid">
+                                    <!-- CPU Section -->
+                                    <div class="env-section">
+                                        <h4>CPU</h4>
+                                        <div id="cpu-status"></div>
+                                    </div>
+                                    <!-- Memory Section -->
+                                    <div class="env-section">
+                                        <h4>Memory</h4>
+                                        <div id="memory-status"></div>
+                                    </div>
+                                    <!-- Temperature Section -->
+                                    <div class="env-section">
+                                        <h4>Temperature</h4>
+                                        <div id="temperature-status"></div>
+                                    </div>
+                                    <!-- Power Section -->
+                                    <div class="env-section">
+                                        <h4>Power</h4>
+                                        <div id="power-status"></div>
+                                    </div>
+                                    <!-- Fans Section -->
+                                    <div class="env-section">
+                                        <h4>Fans</h4>
+                                        <div id="fans-status"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Debug Log Panel (Right) -->
+                        <div>
+                            <h3>Debug Log</h3>
+                            <!-- Use the actual log-panel instead of a container -->
+                            <div id="log-panel" class="scrollable-region">
+                                <div id="log-container" style="font-family: monospace; font-size: 12px;">
+                                    <!-- Log entries will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Connection Modal (unchanged) -->
+<div id="connection-modal" class="modal">
+    <div class="modal-content hud-panel">
+        <div class="hud-panel-background"></div>
+        <div class="hud-panel-border"></div>
+        <div class="hud-corner top-left">
+            <svg viewBox="0 0 100 100">
+                <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            </svg>
+        </div>
+        <div class="hud-corner top-right"></div>
+        <div class="hud-corner bottom-right"></div>
+        <div class="hud-corner bottom-left"></div>
+        <div class="hud-panel-title">— SSH Connection —</div>
+        <div class="hud-panel-content">
+            <form id="ssh-connect-form" class="ssh-login-form">
+                <div class="form-group">
+                    <label>Hostname</label>
+                    <input value= "" type="text" id="ssh-host" class="mat" required>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input value="" id="ssh-username" class="mat" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input value="" type="password" id="ssh-password" class="mat">
+                </div>
+                <div>
+                    <label>Driver Type</label>
+                    <div class="session-type-row">
+                        <input type="hidden" value="terminal" id="ssh-type">
+                        <select id="driver-select" class="mat" style="width: 5rem;">
+                            <option value="ios">ios</option>
+                            <option value="eos">eos</option>
+                            <option value="nxos_ssh">nxos_ssh</option>
+                            <option value="junos">junos</option>
+                            <option value="linux">linux</option>
+                        </select>
+                        <label class="checkbox_style">
+                            <input id="useTelemetry" type="checkbox" checked="checked">
+                            <span class="checkbox-custom"></span>
+                            <span>Telemetry</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="connect-btn">Connect</button>
+                    <button type="button" class="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts (unchanged) -->
+<script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script src="split.min.js"></script>
+<script src="xterm.js"></script>
+<script src="xterm-addon-fit.js"></script>
+<script src="chart.umd.min.js"></script>
+<script src="interfacePanel.js"></script>
+<script src="deviceIcons.js"></script>
+<script src="sessions.js"></script>
+<script src="themes.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize Split.js with two panes (terminal and widgets)
+        Split(['.terminal-section', '.widgets-section'], {
+            sizes: [50, 50],
+            minSize: [400, 300],
+            gutterSize: 6,
+            cursor: 'col-resize',
+            onDrag: () => {
+                if (window.sessionManager?.sessions?.terminal?.handleResize) {
+                    window.sessionManager.sessions.terminal.handleResize();
+                }
+            },
+            onDragEnd: () => {
+                if (window.sessionManager?.sessions?.terminal?.handleResize) {
+                    window.sessionManager.sessions.terminal.handleResize();
+                }
+            }
+        });
+
+        // Copy corner SVGs
+        const cornerSVG = document.querySelector('.hud-corner.top-left svg').outerHTML;
+        document.querySelectorAll('.hud-corner:not(.top-left)').forEach(corner => {
+            corner.innerHTML = cornerSVG;
+        });
+
+        // Set up initial device icon (discovering state)
+        const iconContainer = document.querySelector('.device-icon-container');
+        if (iconContainer) {
+            DeviceIcons.updateDeviceIcon(null); // Will show the discovering animation
+        }
+
+        // Initialize session manager
+        window.sessionManager = new SessionManager();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Telemetry</title>
+
+    <style>
+        :root {
+            --text-primary: #00ffd9;
+            --text-secondary: #00b0f0;
+            --bg-primary: #000000;
+            --bg-secondary: #001a1a;
+            --border-color: rgba(0, 255, 217, 0.2);
+            --scrollbar-track: rgba(0, 20, 40, 0.3);
+            --scrollbar-thumb: #00b0f0;
+            --scrollbar-thumb-hover: #00d0ff;
+            --corner-size: 3rem;
+            --panel-spacing: 1rem;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .top-section {
+            flex: 0 0 auto;
+            min-height: 150px;
+            margin-bottom: 1rem;
+        }
+
+        .middle-section {
+            flex: 1 1 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            min-height: 250px;
+        }
+
+        .bottom-section {
+            flex: 1 1 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            min-height: 250px;
+        }
+
+        /* HUD Panels */
+        .hud-panel {
+            position: relative;
+            min-height: 100px;
+            height: 100%;
+        }
+
+        .hud-panel-background {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-secondary);
+            opacity: 1;
+        }
+
+        .hud-panel-border {
+            position: absolute;
+            inset: 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .hud-panel-content {
+            position: relative;
+            padding: var(--panel-spacing);
+            z-index: 1;
+            height: calc(100% - 2rem);
+            background: var(--bg-primary);
+            overflow-y: auto;
+        }
+
+        .hud-panel-title {
+            position: absolute;
+            top: -0.75rem;
+            left: var(--corner-size);
+            background: var(--bg-primary);
+            padding: 0.25rem 1rem;
+            color: var(--text-primary);
+            z-index: 3;
+            font-size: 0.875rem;
+        }
+
+        /* Corner Elements */
+        .hud-corner {
+            position: absolute;
+            width: var(--corner-size);
+            height: var(--corner-size);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .hud-corner svg {
+            width: 100%;
+            height: 100%;
+            color: var(--text-primary);
+        }
+
+        .hud-corner.top-left { top: -1px; left: -1px; }
+        .hud-corner.top-right { top: -1px; right: -1px; transform: rotate(90deg); }
+        .hud-corner.bottom-right { bottom: -1px; right: -1px; transform: rotate(180deg); }
+        .hud-corner.bottom-left { bottom: -1px; left: -1px; transform: rotate(270deg); }
+.hud-corner.top-right { transform: rotate(90deg); }
+.hud-corner.bottom-right { transform: rotate(180deg); }
+.hud-corner.bottom-left { transform: rotate(270deg); }
+
+        /* Device Info & Controls */
+        .device-info-grid {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            grid-column-gap: 15px;
+            padding: 5px;
+        }
+
+        .device-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .device-info-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .controls-area {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            padding: 10px;
+<!--            border-top: 1px solid rgba(0, 176, 240, 0.3);-->
+        }
+
+        /* Interface Status Colors */
+        .interface-status.up {
+            color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .interface-status.down {
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        /* Scrollable regions */
+        .scrollable-region {
+            max-height: 100%;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            background-color: rgba(0, 16, 32, 0.8);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+
+        /* Scrollbar styling */
+        .scrollable-region::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable-region::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 4px;
+        }
+
+        .scrollable-region::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+
+        .scrollable-region::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        /* Environment & System Panels */
+        .environment-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .env-section {
+            margin-bottom: 10px;
+        }
+
+        .env-section h4 {
+            margin: 0 0 5px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .env-item {
+            font-family: monospace;
+            font-size: 12px;
+            padding: 2px 0;
+        }
+
+        .env-item.warning {
+            color: #ffaa00;
+        }
+
+        .env-item.critical {
+            color: #ff4444;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 15% auto;
+            width: 400px;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+
+        button:hover {
+            background: rgba(0, 176, 240, 0.1);
+        }
+
+        /* Interface Grid */
+        .interface-grid {
+            display: grid;
+            grid-template-columns: auto minmax(60px, auto);
+            gap: 8px;
+        }
+
+        .interface-name {
+            padding: 5px;
+        }
+
+        .interface-status {
+            text-align: center;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 5px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        td {
+            padding: 5px;
+            border-bottom: 1px solid rgba(0, 20, 40, 0.3);
+        }
+
+        /* Log panel */
+        #log-container {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Additional utility classes */
+        .text-cyan {
+            color: var(--text-secondary);
+        }
+
+        /* Error text */
+        .text-error {
+            color: #ff4444;
+        }
+        /* Modal Overlay Improvements */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow: auto;
+}
+
+/* Connection Modal Specific Styling */
+.modal-content {
+    position: relative;
+    margin: 10vh auto; /* Position from top of viewport */
+    width: 300px; /* Narrower width */
+    max-width: 95%;
+    background-color: transparent;
+    z-index: 1001;
+}
+
+/* Form styling improvements */
+.form-group {
+    margin-bottom: 8px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 5px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+}
+
+/* Button group */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.button-group button {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    min-width: 80px;
+}
+
+/* Remove unnecessary padding */
+#connection-modal .hud-panel-content {
+    padding: 10px;
+}
+
+/* Make sure the modal is properly displayed on top */
+.modal.show {
+    display: block;
+}
+        /* Fix for connection modal layout */
+#connection-modal .modal-content {
+    height: auto;
+    margin: 10vh auto 0;
+}
+
+#connection-modal .hud-panel-content {
+    height: auto;
+    padding: 10px 10px 15px 10px; /* Added slightly more padding at bottom */
+}
+
+/* Make the form more compact and center it */
+#telemetry-connect-form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Style all inputs in the connection form */
+#connection-modal .form-group input,
+#connection-modal .form-group select {
+    width: 90%;
+    margin: 0 auto 8px;
+    display: block;
+    height: 28px;
+    box-sizing: border-box;
+}
+
+/* Style labels */
+#connection-modal .form-group label {
+    width: 90%;
+    margin: 0 auto 3px;
+    display: block;
+    text-align: left;
+}
+
+/* Ensure driver select is the right width */
+#connection-modal #modal-driver-select {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center buttons */
+#connection-modal .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0 0 0;
+}
+
+/* Fixed positioning for bottom corners */
+#connection-modal .hud-corner.bottom-left,
+#connection-modal .hud-corner.bottom-right {
+    position: absolute;
+    bottom: 0;
+}
+
+/* Eliminate any other space-causing issues */
+#connection-modal .hud-panel {
+    min-height: auto;
+}
+
+        #telemetry-connect {
+    padding: 8px 16px;
+    margin: 5px 0;
+}
+        body {
+    zoom: 0.85; /* Reduces to 85% of original size */
+}
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Top Section: Device Info & Controls -->
+        <div class="top-section">
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— DEVICE INFO & CONTROLS —</div>
+                <div class="hud-panel-content">
+                    <div class="device-info-grid">
+                        <!-- Device Icon Area -->
+                        <div class="device-icon-area">
+                            <div class="device-icon-container" style="width: 80%; margin: 0 auto;"></div>
+                            <button id="telemetry-connect">Connect</button>
+
+
+                        </div>
+
+                        <!-- Device Info Panel -->
+                        <div id="device-info-panel" class="scrollable-region">
+                            <div class="device-details">
+                                <ul>
+                                    <li data-device="hostname">Hostname: <span></span></li>
+                                    <li data-device="model">Model: <span></span></li>
+                                    <li data-device="serial">Serial: <span></span></li>
+                                    <li data-device="os_version">OS Version: <span></span></li>
+                                    <li data-device="uptime">Uptime: <span></span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Controls Area -->
+                        <div class="controls-area">
+
+
+                            <!-- Add this right after the device-icon-container div in your HTML -->
+                            <span class="theme-selector" style="display: none; margin-top: 10px; text-align: center; width: 8rem;">
+                                <label style="display: block; margin-bottom: 5px; color: var(--text-secondary); font-size: 0.8rem;">THEME</label>
+                                <select id="theme-select" style="width: 100%; padding: 5px; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                                    <option value="cyber">Cyber</option>
+                                    <option value="doom">Doom</option>
+                                    <option value="crt-amber">CRT Amber</option>
+                                    <option value="crt-green">CRT Green</option>
+                                    <option value="forest-green">Forest Green</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="light">Light</option>
+                                    <option value="borland-light">Borland Blue</option>
+                                    <option value="solarized-dark">Solarized Dark</option>
+                                    <option value="solarized-light">Solarized Light</option>
+                                    <option value="nord">Nord</option>
+                                    <option value="gruvbox-dark">Gruvbox Dark</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Section: Network Info -->
+        <div class="middle-section">
+            <!-- Interfaces Panel -->
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left"></div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— INTERFACES —</div>
+                <div class="hud-panel-content">
+                    <div id="interfaces-panel" class="scrollable-region">
+                        <div class="interface-grid">
+                            <!-- Interfaces will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Neighbors Panel -->
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left"></div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— NEIGHBORS & ROUTING —</div>
+                <div class="hud-panel-content">
+                    <!-- Neighbors Section -->
+                    <h3>Neighbors</h3>
+                    <div id="neighbors-panel" class="scrollable-region">
+                        <div class="tabs">
+                            <div class="tab active">LLDP</div>
+                        </div>
+                        <div class="grid grid-cols-3">
+                            <div class="text-cyan">LOCAL PORT</div>
+                            <div class="text-cyan">NEIGHBOR</div>
+                            <div class="text-cyan">REMOTE PORT</div>
+                        </div>
+                    </div>
+
+                    <!-- Routing Section -->
+                    <h3>Default Route</h3>
+                    <div id="routing-panel" class="scrollable-region">
+                        <div class="table-container">
+                            <table class="routing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Network</th>
+                                        <th>Mask</th>
+                                        <th>Next Hop</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Routes will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Section: Environment & Debug -->
+        <div class="bottom-section">
+            <!-- Environment Panel -->
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left"></div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— ENVIRONMENT —</div>
+                <div class="hud-panel-content">
+                    <div id="environment-panel" class="scrollable-region">
+                        <div class="environment-grid">
+                            <!-- CPU Section -->
+                            <div class="env-section">
+                                <h4>CPU</h4>
+                                <div id="cpu-status"></div>
+                            </div>
+                            <!-- Memory Section -->
+                            <div class="env-section">
+                                <h4>Memory</h4>
+                                <div id="memory-status"></div>
+                            </div>
+                            <!-- Temperature Section -->
+                            <div class="env-section">
+                                <h4>Temperature</h4>
+                                <div id="temperature-status"></div>
+                            </div>
+                            <!-- Power Section -->
+                            <div class="env-section">
+                                <h4>Power</h4>
+                                <div id="power-status"></div>
+                            </div>
+                            <!-- Fans Section -->
+                            <div class="env-section">
+                                <h4>Fans</h4>
+                                <div id="fans-status"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Debug Log Panel -->
+            <div class="hud-panel">
+                <div class="hud-panel-background"></div>
+                <div class="hud-panel-border"></div>
+                <div class="hud-corner top-left"></div>
+                <div class="hud-corner top-right"></div>
+                <div class="hud-corner bottom-right"></div>
+                <div class="hud-corner bottom-left"></div>
+                <div class="hud-panel-title">— DEBUG LOG —</div>
+                <div class="hud-panel-content">
+                    <div id="log-panel" class="scrollable-region">
+                        <div id="log-container">
+                            <!-- Log entries will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Modal -->
+    <div id="connection-modal" class="modal">
+        <div class="modal-content hud-panel">
+            <div class="hud-panel-background"></div>
+            <div class="hud-panel-border"></div>
+            <div class="hud-corner top-left">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-panel-title">— TELEMETRY CONNECTION —</div>
+            <div class="hud-panel-content">
+                <form id="telemetry-connect-form">
+                    <div class="form-group">
+                        <label>Hostname</label>
+                        <input type="text" id="host" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password">
+                    </div>
+                    <div class="form-group">
+                        <label>Driver Type</label>
+                        <select id="modal-driver-select">
+                            <option value="linux">linux</option>
+                            <option value="ios">ios</option>
+                            <option value="eos">eos</option>
+                            <option value="nxos_ssh">nxos_ssh</option>
+                            <option value="junos">junos</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="connect-btn">Connect</button>
+                        <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<!--<script src="enhanced-debugger.js"></script>-->
+<script src="telemetry-adapter.js"></script>
+    <script src="chart.umd.min.js"></script>
+
+<script src="themes.js"></script>
+<script src="corner-designs.js"></script>
+<script src="theme_manager.js"></script>
+
+<script src="deviceIcons.js"></script>
+<script src="telemetry-app.js"></script>
+<script src="index.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, checking for theme and corner utils');
+
+    // Check if both utilities are loaded
+    if (window.ThemeUtils && window.CornerUtils) {
+        console.log('Both ThemeUtils and CornerUtils found, integrating them');
+
+        // First initialize ThemeUtils
+        window.ThemeUtils.init();
+
+        // Then integrate corner designs and make sure they're applied
+        window.CornerUtils.integrateWithThemeUtils();
+
+        // Manually trigger initial corner design update
+        const currentTheme = window.ThemeUtils.getCurrentTheme();
+        const cornerDesign = window.CornerUtils.getCornerDesignForTheme(currentTheme);
+        console.log('Setting initial corner design:', cornerDesign, 'for theme:', currentTheme);
+        window.CornerUtils.initializeCorners(cornerDesign);
+
+        // Add an explicit event listener for theme changes
+        window.addEventListener('themeChanged', (event) => {
+            const theme = event.detail.theme;
+            const design = window.CornerUtils.getCornerDesignForTheme(theme);
+            console.log('Theme changed to:', theme, 'applying corner design:', design);
+            window.CornerUtils.initializeCorners(design);
+        });
+
+        console.log('Corner designs successfully integrated with theme system');
+    } else {
+        // Log which utility is missing
+        if (!window.ThemeUtils) console.error('ThemeUtils not found!');
+        if (!window.CornerUtils) console.error('CornerUtils not found!');
+        console.error('Cannot integrate corner designs with theme system');
+    }
+});
+</script>
+ <select id="driver-select" style="display: none;">
+    <option value="linux">linux</option>
+    <option value="ios">ios</option>
+    <option value="eos">eos</option>
+    <option value="nxos_ssh">nxos_ssh</option>
+    <option value="junos">junos</option>
+</select>
+</body>
+</html>

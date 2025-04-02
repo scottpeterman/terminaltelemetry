@@ -1,0 +1,483 @@
+/* Variables */
+:root {
+    --text-primary: #00ffd9;
+    --bg-primary: #000000;
+    --bg-secondary: #001a1a;
+    --border-color: rgba(0, 255, 217, 0.2);
+    --corner-size: 3rem;
+    --panel-spacing: 1rem;
+}
+
+/* Base Styles */
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    overflow: hidden;
+}
+
+/* Layout */
+.split {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.terminal-section {
+    flex: 1;
+    min-width: 0;
+    padding: var(--panel-spacing);
+}
+
+.controls-section {
+    width: 400px;
+    min-width: 300px;
+    max-width: 800px;
+    padding: var(--panel-spacing);
+    overflow-y: auto;
+}
+
+/* HUD Panels */
+.hud-panel {
+    position: relative;
+    min-height: 100px;
+    height: calc(100% - 2 * var(--panel-spacing));
+}
+
+.hud-panel-background {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-primary);
+    opacity: 1;
+}
+
+.hud-panel-border {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--border-color);
+}
+
+.hud-panel-content {
+    position: relative;
+    padding: var(--panel-spacing);
+    z-index: 1;
+    height: calc(100% - 2rem);
+    background: var(--bg-primary);
+    overflow-y: auto;
+}
+
+.hud-panel-title {
+    position: absolute;
+    top: -0.75rem;
+    left: var(--corner-size);
+    background: var(--bg-primary);
+    padding: 0.25rem 1rem;
+    color: var(--text-primary);
+    z-index: 3;
+    font-size: 0.875rem;
+}
+
+/* Corner Elements */
+.hud-corner {
+    position: absolute;
+    width: var(--corner-size);
+    height: var(--corner-size);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.hud-corner svg {
+    width: 100%;
+    height: 100%;
+    color: var(--text-primary);
+}
+
+.hud-corner.top-left { top: -1px; left: -1px; }
+.hud-corner.top-right { top: -1px; right: -1px; transform: rotate(90deg); }
+.hud-corner.bottom-right { bottom: -1px; right: -1px; transform: rotate(180deg); }
+.hud-corner.bottom-left { bottom: -1px; left: -1px; transform: rotate(270deg); }
+
+/* Form Controls */
+.form-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-primary);
+}
+
+.form-controls select,
+.form-controls input,
+.form-controls button {
+  background: transparent;
+
+  outline: none;
+}
+.mat  {
+ border: none;
+  border-bottom: 1px solid var(--text-primary);
+  padding-bottom: 0.25rem;
+
+}
+.mat:focus {
+    border: 1px solid var(--text-primary);
+    box-shadow: 0 1px var(--text-primary);
+
+
+}
+
+.form-group {
+
+        padding: 0.5rem;
+
+    }
+
+select, input, button {
+    background: var(--bg-secondary);
+
+    color: var(--text-primary);
+    padding: 0.5rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+    height: 2.25rem;
+        border-color: var(--text-primary);
+
+}
+
+
+
+button {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+button:hover {
+    border-color: var(--text-primary);
+    background: var(--bg-primary);
+}
+
+/* Tables and Grids */
+.grid {
+    display: grid;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.table-view {
+    border: 1px solid var(--border-color);
+    overflow: auto;
+}
+
+.table-header {
+    display: grid;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: bold;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    color: var(--text-primary);
+    opacity: 0.5;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    transition: all 0.2s;
+}
+
+.tab:hover { opacity: 0.8; }
+.tab.active {
+    opacity: 1;
+    border-bottom: 2px solid var(--text-primary);
+}
+
+/* Charts */
+.chart {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    position: relative;
+}
+
+.chart-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.2;
+}
+
+
+/* Form Layout */
+.ssh-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Reduced spacing between rows */
+}
+
+.ssh-login-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem; /* Reduced spacing between label and input */
+}
+
+.ssh-login-form .session-type-row {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    gap: 1rem; /* Space between select and checkbox */
+}
+
+.ssh-login-form select.mat {
+    min-width: 200px; /* Consistent width for select */
+}
+
+/* Checkbox Styles */
+.checkbox_style {
+    display: flex;
+    align-items: center; /* Align checkbox and label horizontally */
+    gap: 0.5rem; /* Space between the checkbox and label */
+}
+
+.checkbox_style .checkbox-custom {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.checkbox_style input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox_style .checkbox-custom::after {
+    content: '';
+    width: 0.75rem;
+    height: 0.75rem;
+    background: var(--text-primary);
+    transform: scale(0);
+    transition: transform 0.2s ease;
+}
+
+.checkbox_style input[type="checkbox"]:checked + .checkbox-custom::after {
+    transform: scale(1);
+}
+
+
+
+/* Splitter */
+.gutter {
+    position: relative;
+    background-color: var(--border-color);
+    cursor: col-resize;
+    width: 4px !important;
+    margin: 0 -2px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.gutter::before,
+.gutter::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--text-primary);
+}
+
+.gutter::before {
+    width: 2px;
+    height: 100%;
+    opacity: 0.2;
+}
+
+.gutter::after {
+    width: 2px;
+    height: 40px;
+    box-shadow: 0 0 10px var(--text-primary);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.gutter:hover::after { opacity: 1; }
+
+.gutter.gutter-horizontal.dragging::after {
+    opacity: 1;
+    animation: scanline 1s linear infinite;
+}
+
+@keyframes scanline {
+    0% { top: 0; height: 20px; }
+    100% { top: 100%; height: 20px; }
+}
+
+/* Terminal */
+#terminal {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-primary);
+    overflow: hidden;
+}
+
+.xterm {
+    padding: 0;
+    height: 100%;
+    background: var(--bg-primary);
+}
+
+.gutter {
+    position: relative;
+    background-color: var(--border-color);
+    cursor: col-resize;
+    width: 4px !important;
+    margin: 0 -2px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    z-index: 10;
+}
+
+.gutter::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 100%;
+    background: var(--text-primary);
+    opacity: 0.2;
+}
+
+.gutter::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 40px;
+    background: var(--text-primary);
+    box-shadow: 0 0 10px var(--text-primary);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.gutter:hover::after {
+    opacity: 1;
+}
+
+.gutter.gutter-horizontal.dragging::after {
+    opacity: 1;
+    animation: scanline 1s linear infinite;
+}
+
+@keyframes scanline {
+    0% {
+        top: 0;
+        height: 20px;
+    }
+    100% {
+        top: 100%;
+        height: 20px;
+    }
+}
+
+input[type="text"] {
+  border: none;
+  border-bottom: 1px solid var(--text-primary);
+  padding-bottom: 0.25rem;
+  outline: none;
+}
+
+/* Add to your hud.css */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    position: relative;
+    margin: 15% auto;
+    width: 400px;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-group button {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.button-group button:hover {
+    background: var(--hover-color);
+}
+
+.connect-btn {
+    border-color: var(--accent-color) !important;
+}
+/* Utility Classes */
+.h-full { height: 100%; }
+.p-4 { padding: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mt-4 { margin-top: 1rem; }
+.text-cyan { color: var(--text-primary); }
+.text-sm { font-size: 0.875rem; }
+

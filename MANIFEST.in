@@ -1,0 +1,18 @@
+include README.md
+include LICENSE
+include requirements.txt
+
+recursive-include termtel/static *
+recursive-include termtel/templates *
+recursive-include termtel/termtelng/frontend *
+recursive-include termtel/themes *.json
+
+recursive-include termtel *.svg
+recursive-include termtel *.ico
+recursive-include termtel *.html
+recursive-include termtel *.js
+recursive-include termtel *.css
+recursive-include termtel *.wasm
+
+global-exclude __pycache__
+global-exclude *.py[cod]

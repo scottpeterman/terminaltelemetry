@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 100">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="0.3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g fill="none" stroke="#22D3EE" stroke-width="0.8" filter="url(#glow)" transform="translate(155, 5) rotate(90)">
+    <!-- Main server chassis -->
+    <rect x="20" y="10" width="60" height="140" opacity="0.4"/>
+
+    <!-- Server sections/units -->
+    <rect x="22" y="15" width="56" height="25" opacity="0.4"/>
+    <rect x="22" y="45" width="56" height="25" opacity="0.4"/>
+    <rect x="22" y="75" width="56" height="25" opacity="0.4"/>
+    <rect x="22" y="105" width="56" height="25" opacity="0.4"/>
+
+    <!-- Front panel details -->
+    <circle cx="35" cy="27.5" r="5" opacity="0.6"/>
+    <circle cx="35" cy="57.5" r="5" opacity="0.6"/>
+    <circle cx="35" cy="87.5" r="5" opacity="0.6"/>
+    <circle cx="35" cy="117.5" r="5" opacity="0.6"/>
+
+    <!-- Drive bays -->
+    <rect x="45" y="20" width="28" height="4" opacity="0.4"/>
+    <rect x="45" y="26" width="28" height="4" opacity="0.4"/>
+    <rect x="45" y="50" width="28" height="4" opacity="0.4"/>
+    <rect x="45" y="56" width="28" height="4" opacity="0.4"/>
+    <rect x="45" y="80" width="28" height="4" opacity="0.4"/>
+    <rect x="45" y="86" width="28" height="4" opacity="0.4"/>
+    <rect x="45" y="110" width="28" height="4" opacity="0.4"/>
+    <rect x="45" y="116" width="28" height="4" opacity="0.4"/>
+
+    <!-- Network activity indicators -->
+    <path d="M75 25 h8" opacity="0.8" stroke-width="1"/>
+    <path d="M75 55 h8" opacity="0.8" stroke-width="1"/>
+    <path d="M75 85 h8" opacity="0.8" stroke-width="1"/>
+    <path d="M75 115 h8" opacity="0.8" stroke-width="1"/>
+
+    <!-- Corner brackets -->
+    <path d="M15 5 h10 M15 5 v10" stroke-width="1"/>
+    <path d="M85 5 h-10 M85 5 v10" stroke-width="1"/>
+    <path d="M15 155 h10 M15 155 v-10" stroke-width="1"/>
+    <path d="M85 155 h-10 M85 155 v-10" stroke-width="1"/>
+  </g>
+</svg>

@@ -1,0 +1,1199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.themes3 &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">termtel.themes3</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for termtel.themes3</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.resources</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFrame</span><span class="p">,</span> <span class="n">QVBoxLayout</span>
+
+
+<div class="viewcode-block" id="ThemeColors">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeColors">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ThemeColors</span><span class="p">:</span>
+    <span class="c1"># Core colors</span>
+    <span class="n">primary</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">secondary</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">background</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">darker_bg</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lighter_bg</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">grid</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">border</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">success</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">error</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1"># Effects</span>
+    <span class="n">border_light</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">corner_gap</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">corner_bright</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1"># Transparencies</span>
+    <span class="n">panel_bg</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">scrollbar_bg</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">selected_bg</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1"># Buttons</span>
+    <span class="n">button_hover</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">button_pressed</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">chart_bg</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1"># Terminal configuration</span>
+    <span class="n">terminal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">context_menu</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+
+<div class="viewcode-block" id="ThemeColors.from_dict">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeColors.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;ThemeColors&#39;</span><span class="p">:</span>
+        <span class="c1"># Extract terminal configuration</span>
+        <span class="n">terminal_config</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;terminal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Create instance with core theme fields</span>
+        <span class="n">theme_fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">}</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">theme_fields</span><span class="p">)</span>
+
+        <span class="c1"># Set terminal configuration</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="n">terminal_config</span>
+
+        <span class="k">return</span> <span class="n">instance</span></div>
+
+
+<div class="viewcode-block" id="ThemeColors.to_dict">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeColors.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;terminal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+
+<div class="viewcode-block" id="ThemeMapper">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeMapper">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ThemeMapper</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps application themes to terminal themes with dictionary-like behavior&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_library</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span> <span class="o">=</span> <span class="n">theme_library</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_mappings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;cyberpunk&quot;</span><span class="p">:</span> <span class="s2">&quot;Cyberpunk&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dark_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;Dark&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;light_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;Light&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;retro_green&quot;</span><span class="p">:</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;retro_amber&quot;</span><span class="p">:</span> <span class="s2">&quot;Amber&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;neon_blue&quot;</span><span class="p">:</span> <span class="s2">&quot;Neon&quot;</span>
+        <span class="p">}</span>
+        <span class="c1"># Cache the mapping to avoid regenerating it repeatedly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate mapping dictionary from theme library&quot;&quot;&quot;</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Get all available themes</span>
+        <span class="k">for</span> <span class="n">theme_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span><span class="o">.</span><span class="n">get_theme_names</span><span class="p">():</span>
+            <span class="n">theme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span><span class="o">.</span><span class="n">get_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+            <span class="c1"># Check if theme has terminal config in JSON</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="s1">&#39;terminal&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">theme</span><span class="o">.</span><span class="n">terminal</span><span class="p">,</span> <span class="s1">&#39;theme&#39;</span><span class="p">):</span>
+                <span class="n">terminal_theme</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_mappings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">theme_name</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">terminal_theme</span><span class="p">:</span>
+                    <span class="n">mapping</span><span class="p">[</span><span class="n">theme_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">terminal_theme</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Fall back to default mapping</span>
+                <span class="n">mapping</span><span class="p">[</span><span class="n">theme_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_mappings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">theme_name</span><span class="p">,</span> <span class="s2">&quot;Cyberpunk&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mapping</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazy-load and cache the mapping&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_mapping</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span>
+
+<div class="viewcode-block" id="ThemeMapper.get">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeMapper.get">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary-style get method with default value&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary-style bracket access&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Support for &#39;in&#39; operator&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Support for iteration&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Support for len()&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ThemeMapper.items">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeMapper.items">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Support for .items() method&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ThemeMapper.keys">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeMapper.keys">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Support for .keys() method&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ThemeMapper.values">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeMapper.values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Support for .values() method&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ThemeMapper.refresh">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeMapper.refresh">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Force regeneration of the mapping&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span></div>
+</div>
+
+
+<div class="viewcode-block" id="ThemeLibrary">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ThemeLibrary</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">themes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ThemeColors</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_default_themes</span><span class="p">()</span>  <span class="c1"># Load hardcoded default theme first</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_custom_themes</span><span class="p">()</span>  <span class="c1"># Then load any custom themes</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_default_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load default built-in themes&quot;&quot;&quot;</span>
+        <span class="c1"># Default cyberpunk theme</span>
+        <span class="n">cyberpunk</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#0a8993&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;secondary&quot;</span><span class="p">:</span> <span class="s2">&quot;#065359&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;background&quot;</span><span class="p">:</span> <span class="s2">&quot;#111111&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;darker_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;#1a1a1a&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lighter_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;#0ac0c8&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;#0affff&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;grid&quot;</span><span class="p">:</span> <span class="s2">&quot;#08a2a9&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="s2">&quot;#ffff66&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;#0a8993&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;#0a8993&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;#ff4c4c&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;border_light&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(10, 255, 255, 0.5)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;corner_gap&quot;</span><span class="p">:</span> <span class="s2">&quot;#010203&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;corner_bright&quot;</span><span class="p">:</span> <span class="s2">&quot;#0ff5ff&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;panel_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(0, 0, 0, 0.95)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;scrollbar_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(6, 20, 22, 0.6)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selected_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(10, 137, 147, 0.25)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;button_hover&quot;</span><span class="p">:</span> <span class="s2">&quot;#08706e&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;button_pressed&quot;</span><span class="p">:</span> <span class="s2">&quot;#064d4a&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chart_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(6, 83, 89, 0.25)&quot;</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Dark theme</span>
+        <span class="n">dark</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#1f1f1f&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;secondary&quot;</span><span class="p">:</span> <span class="s2">&quot;#2b2b2b&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;background&quot;</span><span class="p">:</span> <span class="s2">&quot;#121212&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;darker_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;#0d0d0d&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lighter_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;#eeeeee&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;grid&quot;</span><span class="p">:</span> <span class="s2">&quot;#2b2b2b&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="s2">&quot;#3a86ff&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;#333333&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;#00e676&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;#ff1744&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;border_light&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(255, 255, 255, 0.4)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;corner_gap&quot;</span><span class="p">:</span> <span class="s2">&quot;#121212&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;corner_bright&quot;</span><span class="p">:</span> <span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;panel_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(18, 18, 18, 0.98)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;scrollbar_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(33, 33, 33, 0.5)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;selected_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(255, 255, 255, 0.1)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;button_hover&quot;</span><span class="p">:</span> <span class="s2">&quot;#333333&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;button_pressed&quot;</span><span class="p">:</span> <span class="s2">&quot;#444444&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chart_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba(33, 33, 33, 0.2)&quot;</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Add the default themes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">themes</span><span class="p">[</span><span class="s2">&quot;cyberpunk&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ThemeColors</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">cyberpunk</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">themes</span><span class="p">[</span><span class="s2">&quot;dark&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ThemeColors</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">dark</span><span class="p">)</span>
+
+    <span class="c1"># In ThemeManager._load_custom_themes, modify to use relative path:</span>
+
+<div class="viewcode-block" id="ThemeLibrary.get_colors">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.get_colors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the color dictionary for the specified theme.&quot;&quot;&quot;</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">theme</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">theme</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Colors for theme &#39;</span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2">&#39; not found, returning default.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_theme</span><span class="p">(</span><span class="s2">&quot;cyberpunk&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ThemeLibrary.get_chart_colors">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.get_chart_colors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_chart_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for get_colors() for backwards compatibility.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_colors</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_custom_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load custom themes from themes directory&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Use relative path instead of home directory</span>
+            <span class="n">custom_themes_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./themes&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading themes from: </span><span class="si">{</span><span class="n">custom_themes_dir</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Create themes directory if it doesn&#39;t exist</span>
+            <span class="n">custom_themes_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Themes directory created/verified&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Load all .json files from the themes directory</span>
+            <span class="k">if</span> <span class="n">custom_themes_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">theme_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">custom_themes_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.json&#39;</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">theme_files</span><span class="p">)</span><span class="si">}</span><span class="s2"> theme files&quot;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">theme_file</span> <span class="ow">in</span> <span class="n">custom_themes_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.json&#39;</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading theme from: </span><span class="si">{</span><span class="n">theme_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">theme_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                            <span class="n">theme_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                            <span class="c1"># Extract only the color-related fields</span>
+                            <span class="n">theme_colors</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">theme_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                                            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ThemeColors</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">}</span>
+                            <span class="n">theme_name</span> <span class="o">=</span> <span class="n">theme_file</span><span class="o">.</span><span class="n">stem</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">themes</span><span class="p">[</span><span class="n">theme_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ThemeColors</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">theme_colors</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully loaded theme: </span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading theme </span><span class="si">{</span><span class="n">theme_file</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in _load_custom_themes: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="ThemeLibrary.get_theme">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.get_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ThemeColors</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a theme by name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ThemeLibrary.add_theme">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.add_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeColors</span><span class="p">,</span> <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new theme and optionally save it to disk&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">themes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">theme</span>
+            <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_theme</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">theme</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error adding theme </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeColors</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a theme to the user&#39;s themes directory&quot;&quot;&quot;</span>
+        <span class="n">home</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./&quot;</span><span class="p">)</span>
+        <span class="n">themes_dir</span> <span class="o">=</span> <span class="n">home</span> <span class="o">/</span> <span class="s1">&#39;themes&#39;</span>
+        <span class="n">themes_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">theme_path</span> <span class="o">=</span> <span class="n">themes_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.json&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">theme_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">theme</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ThemeLibrary.get_theme_names">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.get_theme_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_theme_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of all available theme names&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">themes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="ThemeLibrary.generate_stylesheet">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.generate_stylesheet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_stylesheet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeColors</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate Qt stylesheet from theme colors with WebEngine context menu support&quot;&quot;&quot;</span>
+        <span class="c1"># Get context menu colors, with fully opaque background</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># Create a temporary ThemeColors object from the dict</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+            <span class="n">theme_dict</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+            <span class="n">temp_theme</span> <span class="o">=</span> <span class="n">ThemeColors</span><span class="p">()</span>
+
+            <span class="c1"># Copy all attributes from the dict to the ThemeColors object</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">theme_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;terminal&#39;</span><span class="p">:</span>  <span class="c1"># Handle terminal separately</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">temp_theme</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># Handle terminal specially since it&#39;s nested</span>
+            <span class="k">if</span> <span class="s1">&#39;terminal&#39;</span> <span class="ow">in</span> <span class="n">theme_dict</span><span class="p">:</span>
+                <span class="n">temp_theme</span><span class="o">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="n">theme_dict</span><span class="p">[</span><span class="s1">&#39;terminal&#39;</span><span class="p">]</span>
+
+            <span class="c1"># Use the ThemeColors object instead</span>
+            <span class="n">theme</span> <span class="o">=</span> <span class="n">temp_theme</span>
+
+        <span class="n">context_menu</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="s1">&#39;context_menu&#39;</span><span class="p">,</span> <span class="p">{})</span> <span class="ow">or</span> <span class="p">{</span>
+            <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">secondary</span><span class="p">,</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;selected_bg&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">selected_bg</span><span class="p">,</span>
+            <span class="s1">&#39;selected_text&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">lighter_bg</span><span class="p">,</span>
+            <span class="s1">&#39;border&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">border_light</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Ensure background color is fully opaque by converting any rgba to solid color</span>
+        <span class="n">menu_bg</span> <span class="o">=</span> <span class="n">context_menu</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">menu_bg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;rgba&#39;</span><span class="p">):</span>
+            <span class="c1"># If it&#39;s rgba, convert to solid color using theme.secondary</span>
+            <span class="n">menu_bg</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">secondary</span>
+
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QMainWindow, QWidget </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                font-family: &quot;Courier New&quot;;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QGroupBox </span><span class="se">{{</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                margin-top: 1.5em;</span>
+<span class="s2">                padding: 15px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QGroupBox::title </span><span class="se">{{</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                subcontrol-origin: margin;</span>
+<span class="s2">                left: 10px;</span>
+<span class="s2">                padding: 0 5px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QPushButton </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                padding: 5px 15px;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QPushButton:hover </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">button_hover</span><span class="si">}</span><span class="s2"> !important;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QPushButton:pressed </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">button_pressed</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QLineEdit, QTextEdit </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                padding: 5px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QTreeWidget </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QTreeWidget::item:selected </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">selected_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QComboBox </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                padding: 5px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QComboBox:drop-down </span><span class="se">{{</span>
+<span class="s2">                border: none;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QComboBox:down-arrow </span><span class="se">{{</span>
+<span class="s2">                border: 2px solid </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                width: 6px;</span>
+<span class="s2">                height: 6px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QFrame </span><span class="se">{{</span>
+<span class="s2">                border-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QWebEngineView </span><span class="se">{{</span>
+<span class="s2">                background: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QMenu </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">menu_bg</span><span class="si">}</span><span class="s2"> !important;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">context_menu</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">context_menu</span><span class="p">[</span><span class="s1">&#39;border&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                padding: 5px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QMenu::item </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">menu_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                padding: 5px 30px 5px 30px;</span>
+<span class="s2">                border: 1px solid transparent;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QMenu::item:selected </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">context_menu</span><span class="p">[</span><span class="s1">&#39;selected_bg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">context_menu</span><span class="p">[</span><span class="s1">&#39;selected_text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QMenu::separator </span><span class="se">{{</span>
+<span class="s2">                height: 1px;</span>
+<span class="s2">                background: </span><span class="si">{</span><span class="n">context_menu</span><span class="p">[</span><span class="s1">&#39;border&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> !important;</span>
+<span class="s2">                margin: 5px 0px 5px 0px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            QScrollBar:vertical </span><span class="se">{{</span>
+<span class="s2">    background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">scrollbar_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">    width: 10px;</span>
+<span class="s2">    margin: 0;</span>
+<span class="s2">    border: none;</span>
+<span class="se">}}</span>
+
+<span class="s2">QScrollBar::handle:vertical </span><span class="se">{{</span>
+<span class="s2">    background: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">scrollbar_handle</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;scrollbar_handle&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">    min-height: 20px;</span>
+<span class="s2">    border-radius: 4px;</span>
+<span class="s2">    border: none;</span>
+<span class="se">}}</span>
+
+<span class="s2">QScrollBar::handle:vertical:hover </span><span class="se">{{</span>
+<span class="s2">    background: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">scrollbar_handle_hover</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;scrollbar_handle_hover&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="se">}}</span>
+
+<span class="s2">QScrollBar::add-line:vertical,</span>
+<span class="s2">QScrollBar::sub-line:vertical </span><span class="se">{{</span>
+<span class="s2">    height: 0;</span>
+<span class="s2">    background: none;</span>
+<span class="s2">    border: none;</span>
+<span class="se">}}</span>
+
+<span class="s2">QScrollBar::add-page:vertical,</span>
+<span class="s2">QScrollBar::sub-page:vertical </span><span class="se">{{</span>
+<span class="s2">    background: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">scrollbar_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">    border: none;</span>
+<span class="se">}}</span>
+<span class="s2">        &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ThemeLibrary.apply_theme">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.apply_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply a theme to a widget&quot;&quot;&quot;</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s1">&#39;apply_theme&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">apply_theme</span><span class="p">):</span>
+            <span class="c1"># The widget has its own theme handling</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">theme</span><span class="p">:</span>
+            <span class="n">stylesheet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_stylesheet</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">stylesheet</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Theme &#39;</span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2">&#39; not found&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ThemeLibrary.generate_terminal_js">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.generate_terminal_js">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_terminal_js</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="n">ThemeColors</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate terminal theme JavaScript with improved xterm.js compatibility&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generating terminal theme for </span><span class="si">{</span><span class="n">theme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Debug log</span>
+
+        <span class="c1"># First check if there&#39;s a terminal-specific theme</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="s1">&#39;terminal&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span> <span class="ow">and</span> <span class="s1">&#39;theme&#39;</span> <span class="ow">in</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using terminal-specific theme&quot;</span><span class="p">)</span>
+            <span class="n">term_colors</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span><span class="p">[</span><span class="s1">&#39;theme&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="c1"># Handle scrollbar if it exists in terminal theme</span>
+            <span class="k">if</span> <span class="s1">&#39;scrollbar&#39;</span> <span class="ow">in</span> <span class="n">term_colors</span><span class="p">:</span>
+                <span class="n">scrollbar_colors</span> <span class="o">=</span> <span class="n">term_colors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scrollbar&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scrollbar_colors</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                    <span class="s1">&#39;thumb&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="p">,</span>
+                    <span class="s1">&#39;thumb_hover&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span>
+                <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Falling back to main theme colors&quot;</span><span class="p">)</span>
+            <span class="c1"># Fallback to main theme colors if no terminal theme exists</span>
+            <span class="n">term_colors</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;foreground&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                <span class="s1">&#39;cursor&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="s1">&#39;black&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="p">,</span>
+                <span class="s1">&#39;brightBlack&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="p">,</span>
+                <span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+                <span class="s1">&#39;brightRed&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+                <span class="s1">&#39;green&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">success</span><span class="p">,</span>
+                <span class="s1">&#39;brightGreen&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">success</span><span class="p">,</span>
+                <span class="s1">&#39;yellow&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+                <span class="s1">&#39;brightYellow&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+                <span class="s1">&#39;blue&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span>
+                <span class="s1">&#39;brightBlue&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span>
+                <span class="s1">&#39;magenta&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">secondary</span><span class="p">,</span>
+                <span class="s1">&#39;brightMagenta&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">secondary</span><span class="p">,</span>
+                <span class="s1">&#39;cyan&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+                <span class="s1">&#39;brightCyan&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+                <span class="s1">&#39;white&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="s1">&#39;brightWhite&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">lighter_bg</span><span class="p">,</span>
+                <span class="s1">&#39;selectionBackground&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">selected_bg</span><span class="p">,</span>
+                <span class="s1">&#39;selectionForeground&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">lighter_bg</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">term_colors</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">scrollbar_colors</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                <span class="s1">&#39;thumb&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="p">,</span>
+                <span class="s1">&#39;thumb_hover&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span>
+            <span class="p">}</span>
+        <span class="n">term_colors</span><span class="p">[</span><span class="s1">&#39;selectionBackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#FF0000&#39;</span>  <span class="c1"># Bright red</span>
+        <span class="n">term_colors</span><span class="p">[</span><span class="s1">&#39;selectionForeground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#FFFFFF&#39;</span>  <span class="c1"># White</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Terminal colors: </span><span class="si">{</span><span class="n">term_colors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Debug log</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scrollbar colors: </span><span class="si">{</span><span class="n">scrollbar_colors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Debug log</span>
+
+        <span class="n">js</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        console.log(&#39;Applying terminal theme edited...&#39;, </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">term_colors</span><span class="p">)</span><span class="si">}</span><span class="s2">);</span>
+
+<span class="s2">        // Set terminal options</span>
+<span class="s2">        try </span><span class="se">{{</span>
+<span class="s2">            term.setOption(&#39;theme&#39;, </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">term_colors</span><span class="p">)</span><span class="si">}</span><span class="s2">);</span>
+<span class="s2">            term.setOption(&#39;fontFamily&#39;, &#39;Courier New&#39;);</span>
+<span class="s2">            term.setOption(&#39;fontSize&#39;, 14);</span>
+<span class="s2">            term.setOption(&#39;cursorBlink&#39;, true);</span>
+
+<span class="s2">            console.log(&#39;Theme applied successfully&#39;, term.getOption(&#39;theme&#39;));</span>
+<span class="s2">        </span><span class="se">}}</span><span class="s2"> catch (e) </span><span class="se">{{</span>
+<span class="s2">            console.error(&#39;Error applying theme:&#39;, e);</span>
+<span class="s2">        </span><span class="se">}}</span>
+
+<span class="s2">        // Update scrollbar styles</span>
+<span class="s2">        if (!window.themeStyle) </span><span class="se">{{</span>
+<span class="s2">            window.themeStyle = document.createElement(&#39;style&#39;);</span>
+<span class="s2">            window.themeStyle.id = &#39;theme-scrollbar-style&#39;;</span>
+<span class="s2">            document.head.appendChild(window.themeStyle);</span>
+<span class="s2">        </span><span class="se">}}</span>
+
+<span class="s2">        window.themeStyle.innerHTML = `</span>
+<span class="s2">            body </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                margin: 0;</span>
+<span class="s2">                padding: 0;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            .xterm-viewport::-webkit-scrollbar </span><span class="se">{{</span>
+<span class="s2">                width: 12px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            .xterm-viewport::-webkit-scrollbar-track </span><span class="se">{{</span>
+<span class="s2">                background: </span><span class="si">{</span><span class="n">scrollbar_colors</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            .xterm-viewport::-webkit-scrollbar-thumb </span><span class="se">{{</span>
+<span class="s2">                background: </span><span class="si">{</span><span class="n">scrollbar_colors</span><span class="p">[</span><span class="s1">&#39;thumb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            .xterm-viewport::-webkit-scrollbar-thumb:hover </span><span class="se">{{</span>
+<span class="s2">                background: </span><span class="si">{</span><span class="n">scrollbar_colors</span><span class="p">[</span><span class="s1">&#39;thumb_hover&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">        `;</span>
+
+<span class="s2">        // Force a terminal refresh</span>
+<span class="s2">        term.refresh(0, term.rows - 1);</span>
+
+<span class="s2">        // Log the current state</span>
+<span class="s2">        console.log(&#39;Terminal state:&#39;, </span><span class="se">{{</span>
+<span class="s2">            &#39;theme&#39;: term.getOption(&#39;theme&#39;),</span>
+<span class="s2">            &#39;fontSize&#39;: term.getOption(&#39;fontSize&#39;),</span>
+<span class="s2">            &#39;fontFamily&#39;: term.getOption(&#39;fontFamily&#39;)</span>
+<span class="s2">        </span><span class="se">}}</span><span class="s2">);</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">js</span></div>
+
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTimer</span>
+
+    <span class="c1"># def apply_theme_to_terminal(self, terminal, terminal_theme=None):</span>
+    <span class="c1">#     &quot;&quot;&quot;Apply theme to a terminal instance with a delay&quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="c1">#     def delayed_apply():</span>
+    <span class="c1">#         print(f&quot;Applying terminal theme: {terminal_theme}&quot;)  # Debug log</span>
+    <span class="c1">#</span>
+    <span class="c1">#         theme = self.get_theme(terminal_theme) if terminal_theme else self.get_theme(&quot;borland&quot;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#         if not theme:</span>
+    <span class="c1">#             print(f&quot;Theme not found, falling back to cyberpunk&quot;)</span>
+    <span class="c1">#             theme = self.get_theme(&quot;cyberpunk&quot;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#         if hasattr(terminal, &#39;page&#39;):</span>
+    <span class="c1">#             js_theme = self.generate_terminal_js(theme)</span>
+    <span class="c1">#             # Add debug logging</span>
+    <span class="c1">#             print(&quot;Checking terminal readiness...&quot;)</span>
+    <span class="c1">#             terminal.page.runJavaScript(</span>
+    <span class="c1">#                 &quot;&quot;&quot;</span>
+    <span class="c1">#                 console.log(&#39;Terminal check:&#39;, {</span>
+    <span class="c1">#                     termExists: typeof term !== &#39;undefined&#39;,</span>
+    <span class="c1">#                     termNull: term === null</span>
+    <span class="c1">#                 });</span>
+    <span class="c1">#                 typeof term !== &#39;undefined&#39; &amp;&amp; term !== null</span>
+    <span class="c1">#                 &quot;&quot;&quot;,</span>
+    <span class="c1">#                 lambda result: self.handle_theme_check(result, terminal, js_theme)</span>
+    <span class="c1">#             )</span>
+    <span class="c1">#         else:</span>
+    <span class="c1">#             print(&quot;Terminal has no page() method&quot;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     # Create and start timer with 1000ms (1 second) delay</span>
+    <span class="c1">#     timer = QTimer()</span>
+    <span class="c1">#     timer.setSingleShot(True)</span>
+    <span class="c1">#     timer.timeout.connect(delayed_apply)</span>
+    <span class="c1">#     timer.start(2000)</span>
+<div class="viewcode-block" id="ThemeLibrary.handle_theme_check">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.ThemeLibrary.handle_theme_check">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_theme_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_ready</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">terminal</span><span class="p">,</span> <span class="n">theme_js</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the terminal readiness check for theme application.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Terminal ready: </span><span class="si">{</span><span class="n">is_ready</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Debug log</span>
+
+        <span class="k">if</span> <span class="n">is_ready</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Applying theme JS...&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">theme_js</span><span class="p">)</span>
+            <span class="n">terminal</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span>
+                <span class="n">theme_js</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Theme application completed: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="p">)</span></div>
+</div>
+
+        <span class="c1"># else:</span>
+        <span class="c1">#     print(&quot;Terminal not ready, scheduling retry...&quot;)</span>
+        <span class="c1">#     from PyQt6.QtCore import QTimer</span>
+        <span class="c1">#     QTimer.singleShot(500, lambda: self.apply_theme_to_terminal(terminal))</span>
+
+<div class="viewcode-block" id="LayeredHUDFrame">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.LayeredHUDFrame">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LayeredHUDFrame</span><span class="p">(</span><span class="n">QFrame</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theme_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">theme_name</span><span class="o">=</span><span class="s2">&quot;cyberpunk&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span> <span class="o">=</span> <span class="n">theme_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_name</span> <span class="o">=</span> <span class="n">theme_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">theme_manager</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_theme_colors</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LayeredHUDFrame.setup_ui">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.LayeredHUDFrame.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Main content layout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Create corner lines (bright)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># Horizontal corner pieces</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">HLine</span><span class="p">)</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Vertical corner pieces</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">VLine</span><span class="p">)</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="c1"># Create connecting lines (dim)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connecting_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Horizontal connectors</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">HLine</span><span class="p">)</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Vertical connectors</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">VLine</span><span class="p">)</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connecting_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color: transparent;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Set initial colors (will be overridden if theme_manager is provided)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_line_colors</span><span class="p">(</span><span class="s2">&quot;#0f969e&quot;</span><span class="p">,</span> <span class="s2">&quot;rgba(15, 150, 158, 0.3)&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LayeredHUDFrame.update_theme_colors">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.LayeredHUDFrame.update_theme_colors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_theme_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update colors based on current theme&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">:</span>
+            <span class="c1"># Get theme colors - handle both old and new theme managers</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="s1">&#39;get_colors&#39;</span><span class="p">):</span>
+                <span class="c1"># New ThemeLibrary way</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">get_colors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Fallback for old theme manager</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">get_chart_colors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="c1"># Get colors directly from dict</span>
+                <span class="n">bright_color</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;corner_bright&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;border&#39;</span><span class="p">,</span> <span class="s1">&#39;#0f969e&#39;</span><span class="p">))</span>
+                <span class="n">dim_color</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;border_light&#39;</span><span class="p">,</span> <span class="s1">&#39;rgba(15, 150, 158, 0.3)&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Handle ThemeColors dataclass</span>
+                <span class="n">bright_color</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="s1">&#39;corner_bright&#39;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="s1">&#39;border&#39;</span><span class="p">,</span> <span class="s1">&#39;#0f969e&#39;</span><span class="p">))</span>
+                <span class="n">dim_color</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="s1">&#39;border_light&#39;</span><span class="p">,</span> <span class="s1">&#39;rgba(15, 150, 158, 0.3)&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Convert hex to rgba if needed</span>
+            <span class="k">if</span> <span class="n">bright_color</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bright_color</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bright_color</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bright_color</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="n">dim_color</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;rgba(</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">, 0.4)&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_line_colors</span><span class="p">(</span><span class="n">bright_color</span><span class="p">,</span> <span class="n">dim_color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LayeredHUDFrame.update_line_colors">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.LayeredHUDFrame.update_line_colors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_line_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bright_color</span><span class="p">,</span> <span class="n">dim_color</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update line colors with provided colors&quot;&quot;&quot;</span>
+        <span class="c1"># Update corner lines (bright)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">:</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;background-color: </span><span class="si">{</span><span class="n">bright_color</span><span class="si">}</span><span class="s2">;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Update connecting lines (dim)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connecting_lines</span><span class="p">:</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;background-color: </span><span class="si">{</span><span class="n">dim_color</span><span class="si">}</span><span class="s2">;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LayeredHUDFrame.set_theme">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.LayeredHUDFrame.set_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the theme of the frame&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_name</span> <span class="o">=</span> <span class="n">theme_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_theme_colors</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="LayeredHUDFrame.resizeEvent">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.LayeredHUDFrame.resizeEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="n">corner_length</span> <span class="o">=</span> <span class="mi">20</span>  <span class="c1"># Length of bright corner pieces</span>
+
+        <span class="c1"># Top-left corner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Horizontal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">)</span>  <span class="c1"># Vertical</span>
+
+        <span class="c1"># Top-right corner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Horizontal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">)</span>  <span class="c1"># Vertical</span>
+
+        <span class="c1"># Bottom-left corner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Horizontal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">)</span>  <span class="c1"># Vertical</span>
+
+        <span class="c1"># Bottom-right corner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">corner_length</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Horizontal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_lines</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">)</span>  <span class="c1"># Vertical</span>
+
+        <span class="c1"># Connecting lines (dim)</span>
+        <span class="c1"># Top</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connecting_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">corner_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Bottom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connecting_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">corner_length</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">w</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connecting_lines</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">corner_length</span><span class="p">)</span>
+        <span class="c1"># Right</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connecting_lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">corner_length</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="generate_terminal_themes">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.generate_terminal_themes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_terminal_themes</span><span class="p">(</span><span class="n">theme_library</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert JSON theme files into terminal_themes format for xterm.js 5.5.&quot;&quot;&quot;</span>
+    <span class="n">terminal_themes</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">theme_name</span> <span class="ow">in</span> <span class="n">theme_library</span><span class="o">.</span><span class="n">get_theme_names</span><span class="p">():</span>
+        <span class="n">theme</span> <span class="o">=</span> <span class="n">theme_library</span><span class="o">.</span><span class="n">get_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">theme</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Check if theme has terminal colors defined first</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">theme</span><span class="p">,</span> <span class="s1">&#39;terminal&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span> <span class="ow">and</span> <span class="s1">&#39;theme&#39;</span> <span class="ow">in</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using terminal colors for </span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Use terminal colors directly</span>
+            <span class="n">term_colors</span> <span class="o">=</span> <span class="n">theme</span><span class="o">.</span><span class="n">terminal</span><span class="p">[</span><span class="s1">&#39;theme&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Remove scrollbar from term_colors if it exists</span>
+            <span class="k">if</span> <span class="s1">&#39;scrollbar&#39;</span> <span class="ow">in</span> <span class="n">term_colors</span><span class="p">:</span>
+                <span class="n">scrollbar_colors</span> <span class="o">=</span> <span class="n">term_colors</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scrollbar&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scrollbar_colors</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                    <span class="s1">&#39;thumb&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="p">,</span>
+                    <span class="s1">&#39;thumb_hover&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span>
+                <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using fallback colors for </span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Fallback to theme colors if no terminal colors defined</span>
+            <span class="n">term_colors</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;foreground&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                <span class="s1">&#39;cursor&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+                <span class="s1">&#39;black&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="p">,</span>
+                <span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+                <span class="s1">&#39;green&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">success</span><span class="p">,</span>
+                <span class="s1">&#39;yellow&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+                <span class="s1">&#39;blue&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span>
+                <span class="s1">&#39;magenta&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">secondary</span><span class="p">,</span>
+                <span class="s1">&#39;cyan&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+                <span class="s1">&#39;white&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="s1">&#39;brightBlack&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">darker_bg</span><span class="p">,</span>
+                <span class="s1">&#39;brightRed&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+                <span class="s1">&#39;brightGreen&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">success</span><span class="p">,</span>
+                <span class="s1">&#39;brightYellow&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+                <span class="s1">&#39;brightBlue&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span>
+                <span class="s1">&#39;brightMagenta&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">secondary</span><span class="p">,</span>
+                <span class="s1">&#39;brightCyan&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+                <span class="s1">&#39;brightWhite&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">lighter_bg</span>
+            <span class="p">}</span>
+            <span class="n">scrollbar_colors</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                <span class="s1">&#39;thumb&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">border_light</span><span class="p">,</span>
+                <span class="s1">&#39;thumb_hover&#39;</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">text</span>
+            <span class="p">}</span>
+
+        <span class="c1"># Always set explicit selection colors that will work well</span>
+        <span class="n">selection_bg</span> <span class="o">=</span> <span class="s1">&#39;#504945&#39;</span>  <span class="c1"># Dark gray</span>
+        <span class="n">selection_fg</span> <span class="o">=</span> <span class="s1">&#39;#EBDBB2&#39;</span>  <span class="c1"># Light cream</span>
+
+        <span class="c1"># Add selection colors to term_colors</span>
+        <span class="n">term_colors</span><span class="p">[</span><span class="s1">&#39;selection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selection_bg</span>
+        <span class="n">term_colors</span><span class="p">[</span><span class="s1">&#39;selectionBackground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selection_bg</span>
+        <span class="n">term_colors</span><span class="p">[</span><span class="s1">&#39;selectionForeground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selection_fg</span>
+
+        <span class="c1"># Generate the JavaScript theme application code</span>
+        <span class="n">js_code</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        console.log(&#39;Applying terminal theme for </span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2"> to xterm.js 5.5...&#39;);</span>
+
+<span class="s2">        try </span><span class="se">{{</span>
+<span class="s2">            // Define the complete theme object</span>
+<span class="s2">            const terminalTheme = </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">term_colors</span><span class="p">)</span><span class="si">}</span><span class="s2">;</span>
+
+<span class="s2">            // Log the selection colors we&#39;re applying</span>
+<span class="s2">            console.log(&#39;Setting selection colors:&#39;, </span><span class="se">{{</span>
+<span class="s2">                selection: &#39;</span><span class="si">{</span><span class="n">selection_bg</span><span class="si">}</span><span class="s2">&#39;,</span>
+<span class="s2">                selectionForeground: &#39;</span><span class="si">{</span><span class="n">selection_fg</span><span class="si">}</span><span class="s2">&#39;</span>
+<span class="s2">            </span><span class="se">}}</span><span class="s2">);</span>
+
+<span class="s2">            // Apply theme to terminal</span>
+<span class="s2">            if (term &amp;&amp; term.options) </span><span class="se">{{</span>
+<span class="s2">                // Modern xterm.js 5.x approach</span>
+<span class="s2">                term.options.theme = terminalTheme;</span>
+
+<span class="s2">                // Font settings</span>
+<span class="s2">                term.options.fontFamily = &#39;Courier New&#39;;</span>
+<span class="s2">                term.options.fontSize = 14;</span>
+<span class="s2">                term.options.cursorBlink = true;</span>
+
+<span class="s2">                console.log(&#39;Applied theme using term.options&#39;);</span>
+<span class="s2">            </span><span class="se">}}</span><span class="s2"> else if (term &amp;&amp; term.setOption) </span><span class="se">{{</span>
+<span class="s2">                // Fallback to older approach</span>
+<span class="s2">                term.setOption(&#39;theme&#39;, terminalTheme);</span>
+<span class="s2">                term.setOption(&#39;fontFamily&#39;, &#39;Courier New&#39;);</span>
+<span class="s2">                term.setOption(&#39;fontSize&#39;, 14);</span>
+<span class="s2">                term.setOption(&#39;cursorBlink&#39;, true);</span>
+
+<span class="s2">                console.log(&#39;Applied theme using term.setOption&#39;);</span>
+<span class="s2">            </span><span class="se">}}</span><span class="s2"> else </span><span class="se">{{</span>
+<span class="s2">                console.error(&#39;Cannot find appropriate method to set terminal options&#39;);</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            // Apply CSS to ensure selection is styled correctly</span>
+<span class="s2">            const selectionStyle = document.createElement(&#39;style&#39;);</span>
+<span class="s2">            selectionStyle.textContent = `</span>
+<span class="s2">                .xterm-selection-layer .xterm-selection </span><span class="se">{{</span>
+<span class="s2">                    background-color: </span><span class="si">{</span><span class="n">selection_bg</span><span class="si">}</span><span class="s2"> !important;</span>
+<span class="s2">                    opacity: 0.6;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .xterm-selection-layer .xterm-selection.xterm-focus </span><span class="se">{{</span>
+<span class="s2">                    opacity: 0.8;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .xterm-selection-layer .xterm-selection.xterm-focus .xterm-selection-top-left,</span>
+<span class="s2">                .xterm-selection-layer .xterm-selection.xterm-focus .xterm-selection-top-right,</span>
+<span class="s2">                .xterm-selection-layer .xterm-selection.xterm-focus .xterm-selection-bottom-left,</span>
+<span class="s2">                .xterm-selection-layer .xterm-selection.xterm-focus .xterm-selection-bottom-right </span><span class="se">{{</span>
+<span class="s2">                    background-color: </span><span class="si">{</span><span class="n">selection_bg</span><span class="si">}</span><span class="s2"> !important;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">            `;</span>
+<span class="s2">            document.head.appendChild(selectionStyle);</span>
+<span class="s2">        </span><span class="se">}}</span><span class="s2"> catch (e) </span><span class="se">{{</span>
+<span class="s2">            console.error(&#39;Error applying theme:&#39;, e);</span>
+<span class="s2">        </span><span class="se">}}</span>
+
+<span class="s2">        // Apply scrollbar styles</span>
+<span class="s2">        try </span><span class="se">{{</span>
+<span class="s2">            if (!window.themeStyle) </span><span class="se">{{</span>
+<span class="s2">                window.themeStyle = document.createElement(&#39;style&#39;);</span>
+<span class="s2">                window.themeStyle.id = &#39;theme-scrollbar-style&#39;;</span>
+<span class="s2">                document.head.appendChild(window.themeStyle);</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            window.themeStyle.innerHTML = `</span>
+<span class="s2">                body </span><span class="se">{{</span>
+<span class="s2">                    background-color: </span><span class="si">{</span><span class="n">theme</span><span class="o">.</span><span class="n">background</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    margin: 0;</span>
+<span class="s2">                    padding: 0;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .xterm-viewport::-webkit-scrollbar </span><span class="se">{{</span>
+<span class="s2">                    width: 12px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .xterm-viewport::-webkit-scrollbar-track </span><span class="se">{{</span>
+<span class="s2">                    background: </span><span class="si">{</span><span class="n">scrollbar_colors</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .xterm-viewport::-webkit-scrollbar-thumb </span><span class="se">{{</span>
+<span class="s2">                    background: </span><span class="si">{</span><span class="n">scrollbar_colors</span><span class="p">[</span><span class="s1">&#39;thumb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .xterm-viewport::-webkit-scrollbar-thumb:hover </span><span class="se">{{</span>
+<span class="s2">                    background: </span><span class="si">{</span><span class="n">scrollbar_colors</span><span class="p">[</span><span class="s1">&#39;thumb_hover&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">            `;</span>
+
+<span class="s2">            // Set CSS variables for consistency</span>
+<span class="s2">            document.documentElement.style.setProperty(&#39;--selection-background&#39;, &#39;</span><span class="si">{</span><span class="n">selection_bg</span><span class="si">}</span><span class="s2">&#39;);</span>
+<span class="s2">            document.documentElement.style.setProperty(&#39;--selection-text&#39;, &#39;</span><span class="si">{</span><span class="n">selection_fg</span><span class="si">}</span><span class="s2">&#39;);</span>
+<span class="s2">        </span><span class="se">}}</span><span class="s2"> catch (e) </span><span class="se">{{</span>
+<span class="s2">            console.error(&#39;Error applying scrollbar styles:&#39;, e);</span>
+<span class="s2">        </span><span class="se">}}</span>
+
+<span class="s2">        // Force a terminal refresh</span>
+<span class="s2">        try </span><span class="se">{{</span>
+<span class="s2">            // Refresh the terminal display</span>
+<span class="s2">            if (term &amp;&amp; term.refresh) </span><span class="se">{{</span>
+<span class="s2">                term.refresh(0, term.rows - 1);</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            // Apply fitting if available</span>
+<span class="s2">            if (typeof fitAddon !== &#39;undefined&#39; &amp;&amp; fitAddon.fit) </span><span class="se">{{</span>
+<span class="s2">                fitAddon.fit();</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            console.log(&#39;Terminal refresh completed&#39;);</span>
+<span class="s2">        </span><span class="se">}}</span><span class="s2"> catch (e) </span><span class="se">{{</span>
+<span class="s2">            console.error(&#39;Error in final terminal refresh:&#39;, e);</span>
+<span class="s2">        </span><span class="se">}}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Add to terminal_themes dictionary</span>
+        <span class="n">terminal_themes</span><span class="p">[</span><span class="n">theme_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;js&quot;</span><span class="p">:</span> <span class="n">js_code</span>
+        <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">terminal_themes</span></div>
+
+
+<div class="viewcode-block" id="generate_telemetry_theme_json">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.generate_telemetry_theme_json">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_telemetry_theme_json</span><span class="p">(</span><span class="n">theme_colors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a ThemeColors object to JSON format for the telemetry widget</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        theme_colors: ThemeColors instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Theme data in the format expected by telemetry_theme.js</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Map ThemeColors properties to telemetry theme CSS variables</span>
+    <span class="n">telemetry_theme</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;--text-primary&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+        <span class="s1">&#39;--text-secondary&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+        <span class="s1">&#39;--bg-primary&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+        <span class="s1">&#39;--bg-secondary&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">darker_bg</span><span class="p">,</span>
+        <span class="s1">&#39;--border-color&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">border_light</span><span class="p">,</span>
+        <span class="s1">&#39;--accent-color&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span>
+        <span class="s1">&#39;--scrollbar-track&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">scrollbar_bg</span><span class="p">,</span>
+        <span class="s1">&#39;--scrollbar-thumb&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">border</span><span class="p">,</span>
+        <span class="s1">&#39;--scrollbar-thumb-hover&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+        <span class="s1">&#39;--success-color&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">success</span><span class="p">,</span>
+        <span class="s1">&#39;--error-color&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+        <span class="s1">&#39;--chart-line&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+        <span class="s1">&#39;--chart-grid&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">grid</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Create a corresponding terminal theme</span>
+    <span class="n">terminal_theme</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">theme_colors</span><span class="p">,</span> <span class="s1">&#39;terminal&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">terminal</span><span class="p">:</span>
+        <span class="n">terminal_theme</span> <span class="o">=</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">terminal</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;theme&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Map from app theme to terminal theme</span>
+        <span class="n">terminal_theme</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;foreground&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+            <span class="s1">&#39;cursor&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;black&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">darker_bg</span><span class="p">,</span>
+            <span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+            <span class="s1">&#39;green&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">success</span><span class="p">,</span>
+            <span class="s1">&#39;yellow&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+            <span class="s1">&#39;blue&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span>
+            <span class="s1">&#39;magenta&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">secondary</span><span class="p">,</span>
+            <span class="s1">&#39;cyan&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+            <span class="s1">&#39;white&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;brightBlack&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">darker_bg</span><span class="p">,</span>
+            <span class="s1">&#39;brightRed&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+            <span class="s1">&#39;brightGreen&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">success</span><span class="p">,</span>
+            <span class="s1">&#39;brightYellow&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+            <span class="s1">&#39;brightBlue&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">primary</span><span class="p">,</span>
+            <span class="s1">&#39;brightMagenta&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">secondary</span><span class="p">,</span>
+            <span class="s1">&#39;brightCyan&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+            <span class="s1">&#39;brightWhite&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">lighter_bg</span><span class="p">,</span>
+            <span class="s1">&#39;selectionBackground&#39;</span><span class="p">:</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">selected_bg</span>
+        <span class="p">}</span>
+
+    <span class="c1"># Return the complete theme data</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;css_vars&#39;</span><span class="p">:</span> <span class="n">telemetry_theme</span><span class="p">,</span>
+        <span class="s1">&#39;terminal&#39;</span><span class="p">:</span> <span class="n">terminal_theme</span><span class="p">,</span>
+        <span class="s1">&#39;cornerStyle&#39;</span><span class="p">:</span> <span class="n">get_corner_style_for_theme</span><span class="p">(</span><span class="n">theme_colors</span><span class="p">)</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_corner_style_for_theme">
+<a class="viewcode-back" href="../../api/termtel.themes3.html#termtel.themes3.get_corner_style_for_theme">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_corner_style_for_theme</span><span class="p">(</span><span class="n">theme_colors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine appropriate corner style based on theme characteristics</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        theme_colors: ThemeColors instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Name of the corner style for the theme</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># This mapping is a heuristic - customize based on your preferences</span>
+    <span class="c1"># Analyze theme characteristics to choose appropriate corner style</span>
+    <span class="k">if</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#0&#39;</span><span class="p">):</span>
+        <span class="c1"># Cyber themes with dark blue/green backgrounds</span>
+        <span class="k">return</span> <span class="s1">&#39;hexTech&#39;</span>
+    <span class="k">elif</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#00ff&#39;</span><span class="p">):</span>
+        <span class="c1"># Neon cyan text themes</span>
+        <span class="k">return</span> <span class="s1">&#39;glowCircuit&#39;</span>
+    <span class="k">elif</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#00f&#39;</span><span class="p">):</span>
+        <span class="c1"># Neon blue text themes</span>
+        <span class="k">return</span> <span class="s1">&#39;quantumFlux&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;#00&#39;</span> <span class="ow">in</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+        <span class="c1"># Green text themes</span>
+        <span class="k">return</span> <span class="s1">&#39;pulseWave&#39;</span>
+    <span class="k">elif</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#f&#39;</span><span class="p">):</span>
+        <span class="c1"># Amber/orange text themes</span>
+        <span class="k">return</span> <span class="s1">&#39;neonGrid&#39;</span>
+    <span class="k">elif</span> <span class="n">theme_colors</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#1&#39;</span><span class="p">):</span>
+        <span class="c1"># Dark themes</span>
+        <span class="k">return</span> <span class="s1">&#39;minimalist&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Light themes</span>
+        <span class="k">return</span> <span class="s1">&#39;rounded&#39;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

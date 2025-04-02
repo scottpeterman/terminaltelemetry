@@ -1,0 +1,214 @@
+/* Terminal Telemetry Layout Adjustments
+ * This file optimizes the layout specifically for widgets-only mode
+ */
+
+/* === Hide Terminal Section & Show Full-Width Widgets === */
+.terminal-section {
+    display: none !important;
+}
+
+.widgets-section {
+    width: 100% !important;
+    min-width: 100% !important;
+}
+
+/* Remove splitter */
+.gutter {
+    display: none !important;
+}
+
+/* === WIDGET AREA SIZING === */
+/* Top panel (Device Info) */
+.top-widget-area {
+    flex: 0 0 auto;
+    min-height: 200px;
+    max-height: none;
+}
+
+/* Middle panel (Network Info) */
+.middle-widget-area {
+    flex: 1 1 auto;
+    min-height: 260px;
+}
+
+/* Bottom panel (Environment & Debug) */
+.bottom-widget-area {
+    flex: 1 1 auto;
+    min-height: 260px;
+}
+
+/* === DEVICE INFO PANEL === */
+.device-info-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    grid-column-gap: 15px;
+    padding: 5px;
+}
+
+/* Make device info panel taller */
+.device-info-grid .scrollable-region {
+    height: 140px !important;
+}
+
+/* Controls area */
+.controls-area {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid rgba(0, 176, 240, 0.3);
+}
+
+#telemetry-connect {
+    min-width: 100px !important;
+    height: 32px;
+    font-weight: bold;
+}
+
+.zoom-controls {
+    display: flex;
+    gap: 5px;
+}
+
+/* === GRID LAYOUTS === */
+/* Network grid proportions */
+.network-grid {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    gap: 10px;
+}
+
+/* Environment & Debug grid */
+.env-debug-grid {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    gap: 10px;
+}
+
+/* Environment grid */
+.environment-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+/* === SCROLLABLE REGIONS === */
+.scrollable-region {
+    border: 1px solid rgba(0, 176, 240, 0.3);
+    background-color: rgba(0, 16, 32, 0.8);
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 3px;
+    min-height: 100px;
+    height: auto;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Custom scrollbar styling */
+.scrollable-region::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-region::-webkit-scrollbar-track {
+    background: rgba(0, 20, 40, 0.3);
+    border-radius: 4px;
+}
+
+.scrollable-region::-webkit-scrollbar-thumb {
+    background: #00b0f0;
+    border-radius: 4px;
+}
+
+.scrollable-region::-webkit-scrollbar-thumb:hover {
+    background: #00d0ff;
+}
+
+/* === TABLES AND CONTENT === */
+/* Improve table visibility */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 5px;
+    color: #00b0f0;
+    border-bottom: 1px solid rgba(0, 176, 240, 0.3);
+    font-size: 12px;
+}
+
+td {
+    padding: 5px;
+    border-bottom: 1px solid rgba(0, 20, 40, 0.3);
+    font-size: 12px;
+}
+
+/* Improve heading visibility */
+.hud-panel-content h3 {
+    margin: 5px 0;
+    color: #00b0f0;
+    font-size: 14px;
+}
+
+/* === INTERFACE PANEL === */
+.interface-grid {
+    display: grid;
+    grid-template-columns: auto minmax(60px, auto);
+    gap: 8px;
+}
+
+.interface-status {
+    text-align: center;
+    min-width: 60px;
+}
+
+.interface-status.up {
+    color: #00ff00;
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.interface-status.down {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+}
+
+/* === LOG PANEL === */
+#log-container {
+    font-family: monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* === ENVIRONMENT PANEL SECTIONS === */
+.env-section {
+    margin-bottom: 10px;
+}
+
+.env-section h4 {
+    margin: 0 0 5px 0;
+    color: #00b0f0;
+    font-size: 12px;
+}
+
+/* For CPU, Memory status items */
+.env-item {
+    font-family: monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 2px 0;
+}
+
+/* Highlight warnings/critical items */
+.env-item.warning {
+    color: #ffaa00;
+}
+
+.env-item.critical {
+    color: #ff4444;
+}

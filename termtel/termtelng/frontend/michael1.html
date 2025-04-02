@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كنيس بيت شالوم</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #283593;
+            --hover-color: #3949ab;
+            --text-light: #e8eaf6;
+        }
+
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 280px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 20px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            background-color: var(--hover-color);
+            transform: translateX(-5px);
+            color: white;
+        }
+
+        .sidebar-link i {
+            margin-left: 12px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-right: 280px;
+            padding: 30px;
+            max-width: 1600px;
+            margin-left: auto;
+        }
+
+        .content-section {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (min-width: 1920px) {
+            .main-content {
+                padding: 40px 60px;
+            }
+
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 240px;
+                transform: translateX(100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="d-flex align-items-center mb-4 pt-2">
+            <img src="/api/placeholder/50/50" alt="Logo" class="rounded-circle me-3">
+            <h2 class="h4 text-white mb-0">كنيس بيت شالوم</h2>
+        </div>
+
+        <div class="nav flex-column">
+            <a href="#programs" class="sidebar-link">
+                <i class="fas fa-book-reader"></i>
+                البرامج المقدمة
+            </a>
+            <a href="#faculty" class="sidebar-link">
+                <i class="fas fa-chalkboard-teacher"></i>
+                أعضاء هيئة التدريس
+            </a>
+            <a href="#events" class="sidebar-link">
+                <i class="fas fa-calendar-alt"></i>
+                الفعاليات
+            </a>
+            <a href="#prayers" class="sidebar-link">
+                <i class="fas fa-pray"></i>
+                مواقيت الصلاة
+            </a>
+            <a href="#contact" class="sidebar-link">
+                <i class="fas fa-envelope"></i>
+                اتصل بنا
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Programs Section -->
+        <section id="programs" class="content-section">
+            <h2 class="section-title">البرامج المقدمة</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-torah fa-2x text-primary me-3"></i>
+                                <h3 class="card-title mb-0">دراسة التوراة</h3>
+                            </div>
+                            <p class="card-text">دروس أسبوعية في دراسة النصوص المقدسة والتفسيرات</p>
+                            <ul class="list-unstyled mt-3">
+                                <li><i class="fas fa-clock me-2 text-primary"></i>كل يوم سبت، ١٠ صباحاً</li>
+                                <li><i class="fas fa-map-marker-alt me-2 text-primary"></i>قاعة الدراسة الرئيسية</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-language fa-2x text-primary me-3"></i>
+                                <h3 class="card-title mb-0">تعليم العبرية</h3>
+                            </div>
+                            <p class="card-text">دورات في اللغة العبرية للمبتدئين والمتقدمين</p>
+                            <ul class="list-unstyled mt-3">
+                                <li><i class="fas fa-clock me-2 text-primary"></i>الأحد والثلاثاء، ٦ مساءً</li>
+                                <li><i class="fas fa-map-marker-alt me-2 text-primary"></i>مركز التعليم</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-hands-helping fa-2x text-primary me-3"></i>
+                                <h3 class="card-title mb-0">برامج المجتمع</h3>
+                            </div>
+                            <p class="card-text">أنشطة وفعاليات لتعزيز الروابط المجتمعية</p>
+                            <ul class="list-unstyled mt-3">
+                                <li><i class="fas fa-clock me-2 text-primary"></i>فعاليات أسبوعية متنوعة</li>
+                                <li><i class="fas fa-map-marker-alt me-2 text-primary"></i>قاعة المجتمع</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Faculty Section -->
+        <section id="faculty" class="content-section">
+            <h2 class="section-title">أعضاء هيئة التدريس</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <img src="/api/placeholder/150/150" alt="الحاخام دافيد" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
+                            <h3 class="h4 mb-3">الحاخام دافيد كوهين</h3>
+                            <p class="text-muted mb-3">حاخام رئيسي</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <a href="#" class="btn btn-outline-primary btn-sm rounded-circle">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-primary btn-sm rounded-circle">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-primary btn-sm rounded-circle">
+                                    <i class="fas fa-envelope"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more faculty cards as needed -->
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="content-section">
+            <h2 class="section-title">الفعاليات القادمة</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-xl-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="h5 mb-0">احتفال شابات</h3>
+                                <span class="badge bg-primary">٧ فبراير</span>
+                            </div>
+                            <p class="card-text">انضموا إلينا في احتفال شابات الأسبوعي مع العائلة والأصدقاء</p>
+                            <div class="mt-3">
+                                <i class="fas fa-clock me-2 text-primary"></i>٧:٠٠ مساءً
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more event cards as needed -->
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

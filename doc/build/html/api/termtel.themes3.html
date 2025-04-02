@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.themes3 module &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="termtel.themes2 module" href="termtel.themes2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="termtel.html">termtel package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="termtel.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="termtel.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="termtel.config.html">termtel.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.logo.html">termtel.logo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.nbtosession.html">termtel.nbtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.termtel.html">termtel.termtel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.theme_launcher.html">termtel.theme_launcher module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.themes2.html">termtel.themes2 module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">termtel.themes3 module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.themes3.LayeredHUDFrame"><code class="docutils literal notranslate"><span class="pre">LayeredHUDFrame</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.themes3.ThemeColors"><code class="docutils literal notranslate"><span class="pre">ThemeColors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.themes3.ThemeLibrary"><code class="docutils literal notranslate"><span class="pre">ThemeLibrary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.themes3.ThemeMapper"><code class="docutils literal notranslate"><span class="pre">ThemeMapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.themes3.generate_telemetry_theme_json"><code class="docutils literal notranslate"><span class="pre">generate_telemetry_theme_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.themes3.generate_terminal_themes"><code class="docutils literal notranslate"><span class="pre">generate_terminal_themes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.themes3.get_corner_style_for_theme"><code class="docutils literal notranslate"><span class="pre">get_corner_style_for_theme()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="termtel.html">termtel package</a></li>
+      <li class="breadcrumb-item active">termtel.themes3 module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/termtel.themes3.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-termtel.themes3">
+<span id="termtel-themes3-module"></span><h1>termtel.themes3 module<a class="headerlink" href="#module-termtel.themes3" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.themes3.LayeredHUDFrame">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.themes3.</span></span><span class="sig-name descname"><span class="pre">LayeredHUDFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cyberpunk'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#LayeredHUDFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.LayeredHUDFrame" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QFrame</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.LayeredHUDFrame.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QResizeEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#LayeredHUDFrame.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.LayeredHUDFrame.resizeEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.LayeredHUDFrame.set_theme">
+<span class="sig-name descname"><span class="pre">set_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#LayeredHUDFrame.set_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.LayeredHUDFrame.set_theme" title="Link to this definition"></a></dt>
+<dd><p>Change the theme of the frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.LayeredHUDFrame.setup_ui">
+<span class="sig-name descname"><span class="pre">setup_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#LayeredHUDFrame.setup_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.LayeredHUDFrame.setup_ui" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.LayeredHUDFrame.update_line_colors">
+<span class="sig-name descname"><span class="pre">update_line_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bright_color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#LayeredHUDFrame.update_line_colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.LayeredHUDFrame.update_line_colors" title="Link to this definition"></a></dt>
+<dd><p>Update line colors with provided colors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.LayeredHUDFrame.update_theme_colors">
+<span class="sig-name descname"><span class="pre">update_theme_colors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#LayeredHUDFrame.update_theme_colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.LayeredHUDFrame.update_theme_colors" title="Link to this definition"></a></dt>
+<dd><p>Update colors based on current theme</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.themes3.</span></span><span class="sig-name descname"><span class="pre">ThemeColors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">darker_bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lighter_bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">border</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">border_light</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corner_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corner_bright</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">panel_bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scrollbar_bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button_hover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button_pressed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chart_bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terminal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="termtel.termtelng.backend.linux_driver.html#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="termtel.termtelng.backend.linux_driver.LinuxDriver.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_menu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="termtel.termtelng.backend.linux_driver.html#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="termtel.termtelng.backend.linux_driver.LinuxDriver.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeColors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeColors" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.background">
+<span class="sig-name descname"><span class="pre">background</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.background" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.border">
+<span class="sig-name descname"><span class="pre">border</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.border" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.border_light">
+<span class="sig-name descname"><span class="pre">border_light</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.border_light" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.button_hover">
+<span class="sig-name descname"><span class="pre">button_hover</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.button_hover" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.button_pressed">
+<span class="sig-name descname"><span class="pre">button_pressed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.button_pressed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.chart_bg">
+<span class="sig-name descname"><span class="pre">chart_bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.chart_bg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.context_menu">
+<span class="sig-name descname"><span class="pre">context_menu</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="termtel.termtelng.backend.linux_driver.html#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.context_menu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.corner_bright">
+<span class="sig-name descname"><span class="pre">corner_bright</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.corner_bright" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.corner_gap">
+<span class="sig-name descname"><span class="pre">corner_gap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.corner_gap" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.darker_bg">
+<span class="sig-name descname"><span class="pre">darker_bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.darker_bg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.from_dict">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="termtel.termtelng.backend.linux_driver.html#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#termtel.themes3.ThemeColors" title="termtel.themes3.ThemeColors"><span class="pre">ThemeColors</span></a></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeColors.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeColors.from_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.grid">
+<span class="sig-name descname"><span class="pre">grid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.grid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.lighter_bg">
+<span class="sig-name descname"><span class="pre">lighter_bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.lighter_bg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.line">
+<span class="sig-name descname"><span class="pre">line</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.line" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.panel_bg">
+<span class="sig-name descname"><span class="pre">panel_bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.panel_bg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.primary">
+<span class="sig-name descname"><span class="pre">primary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.primary" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.scrollbar_bg">
+<span class="sig-name descname"><span class="pre">scrollbar_bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.scrollbar_bg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.secondary">
+<span class="sig-name descname"><span class="pre">secondary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.secondary" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.selected_bg">
+<span class="sig-name descname"><span class="pre">selected_bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.selected_bg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.success">
+<span class="sig-name descname"><span class="pre">success</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.success" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.terminal">
+<span class="sig-name descname"><span class="pre">terminal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="termtel.termtelng.backend.linux_driver.html#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.terminal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#termtel.themes3.ThemeColors.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeColors.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="termtel.termtelng.backend.linux_driver.html#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeColors.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeColors.to_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.themes3.</span></span><span class="sig-name descname"><span class="pre">ThemeLibrary</span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QObject</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.childEvent">
+<span class="sig-name descname"><span class="pre">childEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QChildEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.childEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.connectNotify">
+<span class="sig-name descname"><span class="pre">connectNotify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QMetaMethod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.connectNotify" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.customEvent">
+<span class="sig-name descname"><span class="pre">customEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.customEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.disconnectNotify">
+<span class="sig-name descname"><span class="pre">disconnectNotify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QMetaMethod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.disconnectNotify" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.interval">
+<span class="sig-name descname"><span class="pre">interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.interval" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.isActive">
+<span class="sig-name descname"><span class="pre">isActive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.isActive" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.isSignalConnected">
+<span class="sig-name descname"><span class="pre">isSignalConnected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QMetaMethod</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.isSignalConnected" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.isSingleShot">
+<span class="sig-name descname"><span class="pre">isSingleShot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.isSingleShot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.receivers">
+<span class="sig-name descname"><span class="pre">receivers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PYQT_SIGNAL</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.receivers" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.remainingTime">
+<span class="sig-name descname"><span class="pre">remainingTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.remainingTime" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.sender">
+<span class="sig-name descname"><span class="pre">sender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QObject</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.sender" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.senderSignalIndex">
+<span class="sig-name descname"><span class="pre">senderSignalIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.senderSignalIndex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.setInterval">
+<span class="sig-name descname"><span class="pre">setInterval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.setInterval" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.setSingleShot">
+<span class="sig-name descname"><span class="pre">setSingleShot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asingleShot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.setSingleShot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.setTimerType">
+<span class="sig-name descname"><span class="pre">setTimerType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qt.TimerType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.setTimerType" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.singleShot">
+<span class="sig-name descname"><span class="pre">singleShot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PYQT_SLOT</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.singleShot" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">singleShot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timerType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qt.TimerType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PYQT_SLOT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.start" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.stop" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.timeout" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.timerEvent">
+<span class="sig-name descname"><span class="pre">timerEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QTimerEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.timerEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.timerId">
+<span class="sig-name descname"><span class="pre">timerId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.timerId" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.QTimer.timerType">
+<span class="sig-name descname"><span class="pre">timerType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Qt.TimerType</span></span></span><a class="headerlink" href="#termtel.themes3.ThemeLibrary.QTimer.timerType" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.add_theme">
+<span class="sig-name descname"><span class="pre">add_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#termtel.themes3.ThemeColors" title="termtel.themes3.ThemeColors"><span class="pre">ThemeColors</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.add_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.add_theme" title="Link to this definition"></a></dt>
+<dd><p>Add a new theme and optionally save it to disk</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.apply_theme">
+<span class="sig-name descname"><span class="pre">apply_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.apply_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.apply_theme" title="Link to this definition"></a></dt>
+<dd><p>Apply a theme to a widget</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.generate_stylesheet">
+<span class="sig-name descname"><span class="pre">generate_stylesheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#termtel.themes3.ThemeColors" title="termtel.themes3.ThemeColors"><span class="pre">ThemeColors</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.generate_stylesheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.generate_stylesheet" title="Link to this definition"></a></dt>
+<dd><p>Generate Qt stylesheet from theme colors with WebEngine context menu support</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.generate_terminal_js">
+<span class="sig-name descname"><span class="pre">generate_terminal_js</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#termtel.themes3.ThemeColors" title="termtel.themes3.ThemeColors"><span class="pre">ThemeColors</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.generate_terminal_js"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.generate_terminal_js" title="Link to this definition"></a></dt>
+<dd><p>Generate terminal theme JavaScript with improved xterm.js compatibility</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.get_chart_colors">
+<span class="sig-name descname"><span class="pre">get_chart_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.get_chart_colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.get_chart_colors" title="Link to this definition"></a></dt>
+<dd><p>Alias for get_colors() for backwards compatibility.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.get_colors">
+<span class="sig-name descname"><span class="pre">get_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.get_colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.get_colors" title="Link to this definition"></a></dt>
+<dd><p>Return the color dictionary for the specified theme.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.get_theme">
+<span class="sig-name descname"><span class="pre">get_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#termtel.themes3.ThemeColors" title="termtel.themes3.ThemeColors"><span class="pre">ThemeColors</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.get_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.get_theme" title="Link to this definition"></a></dt>
+<dd><p>Get a theme by name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.get_theme_names">
+<span class="sig-name descname"><span class="pre">get_theme_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.get_theme_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.get_theme_names" title="Link to this definition"></a></dt>
+<dd><p>Get a list of all available theme names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeLibrary.handle_theme_check">
+<span class="sig-name descname"><span class="pre">handle_theme_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_ready</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terminal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_js</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeLibrary.handle_theme_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeLibrary.handle_theme_check" title="Link to this definition"></a></dt>
+<dd><p>Handle the terminal readiness check for theme application.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeMapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.themes3.</span></span><span class="sig-name descname"><span class="pre">ThemeMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_library</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeMapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeMapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Maps application themes to terminal themes with dictionary-like behavior</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeMapper.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeMapper.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeMapper.get" title="Link to this definition"></a></dt>
+<dd><p>Dictionary-style get method with default value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeMapper.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeMapper.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeMapper.items" title="Link to this definition"></a></dt>
+<dd><p>Support for .items() method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeMapper.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeMapper.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeMapper.keys" title="Link to this definition"></a></dt>
+<dd><p>Support for .keys() method</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeMapper.mapping">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mapping</span></span><a class="headerlink" href="#termtel.themes3.ThemeMapper.mapping" title="Link to this definition"></a></dt>
+<dd><p>Lazy-load and cache the mapping</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeMapper.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeMapper.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeMapper.refresh" title="Link to this definition"></a></dt>
+<dd><p>Force regeneration of the mapping</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.themes3.ThemeMapper.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#ThemeMapper.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.ThemeMapper.values" title="Link to this definition"></a></dt>
+<dd><p>Support for .values() method</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="termtel.themes3.generate_telemetry_theme_json">
+<span class="sig-prename descclassname"><span class="pre">termtel.themes3.</span></span><span class="sig-name descname"><span class="pre">generate_telemetry_theme_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_colors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#generate_telemetry_theme_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.generate_telemetry_theme_json" title="Link to this definition"></a></dt>
+<dd><p>Convert a ThemeColors object to JSON format for the telemetry widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>theme_colors</strong> – ThemeColors instance</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Theme data in the format expected by telemetry_theme.js</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="termtel.themes3.generate_terminal_themes">
+<span class="sig-prename descclassname"><span class="pre">termtel.themes3.</span></span><span class="sig-name descname"><span class="pre">generate_terminal_themes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_library</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#generate_terminal_themes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.generate_terminal_themes" title="Link to this definition"></a></dt>
+<dd><p>Convert JSON theme files into terminal_themes format for xterm.js 5.5.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="termtel.themes3.get_corner_style_for_theme">
+<span class="sig-prename descclassname"><span class="pre">termtel.themes3.</span></span><span class="sig-name descname"><span class="pre">get_corner_style_for_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_colors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/themes3.html#get_corner_style_for_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.themes3.get_corner_style_for_theme" title="Link to this definition"></a></dt>
+<dd><p>Determine appropriate corner style based on theme characteristics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>theme_colors</strong> – ThemeColors instance</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name of the corner style for the theme</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="termtel.themes2.html" class="btn btn-neutral float-left" title="termtel.themes2 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

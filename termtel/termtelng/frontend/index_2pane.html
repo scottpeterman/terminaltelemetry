@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SSH Terminal</title>
+<style>
+    .hud-panel-content {
+    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 100vh; /* Prevents excessive growth */
+    padding: 10px;
+}
+</style>
+    <!-- Core styles -->
+<!-- Add right after your hud.css link -->
+<link rel="stylesheet" href="hud.css">
+<link rel="stylesheet" href="session-overrides.css">
+    <link rel="stylesheet" href="xterm.css">
+</head>
+<body>
+
+<div class="split">
+    <!-- Terminal Section -->
+    <div class="terminal-section">
+        <div class="hud-panel">
+            <div class="hud-panel-background"></div>
+            <div class="hud-panel-border"></div>
+            <div class="hud-corner top-left">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+                    <path d="M 0 45 L 35 10 M 45 10 L 95 10" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                    <circle cx="40" cy="10" r="2" fill="currentColor"/>
+                    <path d="M 55 10 L 65 0 M 75 10 L 85 0" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-panel-title">— TERMINAL —</div>
+            <div class="hud-panel-content">
+                <div id="terminal"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls Section -->
+<div class="controls-section">
+    <div class="hud-container">
+        <!-- Telemetry Panel -->
+<!-- Telemetry Panel -->
+<div class="hud-panel">
+    <div class="hud-panel-background"></div>
+    <div class="hud-panel-border"></div>
+    <div class="hud-corner top-left">
+        <svg viewBox="0 0 100 100">
+            <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"></path>
+        </svg>
+    </div>
+    <div class="hud-corner top-right"></div>
+    <div class="hud-corner bottom-right"></div>
+    <div class="hud-corner bottom-left"></div>
+    <div class="hud-panel-title">— Telemetry —</div>
+    <div class="hud-panel-content">
+        <div class="control-header form-group" style="display: flex; gap: 0.5rem; align-items: center;">
+            <label>Driver:</label>
+            <select id="driver-select" class="mat" style="width: 5rem;">                <option value="ios">ios</option>
+                <option value="eos">eos</option>
+                <option value="nxos_ssh">nxos_ssh</option>
+                <option value="junos">junos</option>
+            </select>
+            <button id="telemetry-connect" style="min-width: 5rem;">Connect</button>
+            <select id="theme-select" class="mat" style="width: 8rem;">
+                <option value="cyber">Cyber</option>
+                <option value="crt-amber">CRT Amber</option>
+                <option value="crt-green">CRT Green</option>
+                <option value="forest-green">Forest</option>
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>
+        </div>
+    </div>
+</div>
+        <br>
+        <!-- Device Info Panel -->
+        <div id="device-info-panel" class="hud-panel">
+            <div class="hud-panel-background"></div>
+            <div class="hud-panel-border"></div>
+            <div class="hud-corner top-left">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"></path>
+                </svg>
+            </div>
+            <div class="hud-corner top-right">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"></path>
+                </svg>
+            </div>
+            <div class="hud-corner bottom-right">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"></path>
+                </svg>
+            </div>
+            <div class="hud-corner bottom-left">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"></path>
+                </svg>
+            </div>
+            <div class="hud-panel-title">— Device Info —</div>
+            <div class="hud-panel-content">
+                <ul>
+                    <li data-device="hostname">Hostname: <span></span></li>
+                    <li data-device="model">Model: <span></span></li>
+                    <li data-device="serial">Serial: <span></span></li>
+                    <li data-device="os_version">OS Version: <span></span></li>
+                    <li data-device="uptime">Uptime: <span></span></li>
+
+                </ul>
+            </div>
+        </div>
+        <br>
+        <div id="neighbors-panel" class="hud-panel">
+            <div class="hud-panel-background"></div>
+            <div class="hud-panel-border"></div>
+            <div class="hud-corner top-left">
+                <svg viewBox="0 0 100 100">
+                    <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"></path>
+                </svg>
+            </div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-panel-title">— Neighbors —</div>
+            <div class="hud-panel-content">
+                <div class="tabs">
+                    <div class="tab active">LLDP</div>
+                    <div class="tab">ARP</div>
+                </div>
+                <div class="grid grid-cols-3">
+                    <div class="text-cyan text-sm">LOCAL PORT</div>
+                    <div class="text-cyan text-sm">NEIGHBOR</div>
+                    <div class="text-cyan text-sm">REMOTE PORT</div>
+                </div>
+            </div>
+        </div>
+        <br>
+
+<div id="routing-panel" class="hud-panel">
+    <div class="hud-panel-background"></div>
+    <div class="hud-panel-border"></div>
+    <div class="hud-corner top-left">
+        <svg viewBox="0 0 100 100">
+            <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 0 45 L 35 10 M 45 10 L 95 10" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="40" cy="10" r="2" fill="currentColor"/>
+            <path d="M 55 10 L 65 0 M 75 10 L 85 0" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-corner top-right">
+        <svg viewBox="0 0 100 100">
+            <path d="M 0 0 L 60 0 L 100 40 L 100 100 L 90 100 L 90 45 L 55 10 L 0 10 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 65 10 L 100 45 M 5 10 L 55 10" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="60" cy="10" r="2" fill="currentColor"/>
+            <path d="M 15 10 L 25 0 M 35 10 L 45 0" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-corner bottom-right">
+        <svg viewBox="0 0 100 100">
+            <path d="M 100 0 L 100 60 L 60 100 L 0 100 L 0 90 L 55 90 L 90 55 L 90 0 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 90 65 L 55 100 M 90 5 L 90 55" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="90" cy="60" r="2" fill="currentColor"/>
+            <path d="M 90 15 L 100 25 M 90 35 L 100 45" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-corner bottom-left">
+        <svg viewBox="0 0 100 100">
+            <path d="M 40 100 L 0 60 L 0 0 L 10 0 L 10 55 L 45 90 L 100 90 L 100 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 45 90 L 10 55 M 5 90 L 55 90" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="40" cy="90" r="2" fill="currentColor"/>
+            <path d="M 15 90 L 25 100 M 35 90 L 45 100" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-panel-title">— Routing Table —</div>
+    <div class="hud-panel-content">
+        <div class="table-container">
+            <table class="routing-table">
+                <thead>
+                    <tr>
+                        <th>Network</th>
+                        <th>Mask</th>
+                        <th>Next Hop</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Routing entries will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    </div>
+<!-- Interfaces Panel -->
+<div id="interfaces-panel" class="hud-panel">
+    <div class="hud-panel-background"></div>
+    <div class="hud-panel-border"></div>
+    <div class="hud-corner top-left">
+        <svg viewBox="0 0 100 100">
+            <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 0 45 L 35 10 M 45 10 L 95 10" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="40" cy="10" r="2" fill="currentColor"/>
+            <path d="M 55 10 L 65 0 M 75 10 L 85 0" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-corner top-right">
+        <svg viewBox="0 0 100 100">
+            <path d="M 0 0 L 60 0 L 100 40 L 100 100 L 90 100 L 90 45 L 55 10 L 0 10 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 65 10 L 100 45 M 5 10 L 55 10" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="60" cy="10" r="2" fill="currentColor"/>
+            <path d="M 15 10 L 25 0 M 35 10 L 45 0" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-corner bottom-right">
+        <svg viewBox="0 0 100 100">
+            <path d="M 100 0 L 100 60 L 60 100 L 0 100 L 0 90 L 55 90 L 90 55 L 90 0 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 90 65 L 55 100 M 90 5 L 90 55" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="90" cy="60" r="2" fill="currentColor"/>
+            <path d="M 90 15 L 100 25 M 90 35 L 100 45" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-corner bottom-left">
+        <svg viewBox="0 0 100 100">
+            <path d="M 40 100 L 0 60 L 0 0 L 10 0 L 10 55 L 45 90 L 100 90 L 100 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 45 90 L 10 55 M 5 90 L 55 90" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <circle cx="40" cy="90" r="2" fill="currentColor"/>
+            <path d="M 15 90 L 25 100 M 35 90 L 45 100" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+        </svg>
+    </div>
+    <div class="hud-panel-title">— Interfaces —</div>
+    <div class="hud-panel-content">
+        <div class="interface-grid">
+            <!-- Interface entries will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+</div>
+<!-- Add this right after your Split div -->
+<div id="connection-modal" class="modal">
+    <div class="modal-content hud-panel">
+        <div class="hud-panel-background"></div>
+        <div class="hud-panel-border"></div>
+        <div class="hud-corner top-left">
+            <svg viewBox="0 0 100 100">
+                <path d="M 0 40 L 40 0 L 100 0 L 100 10 L 45 10 L 10 45 L 10 100 L 0 100 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+            </svg>
+        </div>
+        <div class="hud-corner top-right"></div>
+        <div class="hud-corner bottom-right"></div>
+        <div class="hud-corner bottom-left"></div>
+        <div class="hud-panel-title">— SSH Connection —</div>
+        <div class="hud-panel-content">
+        <form id="ssh-connect-form" class="ssh-login-form">
+            <div class="form-group">
+                <label>Hostname</label>
+                <input value= "172.16.101.100" type="text" id="ssh-host" class="mat" required>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input value="cisco" id="ssh-username" class="mat" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input value="cisco" type="password" id="ssh-password" class="mat">
+            </div>
+            <div>
+                <label>Session Type</label>
+                <div class="session-type-row">
+                    <select id="ssh-type" class="mat">
+                        <option value="terminal">Terminal</option>
+                        <option value="telemetry">Telemetry-Only</option>
+                    </select>
+                    <label class="checkbox_style">
+                        <input id="useTelemetry" type="checkbox">
+                        <span class="checkbox-custom"></span>
+                        <span>Telemetry</span>
+                    </label>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="submit" class="connect-btn">Connect</button>
+                <button type="button" class="cancel-btn">Cancel</button>
+            </div>
+        </form>
+
+</div>
+    </div>
+</div>
+    <!-- Connection Modal -->
+
+
+    <!-- Core scripts -->
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="split.min.js"></script>
+    <script src="xterm.js"></script>
+    <script src="xterm-addon-fit.js"></script>
+
+    <!-- Application scripts -->
+    <script src="interfacePanel.js"></script>
+    <script src="sessions.js"></script>
+    <script src="themes.js"></script>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Split.js
+    Split(['.terminal-section', '.controls-section'], {
+        sizes: [70, 30],
+        minSize: [300, 300],
+        gutterSize: 6,
+        cursor: 'col-resize',
+        onDrag: () => {
+            // Get terminal session and trigger resize
+            if (window.sessionManager?.sessions?.terminal?.handleResize) {
+                window.sessionManager.sessions.terminal.handleResize();
+            }
+        },
+        onDragEnd: () => {
+            // Also trigger resize after drag ends for good measure
+            if (window.sessionManager?.sessions?.terminal?.handleResize) {
+                window.sessionManager.sessions.terminal.handleResize();
+            }
+        }
+    });
+
+    // Copy corner SVGs
+    const cornerSVG = document.querySelector('.hud-corner.top-left svg').outerHTML;
+    document.querySelectorAll('.hud-corner:not(.top-left)').forEach(corner => {
+        corner.innerHTML = cornerSVG;
+    });
+
+    // Initialize session manager
+    window.sessionManager = new SessionManager();
+});
+    </script>
+</body>
+</html>

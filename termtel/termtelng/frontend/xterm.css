@@ -1,0 +1,201 @@
+/**
+ * Copyright (c) 2014 The xterm.js authors. All rights reserved.
+ * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
+ * https://github.com/chjj/term.js
+ * @license MIT
+ *
+ * Modified for cyberpunk theme
+ */
+
+.xterm {
+    cursor: text;
+    position: relative;
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.xterm.focus,
+.xterm:focus {
+    outline: none;
+}
+
+.xterm .xterm-helpers {
+    position: absolute;
+    top: 0;
+    z-index: 5;
+}
+
+.xterm .xterm-helper-textarea {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    position: absolute;
+    opacity: 0;
+    left: -9999em;
+    top: 0;
+    width: 0;
+    height: 0;
+    z-index: -5;
+    white-space: nowrap;
+    overflow: hidden;
+    resize: none;
+}
+
+.xterm .composition-view {
+    background: #000;
+    color: #0affff;
+    display: none;
+    position: absolute;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.xterm .composition-view.active {
+    display: block;
+}
+
+.xterm .xterm-viewport {
+    background-color: #000;
+    overflow-y: scroll;
+    cursor: default;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.xterm .xterm-screen {
+    position: relative;
+}
+
+.xterm .xterm-screen canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.xterm-selection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.xterm-selection div {
+    position: absolute;
+}
+
+.xterm-decoration-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.xterm-decoration {
+    position: absolute;
+    z-index: 6;
+    pointer-events: none;
+    background-color: rgba(34, 211, 238, 0.3);
+}
+
+.xterm-decoration.blinking {
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    50% {
+        background-color: transparent;
+    }
+}
+
+.xterm-cursor {
+    position: absolute;
+    z-index: 5;
+}
+
+.xterm-cursor.xterm-cursor-blink {
+    animation: blink-cursor 1.2s infinite steps(1);
+}
+
+@keyframes blink-cursor {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+.xterm-cursor.xterm-cursor-block {
+    width: 1em;
+    background-color: #0affff;
+}
+
+.xterm-cursor.xterm-cursor-bar {
+    width: 2px;
+    background-color: #0affff;
+}
+
+.xterm-cursor.xterm-cursor-underline {
+    height: 2px;
+    background-color: #0affff;
+}
+
+.xterm-dim {
+    opacity: 0.5;
+}
+
+.xterm-underline {
+    text-decoration: underline;
+}
+
+.xterm-strikethrough {
+    text-decoration: line-through;
+}
+
+.xterm-bold {
+    font-weight: bold;
+}
+
+.xterm-italic {
+    font-style: italic;
+}
+
+/* Special handling for the first terminal row */
+.xterm .xterm-rows > :first-child {
+    margin-top: 0;
+}
+
+/* Ensure proper spacing between lines */
+.xterm-char-measure-element {
+    display: inline-block;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: -9999em;
+    line-height: normal;
+}
+
+/* Scrollbar Styling */
+.xterm .xterm-viewport::-webkit-scrollbar {
+    width: 8px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb {
+    background: rgba(34, 211, 238, 0.3);
+    border-radius: 4px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 211, 238, 0.5);
+}

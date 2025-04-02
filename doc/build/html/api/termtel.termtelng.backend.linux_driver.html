@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.termtelng.backend.linux_driver module &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="termtel.termtelng.backend.message_router module" href="termtel.termtelng.backend.message_router.html" />
+    <link rel="prev" title="termtel.termtelng.backend package" href="termtel.termtelng.backend.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="termtel.termtelng.backend.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">termtel.termtelng.backend.linux_driver module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.termtelng.backend.linux_driver.LinuxDriver"><code class="docutils literal notranslate"><span class="pre">LinuxDriver</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.termtelng.backend.message_router.html">termtel.termtelng.backend.message_router module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.termtelng.backend.sessions.html">termtel.termtelng.backend.sessions module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="termtel.html">termtel package</a></li>
+          <li class="breadcrumb-item"><a href="termtel.termtelng.html">termtel.termtelng package</a></li>
+          <li class="breadcrumb-item"><a href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+      <li class="breadcrumb-item active">termtel.termtelng.backend.linux_driver module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/termtel.termtelng.backend.linux_driver.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-termtel.termtelng.backend.linux_driver">
+<span id="termtel-termtelng-backend-linux-driver-module"></span><h1>termtel.termtelng.backend.linux_driver module<a class="headerlink" href="#module-termtel.termtelng.backend.linux_driver" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.termtelng.backend.linux_driver.</span></span><span class="sig-name descname"><span class="pre">LinuxDriver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optional_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Linux driver that mimics NAPALM’s interface using Netmiko’s Linux driver</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.Any">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Special type indicating an unconstrained type.</p>
+<ul class="simple">
+<li><p>Any is compatible with every type.</p></li>
+<li><p>Any assumed to have all methods.</p></li>
+<li><p>All values assumed to be instances of Any.</p></li>
+</ul>
+<p>Note that all the above statements are true from the point of view of
+static type checkers. At runtime, Any should not be used with instance
+checks.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.Dict">
+<span class="sig-name descname"><span class="pre">Dict</span></span><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.Dict" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.List">
+<span class="sig-name descname"><span class="pre">List</span></span><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.List" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.Optional">
+<span class="sig-name descname"><span class="pre">Optional</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">typing.Optional</span></em><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.Optional" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.close" title="Link to this definition"></a></dt>
+<dd><p>Safely close connection to the device</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.get_environment">
+<span class="sig-name descname"><span class="pre">get_environment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver.get_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.get_environment" title="Link to this definition"></a></dt>
+<dd><p>Get environmental information matching TelemetryCollector’s expected schema</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.get_facts">
+<span class="sig-name descname"><span class="pre">get_facts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver.get_facts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.get_facts" title="Link to this definition"></a></dt>
+<dd><p>Get device facts using uname commands</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.get_interfaces">
+<span class="sig-name descname"><span class="pre">get_interfaces</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver.get_interfaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.get_interfaces" title="Link to this definition"></a></dt>
+<dd><p>Get interface information</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.get_lldp_neighbors_detail">
+<span class="sig-name descname"><span class="pre">get_lldp_neighbors_detail</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver.get_lldp_neighbors_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.get_lldp_neighbors_detail" title="Link to this definition"></a></dt>
+<dd><p>Get LLDP neighbor information</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.get_route_to">
+<span class="sig-name descname"><span class="pre">get_route_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver.get_route_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.get_route_to" title="Link to this definition"></a></dt>
+<dd><p>Get routing information</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.json">
+<span class="sig-name descname"><span class="pre">json</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'json'</span> <span class="pre">from</span> <span class="pre">'C:\\Python312\\Lib\\json\\__init__.py'&gt;</span></em><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.json" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Logger</span> <span class="pre">termtel.termtelng.backend.linux_driver</span> <span class="pre">(DEBUG)&gt;</span></em><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.logger" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.logging">
+<span class="sig-name descname"><span class="pre">logging</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'logging'</span> <span class="pre">from</span> <span class="pre">'C:\\Python312\\Lib\\logging\\__init__.py'&gt;</span></em><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.logging" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/termtel/termtelng/backend/linux_driver.html#LinuxDriver.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.open" title="Link to this definition"></a></dt>
+<dd><p>Open connection to the Linux device</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.re">
+<span class="sig-name descname"><span class="pre">re</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'re'</span> <span class="pre">from</span> <span class="pre">'C:\\Python312\\Lib\\re\\__init__.py'&gt;</span></em><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.re" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.termtelng.backend.linux_driver.LinuxDriver.traceback">
+<span class="sig-name descname"><span class="pre">traceback</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'traceback'</span> <span class="pre">from</span> <span class="pre">'C:\\Python312\\Lib\\traceback.py'&gt;</span></em><a class="headerlink" href="#termtel.termtelng.backend.linux_driver.LinuxDriver.traceback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="termtel.termtelng.backend.html" class="btn btn-neutral float-left" title="termtel.termtelng.backend package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="termtel.termtelng.backend.message_router.html" class="btn btn-neutral float-right" title="termtel.termtelng.backend.message_router module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

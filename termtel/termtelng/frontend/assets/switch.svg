@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="black" fill="#22D3EE" stroke-width="0.5">
+        <path d="m 21.55977,279.14682 -0.03534,4.40877 -4.048041,4.15909 0.09435,-4.17461 z" transform="translate(0,-270.54165)"/>
+        <path d="m 8.5588078,279.04894 13.0009622,0.0979 -4.080081,4.31046 -13.1331462,-0.006 z" transform="translate(0,-270.54165)"/>
+        <rect width="13.260025" height="4.1339302" x="4.31071" y="13"/>
+    </g>
+    <g transform="translate(-0.51449383,270.42472)" stroke="white" fill="white" stroke-width="0.5">
+        <path d="m 8.5018066,282.79217 -0.3369304,0.36173 -0.9591147,-0.51882 2.013314,-0.60565 -0.416297,0.44637 3.2864065,4e-5 -0.298922,0.31637 z" transform="translate(0,-270.54165)"/>
+        <path d="m 11.446545,280.38716 -0.416297,0.44637 3.286406,4e-5 -0.298905,0.31637 -3.288473,-4e-5 -0.33693,0.36173 -0.9587626,-0.52098 z" transform="translate(0,-270.54165)"/>
+        <path d="m 12.148121,281.9647 3.404962,4e-5 -0.276027,0.29847 1.873319,-0.45496 -0.81912,-0.66951 -0.479267,0.50963 -3.403545,0.006 z" transform="translate(0,-270.54165)"/>
+        <path d="m 13.968439,280.36547 0.294245,-0.31637 3.409622,4e-5 0.479267,-0.50963 0.815745,0.66673 -1.869944,0.45774 0.276027,-0.29847 z" transform="translate(0,-270.54165)"/>
+    </g>
+</svg>'''
+    else:
+        return '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 41">
+    <g stroke="black" fill="#22D3EE" stroke-width="0.5">
+        <path d="M58.274 11.419c0 6.3-12.994 11.419-29.137 11.419S0 17.719 0 11.419v16.537c0 6.3 12.994 11.419 29.137 11.419s29.137-5.119 29.137-11.419z"/>
+        <path d="M29.137 22.837c16.144 0 29.137-5.119 29.137-11.419S45.281 0 29.137 0 0 5.119 0 11.419s12.994 11.419 29.137 11.419z"/>
+    </g>
+    <g stroke="white" fill="white" stroke-width="0.3">
+        <path d="M22.448 7.081l2.363 3.544-9.056 1.969 1.969-1.575L3.942 8.656 7.486 5.9l13.388 2.362 1.575-1.181z"/>
+        <path d="M35.442 15.743L33.473 12.2l8.269-1.969-1.181 1.575 13.388 2.362-3.15 2.363-13.781-2.363-1.575 1.575z"/>
+        <path d="M30.717 5.113l9.056-2.362.394 3.544-2.363-.394-4.331 3.938-4.331-.787 4.331-3.544-2.756-.394z"/>
+        <path d="M26.78 19.288l-8.662 1.575-.394-4.331 2.756.787 4.725-4.331 4.331.787-5.119 4.725 2.362.788z"/>
+    </g>
+</svg>'''
+
+def get_discovering_svg():
+    """Get SVG for the discovering state - pulsing wireframe router"""
+    return '''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 41">
+    <!-- Base device -->
+    <g stroke="black" fill="#22D3EE" stroke-width="0.5">
+        <path d="M58.274 11.419c0 6.3-12.994 11.419-29.137 11.419S0 17.719 0 11.419v16.537c0 6.3 12.994 11.419 29.137 11.419s29.137-5.119 29.137-11.419z"/>
+        <path d="M29.137 22.837c16.144 0 29.137-5.119 29.137-11.419S45.281 0 29.137 0 0 5.119 0 11.419s12.994 11.419 29.137 11.419z"/>
+    </g>
+    <!-- Scanning lines -->
+    <line x1="0" y1="20" x2="60" y2="20" stroke="#22D3EE" stroke-width="0.5">
+        <animateTransform
+            attributeName="transform"
+            type="translate"
+            from="0 -20"
+            to="0 41"
+            dur="2s"
+            repeatCount="indefinite"/>
+        <animate
+            attributeName="opacity"
+            values="0;1;0"
+            dur="2s"
+            repeatCount="indefinite"/>
+    </line>
+    <!-- Pulsing circles -->
+    <circle cx="30" cy="20" r="25" fill="none" stroke="#22D3EE" stroke-width="0.5">
+        <animate
+            attributeName="r"
+            values="20;30"
+            dur="1.5s"
+            repeatCount="indefinite"/>
+        <animate
+            attributeName="opacity"
+            values="1;0"
+            dur="1.5s"
+            repeatCount="indefinite"/>
+    </circle>
+    <circle cx="30" cy="20" r="25" fill="none" stroke="#22D3EE" stroke-width="0.5">
+        <animate
+            attributeName="r"
+            values="20;30"
+            dur="1.5s"
+            begin="0.5s"
+            repeatCount="indefinite"/>
+        <animate
+            attributeName="opacity"
+            values="1;0"
+            dur="1.5s"
+            begin="0.5s"
+            repeatCount="indefinite"/>
+    </circle>
+</svg>

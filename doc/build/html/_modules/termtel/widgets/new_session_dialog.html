@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets.new_session_dialog &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">termtel.widgets.new_session_dialog</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for termtel.widgets.new_session_dialog</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QDialog</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span>
+                             <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span>
+                             <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.helpers.credslib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SecureCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.themes2</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayeredHUDFrame</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NewSessionDialog">
+<a class="viewcode-back" href="../../../api/termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NewSessionDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cred_manager</span><span class="p">:</span> <span class="n">SecureCredentials</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span> <span class="o">=</span> <span class="n">cred_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_credential</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Get theme information from parent</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">theme_manager</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">theme</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">parent</span><span class="o">.</span><span class="n">theme</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">theme_manager</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">theme_name</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_credentials</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_theme</span><span class="p">()</span>
+
+<div class="viewcode-block" id="NewSessionDialog.setup_ui">
+<a class="viewcode-back" href="../../../api/termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the UI components.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;New Session&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+
+        <span class="c1"># Main layout</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Main HUD frame</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="n">LayeredHUDFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="n">theme_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="n">LayeredHUDFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">frame_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">content_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">frame_layout</span><span class="p">)</span>
+
+        <span class="c1"># Credentials section</span>
+        <span class="n">creds_group</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">creds_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">creds_group</span><span class="p">)</span>
+
+        <span class="c1"># Saved credentials selector</span>
+        <span class="n">saved_creds_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creds_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Saved Credentials:&quot;</span><span class="p">)</span>
+        <span class="n">saved_creds_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">creds_label</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_credential_selected</span><span class="p">)</span>
+        <span class="n">saved_creds_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="p">)</span>
+        <span class="n">creds_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">saved_creds_layout</span><span class="p">)</span>
+
+        <span class="c1"># Connection details</span>
+        <span class="n">details_form</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;22&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password_input</span><span class="o">.</span><span class="n">setEchoMode</span><span class="p">(</span><span class="n">QLineEdit</span><span class="o">.</span><span class="n">EchoMode</span><span class="o">.</span><span class="n">Password</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_name_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+
+        <span class="c1"># Labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Host:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Port:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Username:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Password:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_name_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Display Name:&quot;</span><span class="p">)</span>
+
+        <span class="n">details_form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_input</span><span class="p">)</span>
+        <span class="n">details_form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port_input</span><span class="p">)</span>
+        <span class="n">details_form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">username_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username_input</span><span class="p">)</span>
+        <span class="n">details_form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">password_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_input</span><span class="p">)</span>
+        <span class="n">details_form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name_input</span><span class="p">)</span>
+
+        <span class="n">creds_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">details_form</span><span class="p">)</span>
+        <span class="n">frame_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">creds_group</span><span class="p">)</span>
+
+        <span class="c1"># Buttons</span>
+        <span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;CONNECT&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;CANCEL&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_button</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="p">)</span>
+
+        <span class="n">frame_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">button_layout</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NewSessionDialog.get_connection_data">
+<a class="viewcode-back" href="../../../api/termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.get_connection_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_connection_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the connection data.&quot;&quot;&quot;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">host</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Host is required&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Generate display name if not provided</span>
+        <span class="n">display_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">display_name</span><span class="p">:</span>
+            <span class="n">display_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">connection_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">,</span>
+            <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">22</span><span class="p">),</span>
+            <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+            <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+            <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="n">display_name</span><span class="p">,</span>
+            <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">connection_data</span></div>
+
+
+<div class="viewcode-block" id="NewSessionDialog.load_credentials">
+<a class="viewcode-back" href="../../../api/termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.load_credentials">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load saved credentials into the combo box.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">is_initialized</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">is_unlocked</span><span class="p">()):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Credential manager not initialized or unlocked&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">creds_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">config_dir</span> <span class="o">/</span> <span class="s2">&quot;credentials.yaml&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">creds_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No credentials file found&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">creds_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">load_credentials</span><span class="p">(</span><span class="n">creds_path</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Manual Entry&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">cred</span> <span class="ow">in</span> <span class="n">creds_list</span><span class="p">:</span>
+                <span class="n">display_name</span> <span class="o">=</span> <span class="n">cred</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display_name&#39;</span><span class="p">,</span> <span class="n">cred</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">display_name</span><span class="p">,</span> <span class="n">cred</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load credentials: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NewSessionDialog.get_connection">
+<a class="viewcode-back" href="../../../api/termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.get_connection">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_connection</span><span class="p">(</span><span class="n">cred_manager</span><span class="p">:</span> <span class="n">SecureCredentials</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Static method to create and show the dialog.&quot;&quot;&quot;</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">NewSessionDialog</span><span class="p">(</span><span class="n">cred_manager</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">dialog</span><span class="o">.</span><span class="n">get_connection_data</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;Invalid Input&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="NewSessionDialog.apply_theme">
+<a class="viewcode-back" href="../../../api/termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.apply_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply current theme to all widgets.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">get_colors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span><span class="p">)</span>
+
+        <span class="c1"># Dialog styling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QDialog </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Style labels</span>
+        <span class="n">label_style</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QLabel </span><span class="se">{{</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                font-family: &quot;Courier New&quot;;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">creds_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port_label</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">username_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name_label</span><span class="p">]:</span>
+            <span class="n">label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">label_style</span><span class="p">)</span>
+
+        <span class="c1"># Style inputs</span>
+        <span class="n">input_style</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QLineEdit </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;darker_bg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;border_light&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border-radius: 0;</span>
+<span class="s2">                padding: 5px;</span>
+<span class="s2">                font-family: &quot;Courier New&quot;;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QLineEdit:focus </span><span class="se">{{</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">input_widget</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">host_input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port_input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username_input</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">password_input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name_input</span><span class="p">]:</span>
+            <span class="n">input_widget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">input_style</span><span class="p">)</span>
+
+        <span class="c1"># Style combo box</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QComboBox </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;darker_bg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;border_light&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border-radius: 0;</span>
+<span class="s2">                padding: 5px;</span>
+<span class="s2">                font-family: &quot;Courier New&quot;;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QComboBox::drop-down </span><span class="se">{{</span>
+<span class="s2">                border: none;</span>
+<span class="s2">                width: 20px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QComboBox::down-arrow </span><span class="se">{{</span>
+<span class="s2">                image: none;</span>
+<span class="s2">                border: 2px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                width: 6px;</span>
+<span class="s2">                height: 6px;</span>
+<span class="s2">                border-top: none;</span>
+<span class="s2">                border-right: none;</span>
+<span class="s2">                transform: rotate(-45deg);</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QComboBox QAbstractItemView </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;darker_bg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                selection-background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;selected_bg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                selection-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;border_light&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Style buttons</span>
+        <span class="n">button_style</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QPushButton </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;darker_bg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;border_light&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                padding: 8px 15px;</span>
+<span class="s2">                font-family: &quot;Courier New&quot;;</span>
+<span class="s2">                text-transform: uppercase;</span>
+<span class="s2">                min-width: 100px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QPushButton:hover </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;button_hover&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            QPushButton:pressed </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;button_pressed&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_button</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">button_style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">button_style</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NewSessionDialog.on_credential_selected">
+<a class="viewcode-back" href="../../../api/termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.on_credential_selected">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_credential_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle credential selection from combo box.&quot;&quot;&quot;</span>
+        <span class="n">cred_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">creds_combo</span><span class="o">.</span><span class="n">itemData</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cred_data</span><span class="p">:</span>
+            <span class="c1"># Fill in the form with saved credentials</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">cred_data</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">password_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">cred_data</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;display_name&#39;</span> <span class="ow">in</span> <span class="n">cred_data</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">display_name_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">cred_data</span><span class="p">[</span><span class="s1">&#39;display_name&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Clear the form for manual entry</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username_input</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">password_input</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_name_input</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

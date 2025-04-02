@@ -1,0 +1,2 @@
+Command output for cpu_usage:
+Calculated usage: 12.5%

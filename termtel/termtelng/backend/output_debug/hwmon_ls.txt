@@ -1,0 +1,4 @@
+Command output for hwmon_ls:
+total 0
+lrwxrwxrwx 1 root root 0 Feb 14 09:50 hwmon0 -> ../../devices/platform/coretemp.0/hwmon/hwmon0
+lrwxrwxrwx 1 root root 0 Feb 14 09:50 hwmon1 -> ../../devices/platform/coretemp.1/hwmon/hwmon1

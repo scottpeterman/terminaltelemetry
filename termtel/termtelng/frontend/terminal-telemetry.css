@@ -1,0 +1,124 @@
+/* Custom CSS for Terminal Telemetry
+ * This file improves the layout without scaling the entire application
+ */
+
+/* ===== Hide Terminal Section ===== */
+.terminal-section {
+    display: none !important;
+}
+
+/* ===== Widgets Section Layout ===== */
+.widgets-section {
+    width: 100% !important;
+    min-width: 100% !important;
+}
+
+/* Remove splitter */
+.gutter {
+    display: none !important;
+}
+
+/* ===== Top Panel Improvements ===== */
+/* Make device info area taller and more visible */
+.top-widget-area {
+    min-height: 220px !important;
+    max-height: none !important;
+}
+
+.device-info-grid {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    grid-column-gap: 15px;
+    padding: 10px;
+}
+
+.device-info-grid .scrollable-region {
+    height: 140px !important;
+}
+
+/* Improve controls visibility */
+.controls-area {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 10px;
+    border-top: 1px solid rgba(0, 176, 240, 0.3);
+}
+
+#telemetry-connect {
+    min-width: 100px !important;
+    height: 32px;
+    font-weight: bold;
+}
+
+.zoom-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.zoom-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* ===== Network Info Panel ===== */
+.middle-widget-area {
+    min-height: 280px !important;
+}
+
+.network-grid {
+    grid-template-columns: 45% 55%;
+}
+
+.neighbors-table-container {
+    max-height: 180px !important;
+}
+
+/* ===== Environment & Debug Panel ===== */
+.bottom-widget-area {
+    min-height: 280px !important;
+}
+
+.env-debug-grid {
+    grid-template-columns: 45% 55%;
+}
+
+/* Make scrollable regions more accessible */
+.scrollable-region {
+    min-height: 130px;
+    border-radius: 4px;
+}
+
+/* ===== Panel Titles ===== */
+.hud-panel-title {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+/* ===== Content Headings ===== */
+.hud-panel-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #00b0f0;
+}
+
+/* ===== Tables ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 5px;
+    border-bottom: 1px solid rgba(0, 176, 240, 0.3);
+}
+
+td {
+    padding: 5px;
+    border-bottom: 1px solid rgba(0, 20, 40, 0.3);
+}

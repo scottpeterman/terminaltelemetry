@@ -1,0 +1,37 @@
+Command output for coretemp_1_path:
+total 0
+lrwxrwxrwx 1 root root    0 Feb 14 06:20 device -> ../../../coretemp.1
+-r--r--r-- 1 root root 4096 Feb 14 09:50 name
+drwxr-xr-x 2 root root    0 Feb 14 06:20 power
+lrwxrwxrwx 1 root root    0 Feb 14 06:20 subsystem -> ../../../../../class/hwmon
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp2_crit
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp2_crit_alarm
+-r--r--r-- 1 root root 4096 Feb 14 09:20 temp2_input
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp2_label
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp2_max
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp3_crit
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp3_crit_alarm
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp3_input
+-r--r--r-- 1 root root 4096 Feb 14 09:50 temp3_label
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp3_max
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp4_crit
+-r--r--r-- 1 root root 4096 Feb 14 09:50 temp4_crit_alarm
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp4_input
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp4_label
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp4_max
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp5_crit
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp5_crit_alarm
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp5_input
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp5_label
+-r--r--r-- 1 root root 4096 Feb 14 09:50 temp5_max
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp6_crit
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp6_crit_alarm
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp6_input
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp6_label
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp6_max
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp7_crit
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp7_crit_alarm
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp7_input
+-r--r--r-- 1 root root 4096 Feb 14 09:20 temp7_label
+-r--r--r-- 1 root root 4096 Feb 14 06:20 temp7_max
+-rw-r--r-- 1 root root 4096 Feb 14 06:20 uevent

@@ -1,0 +1,2 @@
+Command output for coretemp_1_fan1:
+cat: /sys/devices/platform/coretemp.1/hwmon/hwmon1/fan1_input: No such file or directory

@@ -1,0 +1,84 @@
+Command output for environment:
+{
+  "cpu": {
+    "CPU0": {
+      "%usage": 12.5
+    },
+    "CPU1": {
+      "%usage": 12.5
+    },
+    "CPU2": {
+      "%usage": 12.5
+    },
+    "CPU3": {
+      "%usage": 12.5
+    },
+    "CPU4": {
+      "%usage": 12.5
+    },
+    "CPU5": {
+      "%usage": 12.5
+    },
+    "CPU6": {
+      "%usage": 12.5
+    },
+    "CPU7": {
+      "%usage": 12.5
+    },
+    "CPU8": {
+      "%usage": 12.5
+    },
+    "CPU9": {
+      "%usage": 12.5
+    },
+    "CPU10": {
+      "%usage": 12.5
+    },
+    "CPU11": {
+      "%usage": 12.5
+    },
+    "CPU12": {
+      "%usage": 12.5
+    },
+    "CPU13": {
+      "%usage": 12.5
+    },
+    "CPU14": {
+      "%usage": 12.5
+    },
+    "CPU15": {
+      "%usage": 12.5
+    },
+    "CPU16": {
+      "%usage": 12.5
+    },
+    "CPU17": {
+      "%usage": 12.5
+    },
+    "CPU18": {
+      "%usage": 12.5
+    },
+    "CPU19": {
+      "%usage": 12.5
+    },
+    "CPU20": {
+      "%usage": 12.5
+    },
+    "CPU21": {
+      "%usage": 12.5
+    },
+    "CPU22": {
+      "%usage": 12.5
+    },
+    "CPU23": {
+      "%usage": 12.5
+    }
+  },
+  "memory": {
+    "available_ram": 67520028672,
+    "used_ram": 45096464384
+  },
+  "temperature": {},
+  "power": {},
+  "fans": {}
+}

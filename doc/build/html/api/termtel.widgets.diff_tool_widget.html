@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets.diff_tool_widget module &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="termtel.widgets.game_integration_wrapper module" href="termtel.widgets.game_integration_wrapper.html" />
+    <link rel="prev" title="termtel.widgets.dialogs module" href="termtel.widgets.dialogs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="termtel.widgets.html">termtel.widgets package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="termtel.widgets.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html">termtel.widgets.TelemetryWidget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html">termtel.widgets.credential_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.dialogs.html">termtel.widgets.dialogs module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">termtel.widgets.diff_tool_widget module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.diff_tool_widget.DiffEditor"><code class="docutils literal notranslate"><span class="pre">DiffEditor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.diff_tool_widget.DiffNavigationBar"><code class="docutils literal notranslate"><span class="pre">DiffNavigationBar</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.diff_tool_widget.DiffToolWidget"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.diff_tool_widget.DiffToolWrapper"><code class="docutils literal notranslate"><span class="pre">DiffToolWrapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.diff_tool_widget.DiffWidget"><code class="docutils literal notranslate"><span class="pre">DiffWidget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.diff_tool_widget.LineNumberArea"><code class="docutils literal notranslate"><span class="pre">LineNumberArea</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html">termtel.widgets.game_integration_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html">termtel.widgets.lmtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html">termtel.widgets.map_preview module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html">termtel.widgets.nbtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html">termtel.widgets.new_session_dialog module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html">termtel.widgets.notepad_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html">termtel.widgets.qtssh_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.sclite_widget.html">termtel.widgets.sclite_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html">termtel.widgets.session_editor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html">termtel.widgets.session_navigator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.setup.html">termtel.widgets.setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html">termtel.widgets.space_debris module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html">termtel.widgets.terminal_app_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html">termtel.widgets.terminal_tabs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html">termtel.widgets.theme_editor module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="termtel.html">termtel package</a></li>
+          <li class="breadcrumb-item"><a href="termtel.widgets.html">termtel.widgets package</a></li>
+      <li class="breadcrumb-item active">termtel.widgets.diff_tool_widget module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/termtel.widgets.diff_tool_widget.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-termtel.widgets.diff_tool_widget">
+<span id="termtel-widgets-diff-tool-widget-module"></span><h1>termtel.widgets.diff_tool_widget module<a class="headerlink" href="#module-termtel.widgets.diff_tool_widget" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.diff_tool_widget.</span></span><span class="sig-name descname"><span class="pre">DiffEditor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QPlainTextEdit</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.apply_theme">
+<span class="sig-name descname"><span class="pre">apply_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.apply_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.apply_theme" title="Link to this definition"></a></dt>
+<dd><p>Apply theme colors to editor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.highlightCurrentLine">
+<span class="sig-name descname"><span class="pre">highlightCurrentLine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.highlightCurrentLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.highlightCurrentLine" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.lineNumberAreaPaintEvent">
+<span class="sig-name descname"><span class="pre">lineNumberAreaPaintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.lineNumberAreaPaintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.lineNumberAreaPaintEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.lineNumberAreaWidth">
+<span class="sig-name descname"><span class="pre">lineNumberAreaWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.lineNumberAreaWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.lineNumberAreaWidth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QResizeEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.resizeEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.updateLineNumberArea">
+<span class="sig-name descname"><span class="pre">updateLineNumberArea</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rect</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.updateLineNumberArea"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.updateLineNumberArea" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.updateLineNumberAreaWidth">
+<span class="sig-name descname"><span class="pre">updateLineNumberAreaWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.updateLineNumberAreaWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.updateLineNumberAreaWidth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.updateRequest">
+<span class="sig-name descname"><span class="pre">updateRequest</span></span><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.updateRequest" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffEditor.update_styling">
+<span class="sig-name descname"><span class="pre">update_styling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffEditor.update_styling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffEditor.update_styling" title="Link to this definition"></a></dt>
+<dd><p>Update editor styling based on current theme colors</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffNavigationBar">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.diff_tool_widget.</span></span><span class="sig-name descname"><span class="pre">DiffNavigationBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffNavigationBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffNavigationBar" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffNavigationBar.apply_theme">
+<span class="sig-name descname"><span class="pre">apply_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffNavigationBar.apply_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffNavigationBar.apply_theme" title="Link to this definition"></a></dt>
+<dd><p>Apply theme colors to navigation bar</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffNavigationBar.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPaintEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffNavigationBar.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffNavigationBar.paintEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffNavigationBar.setDiffLocations">
+<span class="sig-name descname"><span class="pre">setDiffLocations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffNavigationBar.setDiffLocations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffNavigationBar.setDiffLocations" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.diff_tool_widget.</span></span><span class="sig-name descname"><span class="pre">DiffToolWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Main diff tool widget that can be integrated into the tab system</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.add_legend_item">
+<span class="sig-name descname"><span class="pre">add_legend_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.add_legend_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.add_legend_item" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.apply_theme">
+<span class="sig-name descname"><span class="pre">apply_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.apply_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.apply_theme" title="Link to this definition"></a></dt>
+<dd><p>Improved theme application that cascades to all components</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.brighten_color">
+<span class="sig-name descname"><span class="pre">brighten_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color_hex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.brighten_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.brighten_color" title="Link to this definition"></a></dt>
+<dd><p>Brighten a hex color by a factor (&gt;1.0)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Handle cleanup when the widget is closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.compare">
+<span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.compare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.compare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.compareTexts">
+<span class="sig-name descname"><span class="pre">compareTexts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.compareTexts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.compareTexts" title="Link to this definition"></a></dt>
+<dd><p>Compare the texts in the left and right editors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.darken_color">
+<span class="sig-name descname"><span class="pre">darken_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color_hex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.darken_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.darken_color" title="Link to this definition"></a></dt>
+<dd><p>Darken a hex color by a factor (0.0-1.0)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.lineNumberAreaWidth">
+<span class="sig-name descname"><span class="pre">lineNumberAreaWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.lineNumberAreaWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.lineNumberAreaWidth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.navigate_to_next_diff">
+<span class="sig-name descname"><span class="pre">navigate_to_next_diff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.navigate_to_next_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.navigate_to_next_diff" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.navigate_to_prev_diff">
+<span class="sig-name descname"><span class="pre">navigate_to_prev_diff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.navigate_to_prev_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.navigate_to_prev_diff" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.open_left_file">
+<span class="sig-name descname"><span class="pre">open_left_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.open_left_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.open_left_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.open_right_file">
+<span class="sig-name descname"><span class="pre">open_right_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.open_right_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.open_right_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.paste_to_left">
+<span class="sig-name descname"><span class="pre">paste_to_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.paste_to_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.paste_to_left" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.paste_to_right">
+<span class="sig-name descname"><span class="pre">paste_to_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.paste_to_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.paste_to_right" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.setup_ui">
+<span class="sig-name descname"><span class="pre">setup_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.setup_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.setup_ui" title="Link to this definition"></a></dt>
+<dd><p>Initialize the UI components</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.updateLineNumberArea">
+<span class="sig-name descname"><span class="pre">updateLineNumberArea</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rect</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.updateLineNumberArea"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.updateLineNumberArea" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWidget.update_diff_formats">
+<span class="sig-name descname"><span class="pre">update_diff_formats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWidget.update_diff_formats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWidget.update_diff_formats" title="Link to this definition"></a></dt>
+<dd><p>Update diff highlighting formats based on current theme</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWrapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.diff_tool_widget.</span></span><span class="sig-name descname"><span class="pre">DiffToolWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff_tool_widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWrapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Wrapper class for the DiffToolWidget to standardize interface with the tab system</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWrapper.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWrapper.cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWrapper.cleanup" title="Link to this definition"></a></dt>
+<dd><p>Handle cleanup when tab is closed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffToolWrapper.update_theme">
+<span class="sig-name descname"><span class="pre">update_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theme_manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffToolWrapper.update_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffToolWrapper.update_theme" title="Link to this definition"></a></dt>
+<dd><p>Pass theme updates to the diff tool widget</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.diff_tool_widget.</span></span><span class="sig-name descname"><span class="pre">DiffWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QSplitter</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.apply_theme">
+<span class="sig-name descname"><span class="pre">apply_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.apply_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.apply_theme" title="Link to this definition"></a></dt>
+<dd><p>Apply theme colors to diff widget and its components</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.compareTexts">
+<span class="sig-name descname"><span class="pre">compareTexts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.compareTexts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.compareTexts" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.computeLineMapping">
+<span class="sig-name descname"><span class="pre">computeLineMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">leftLines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rightLines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.computeLineMapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.computeLineMapping" title="Link to this definition"></a></dt>
+<dd><p>Compute mapping between corresponding lines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.highlightLine">
+<span class="sig-name descname"><span class="pre">highlightLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">editor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.highlightLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.highlightLine" title="Link to this definition"></a></dt>
+<dd><p>Highlight an entire line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.highlightSection">
+<span class="sig-name descname"><span class="pre">highlightSection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">editor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startCol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endCol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.highlightSection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.highlightSection" title="Link to this definition"></a></dt>
+<dd><p>Highlight a section of a line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.setTexts">
+<span class="sig-name descname"><span class="pre">setTexts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">leftText</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rightText</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.setTexts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.setTexts" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.syncScroll">
+<span class="sig-name descname"><span class="pre">syncScroll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.syncScroll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.syncScroll" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.DiffWidget.update_splitter_style">
+<span class="sig-name descname"><span class="pre">update_splitter_style</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#DiffWidget.update_splitter_style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.DiffWidget.update_splitter_style" title="Link to this definition"></a></dt>
+<dd><p>Update splitter style based on theme colors</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.LineNumberArea">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.diff_tool_widget.</span></span><span class="sig-name descname"><span class="pre">LineNumberArea</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">editor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#LineNumberArea"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.LineNumberArea" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.LineNumberArea.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPaintEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#LineNumberArea.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.LineNumberArea.paintEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.diff_tool_widget.LineNumberArea.sizeHint">
+<span class="sig-name descname"><span class="pre">sizeHint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QSize</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/diff_tool_widget.html#LineNumberArea.sizeHint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.diff_tool_widget.LineNumberArea.sizeHint" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="termtel.widgets.dialogs.html" class="btn btn-neutral float-left" title="termtel.widgets.dialogs module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="termtel.widgets.game_integration_wrapper.html" class="btn btn-neutral float-right" title="termtel.widgets.game_integration_wrapper module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
