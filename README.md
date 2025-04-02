@@ -1,6 +1,6 @@
 # TerminalTelemetry
 
-![Screenshot](https://raw.githubusercontent.com/scottpeterman/terminaltelemetry/main/screenshots/slides2.gif)
+![Screenshot](https://github.com/scottpeterman/terminaltelemetry/blob/c9099e0a76fb67ead274f1b49cb539883996bd4e/screenshots/slides2.gif)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 
