@@ -231,10 +231,10 @@ class TelemetryWidget(QWidget):
 
     def inject_theme(self, theme_name):
         """
-        Inject a darkpty theme into the telemetry widget's theme system
+        Inject a termtel theme into the telemetry widget's theme system
 
         Args:
-            theme_name: Name of the darkpty theme to apply
+            theme_name: Name of the termtel theme to apply
         """
         try:
             from termtel.themes3 import ThemeLibrary
@@ -479,7 +479,7 @@ class TelemetryWidget(QWidget):
 def update_theme(self, theme_name):
     """Update the theme of the telemetry widget"""
     try:
-        # Try to inject theme directly from darkpty
+        # Try to inject theme directly from termtel
         self.inject_theme(theme_name)
     except Exception as e:
         print(f"Error updating telemetry theme: {e}")

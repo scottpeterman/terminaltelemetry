@@ -88,7 +88,7 @@ class TerminalTabWidget(QTabWidget):
 
             # Get absolute path to doom.html
             # https://github.com/scottpeterman/pywasm3-doom-demo
-            doom_path = files('darkpty').joinpath('static/doom.html')
+            doom_path = files('termtel').joinpath('static/doom.html')
 
             web_view = QWebEngineView()
             web_view.setUrl(QUrl.fromLocalFile(str(doom_path)))

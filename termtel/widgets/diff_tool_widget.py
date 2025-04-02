@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPlainTextEdit,
                              QStatusBar, QToolButton, QStyle, QTextEdit, QApplication)
 import logging
 
-logger = logging.getLogger('darkpty.diff_tool')
+logger = logging.getLogger('termtel.diff_tool')
 
 class LineNumberArea(QWidget):
     def __init__(self, editor):

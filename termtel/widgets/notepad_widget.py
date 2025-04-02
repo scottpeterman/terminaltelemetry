@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 import os
 import logging
 
-logger = logging.getLogger('darkpty.notepad')
+logger = logging.getLogger('termtel.notepad')
 
 
 class NotepadWidget(QWidget):

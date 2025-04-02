@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-darkpty - A PyQt6 Terminal Emulator
+termtel - A PyQt6 Terminal Emulator
 """
 import os
 import sys
@@ -33,7 +33,7 @@ from termtel.widgets.terminal_tabs import TerminalTabWidget
 # Configure logging
 logging.basicConfig(level=logging.INFO,
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('darkpty')
+logger = logging.getLogger('termtel')
 
 THEME_MAPPING = None
 def initialize_sessions():
@@ -351,7 +351,7 @@ class termtelWindow(QMainWindow):
         self.terminal_splitter.setSizes([250, width - 250])
         setup_menus(self)
 
-    # In darkpty.py, add this import
+    # In termtel.py, add this import
     def launch_telemetry(window):
         """Launch the telemetry interface in a tab"""
         try:
@@ -442,7 +442,7 @@ class termtelWindow(QMainWindow):
             logger.error(f"Error during telemetry cleanup: {e}")
             traceback.print_exc()
 
-    # In darkpty.py, modify the switch_theme method:
+    # In termtel.py, modify the switch_theme method:
 
     def switch_theme(self, theme_name: str):
         """Override switch_theme to handle both UI and terminal theming."""
@@ -765,10 +765,10 @@ class termtelWindow(QMainWindow):
 
 def setup_logging():
     """Configure logging to write to a file instead of stdout."""
-    log_dir = Path.home() / "./darkpty" / "logs"
+    log_dir = Path.home() / "./termtel" / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    log_file = log_dir / "darkpty.log"
+    log_file = log_dir / "termtel.log"
     logging.basicConfig(
         filename=str(log_file),
         level=logging.INFO,
@@ -788,7 +788,7 @@ def redirect_output():
 
 
 def main():
-    """darkpty - A modern terminal emulator."""
+    """termtel - A modern terminal emulator."""
     # Set up logging before anything else
     setup_logging()
 
@@ -798,7 +798,7 @@ def main():
     try:
         initialize_sessions()
         app = QApplication(sys.argv)
-        app.setApplicationName("darkpty")
+        app.setApplicationName("termtel")
 
         theme = "cyberpunk"
         # Create theme manager instance

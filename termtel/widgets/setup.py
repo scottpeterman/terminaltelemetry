@@ -20,7 +20,7 @@ from termtel.widgets.credential_manager import CredentialManagerDialog
 from termtel.widgets.lmtosession import LMDownloader
 from termtel.widgets.nbtosession import App as NetboxExporter
 from termtel.logo import get_themed_svg
-logger = logging.getLogger('darkpty.setup')
+logger = logging.getLogger('termtel.setup')
 
 
 class AboutDialog(QDialog):

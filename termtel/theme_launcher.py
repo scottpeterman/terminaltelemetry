@@ -40,7 +40,7 @@ def launch_theme_editor(window):
                     }, f)
             except Exception as e:
                 import logging
-                logger = logging.getLogger('darkpty.theme_editor')
+                logger = logging.getLogger('termtel.theme_editor')
                 logger.error(f"Error saving theme data to temp file: {e}")
 
         # Pass the themes directory path and temp file as arguments
@@ -64,7 +64,7 @@ def launch_theme_editor(window):
 
     except Exception as e:
         import logging
-        logger = logging.getLogger('darkpty.theme_editor')
+        logger = logging.getLogger('termtel.theme_editor')
         logger.error(f"Error launching theme editor process: {e}")
         from PyQt6.QtWidgets import QMessageBox
         QMessageBox.critical(
@@ -90,7 +90,7 @@ def _handle_theme_editor_error(window, error):
 
     error_msg = error_messages.get(error, "An unknown error occurred")
     import logging
-    logger = logging.getLogger('darkpty.theme_editor')
+    logger = logging.getLogger('termtel.theme_editor')
     logger.error(f"Theme editor process error: {error_msg}")
 
 
@@ -99,7 +99,7 @@ def _handle_theme_editor_finish(window, exit_code, exit_status, temp_file):
     import os
     import json
     import logging
-    logger = logging.getLogger('darkpty.theme_editor')
+    logger = logging.getLogger('termtel.theme_editor')
 
     # Check for successful completion
     if exit_code == 0:

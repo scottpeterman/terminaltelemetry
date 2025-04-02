@@ -10,8 +10,8 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read().splitlines()
 
 setup(
-    name="terminaltelemetry",
-    version="0.1.0",
+    name="TerminalTelemetry",
+    version="0.9.8",
     author="Scott Peterman",
     author_email="scottpeterman@gmail.com",
     description="A PyQt6 terminal emulator with SSH and telemetry capabilities",
