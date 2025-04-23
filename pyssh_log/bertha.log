@@ -1,0 +1,100 @@
+Connected to bertha using the specified algorithms.
+Executing command: cat /etc/*release* && hostnamectl && lscpu && free -h && df -h && echo #
+#
+#
+
+term len 0
+terminal length 0
+no page
+no paging
+set cli pager off
+show version
+Welcome to Ubuntu 20.04.5 LTS (GNU/Linux 5.4.0-164-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+94 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+New release '22.04.5 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+*** System restart required ***
+Last login: Mon Nov 25 11:47:04 2024 from 10.35.24.195
+speterman@bertha:~$ cat /etc/*release* && hostnamectl && lscpu && free -h && df -h && echo #
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=20.04
+DISTRIB_CODENAME=focal
+DISTRIB_DESCRIPTION="Ubuntu 20.04.5 LTS"
+NAME="Ubuntu"
+VERSION="20.04.5 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 20.04.5 LTS"
+VERSION_ID="20.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=focal
+UBUNTU_CODENAME=focal
+   Static hostname: bertha
+         Icon name: computer-server
+           Chassis: server
+        Machine ID: 1357e76b52ae7cc66b19143058a204c4
+           Boot ID: 07ba70967645403d82450dcce0577317
+  Operating System: ]8;;https://www.ubuntu.com/Ubuntu 20.04.5 LTS]8;;
+            Kernel: Linux 5.4.0-164-generic
+      Architecture: x86-64
+Architecture:                       x86_64
+CPU op-mode(s):                     32-bit, 64-bit
+Byte Order:                         Little Endian
+Address sizes:                      40 bits physical, 48 bits virtual
+CPU(s):                             24
+On-line CPU(s) list:                0-23
+Thread(s) per core:                 2
+Core(s) per socket:                 6
+Socket(s):                          2
+NUMA node(s):                       2
+Vendor ID:                          GenuineIntel
+CPU family:                         6
+Model:                              44
+Model name:                         Intel(R) Xeon(R) CPU           X5680  @ 3.33
+                                    GHz
+Stepping:                           2
+CPU MHz:                            3333.462
+BogoMIPS:                           6666.91
+Virtualization:                     VT-x
+L1d cache:                          384 KiB
+L1i cache:                          384 KiB
+L2 cache:                           3 MiB
+L3 cache:                           24 MiB
+NUMA node0 CPU(s):                  0-5,12-17
+NUMA node1 CPU(s):                  6-11,18-23
+Vulnerability Gather data sampling: Not affected
+Vulnerability Itlb multihit:        KVM: Mitigation: Split huge pages
+Vulnerability L1tf:                 Mitigation; PTE Inversion; VMX conditional c
+                                    ache flushes, SMT vulnerable
+Vulnerability Mds:                  Vulnerable: Clear CPU buffers attempted, no 
+                                    microcode; SMT vulnerable
+Vulnerability Meltdown:             Mitigation; PTI
+Vulnerability Mmio stale data:      Unknown: No mitigations
+Vulnerability Retbleed:             Not affected
+Vulnerability Spec store bypass:    Mitigation; Speculative Store Bypass disable
+                                    d via prctl and seccomp
+Vulnerability Spectre v1:           Mitigation; usercopy/swapgs barriers and __u
+                                    ser pointer sanitization
+Vulnerability Spectre v2:           Mitigation; Retpolines, IBPB conditional, IB
+                                    RS_FW, STIBP conditional, RSB filling, PBRSB
+                                    -eIBRS Not affected
+Vulnerability Srbds:                Not affected
+Vulnerability Tsx async abort:      Not affected
+Flags:                              fpu vme de pse tsc msr pae mce cx8 apic sep 
+                                    mtrr pge mca cmov pat pse36 clflush dts acpi
+                                     mmx fxsr sse sse2 ht tm pbe syscall nx pdpe
+                                    1gb rdtscp lm constant_tsc arch_perf
+Successfully detected prompt () 6 times.
+running commands...

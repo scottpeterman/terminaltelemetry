@@ -128,9 +128,9 @@ class Ui_Terminal(QWidget):
 
         # Send text back to JavaScript
         self.view.page().runJavaScript(
-            f"if (window.handlePasteResult) window.handlePasteResult(`{text.replace('`', '\\`')}`);"
+            "if (window.handlePasteResult) window.handlePasteResult(`{}`);"
+            .format(text.replace('`', '\\`'))
         )
-
     def update_div_height(self):
         """
         Updates the div height of the terminal.

@@ -11,7 +11,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="TerminalTelemetry",
-    version="0.9.8",
+    version="0.10.0",
     author="Scott Peterman",
     author_email="scottpeterman@gmail.com",
     description="A PyQt6 terminal emulator with SSH and telemetry capabilities",
@@ -25,7 +25,7 @@ setup(
         "Operating System :: OS Independent",
         "Environment :: X11 Applications :: Qt",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     install_requires=requirements,
     include_package_data=True,
     package_data={
