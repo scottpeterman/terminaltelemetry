@@ -12,6 +12,7 @@
 ### PyPI Installation (Recommended)
 ```bash
 pip install TerminalTelemetry
+termtel-con
 termtel
 ```
 
