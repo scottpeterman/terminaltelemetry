@@ -114,8 +114,8 @@ class TerminalTabWidget(QTabWidget):
             frontend_path = Path(__file__).parent.parent / 'termtelng' / 'frontend'
 
             # Create the telemetry widget
-            from termtel.widgets.TelemetryWidget import TelemetryWidget
-            telemetry_widget = TelemetryWidget(parent=self.parent, base_path=frontend_path)
+            from termtel.termtelwidgets.telemetry_widget import TelemetryWidget
+            telemetry_widget = TelemetryWidget(parent=self.parent)
 
             # Connect cleanup signal
             # telemetry_widget.cleanup_requested.connect(self.parent.handle_telemetry_cleanup)
@@ -134,8 +134,8 @@ class TerminalTabWidget(QTabWidget):
             self.setCurrentIndex(index)  # Switch to the new tab
 
             # Apply current theme
-            if hasattr(telemetry_widget, 'update_theme') and hasattr(self.parent, 'theme'):
-                telemetry_widget.update_theme(self.parent.theme)
+            if hasattr(telemetry_widget, 'set_theme_from_parent') and hasattr(self.parent, 'theme'):
+                telemetry_widget.set_theme_from_parent(self.parent.theme)
 
             # Store reference for cleanup
             if not hasattr(self.parent, 'telemetry_widgets'):
@@ -165,6 +165,7 @@ class TerminalTabWidget(QTabWidget):
         self.setTabsClosable(True)
         self.setMovable(True)
         self.setDocumentMode(True)
+        self.setUsesScrollButtons(True)
 
         # Connect signals
         self.tabCloseRequested.connect(self.close_tab)
@@ -324,6 +325,71 @@ class TerminalTabWidget(QTabWidget):
         else:
             # Retry after a short delay
             QTimer.singleShot(1000, lambda: self.apply_theme_to_terminal(terminal, self.current_term_theme))
+
+    def apply_theme_to_terminal(self, terminal, theme_name):
+        """Apply theme to a specific terminal instance - restored original working version."""
+        if hasattr(terminal, 'view') and theme_name in self.terminal_themes:
+            js_code = self.terminal_themes[theme_name]["js"]
+            try:
+                terminal.view.page().runJavaScript(
+                    "typeof term !== 'undefined' && term !== null",
+                    lambda result: self.handle_theme_check(result, terminal, js_code)
+                )
+            except Exception as e:
+                print(f"Error applying theme to terminal: {e}")
+                traceback.print_exc()
+
+    def handle_theme_check(self, is_ready: bool, terminal, theme_js: str):
+        """Handle the terminal readiness check for theme application - restored original."""
+        if is_ready:
+            terminal.view.page().runJavaScript(
+                theme_js,
+                lambda result: print(f"Theme applied successfully")
+            )
+        else:
+            # Retry after a short delay
+            QTimer.singleShot(1000, lambda: self.apply_theme_to_terminal(terminal, self.current_term_theme))
+
+    def change_single_terminal_theme(self, theme_name: str, tab_index: int):
+        """Change theme for a specific terminal tab using dynamic theme system."""
+        print(f"Changing theme for tab {tab_index} to {theme_name}")
+
+        # Get the specific tab that was right-clicked
+        tab = self.widget(tab_index)
+        if tab:
+            terminal = tab.findChild(Ui_Terminal)
+            if terminal and hasattr(terminal, 'view'):
+                # Use the dynamic theme system - get the generated JavaScript for this theme
+                if theme_name in self.terminal_themes:
+                    js_code = self.terminal_themes[theme_name]["js"]
+                    try:
+                        # Use a longer delay for individual tab theme changes
+                        QTimer.singleShot(3000, lambda: terminal.view.page().runJavaScript(
+                            "typeof term !== 'undefined' && term !== null",
+                            lambda result: self.handle_single_theme_check(result, terminal, js_code, theme_name)
+                        ))
+                    except Exception as e:
+                        print(f"Error applying theme to single terminal: {e}")
+                else:
+                    print(f"Theme '{theme_name}' not found in generated terminal_themes")
+                    print(f"Available themes: {list(self.terminal_themes.keys())}")
+            else:
+                print(f"No terminal found in tab {tab_index}")
+
+    def handle_single_theme_check(self, is_ready: bool, terminal, theme_js: str, theme_name: str):
+        """Handle theme check for individual terminal theme changes."""
+        if is_ready:
+            try:
+                terminal.view.page().runJavaScript(
+                    theme_js,
+                    lambda result: print(f"Single terminal theme '{theme_name}' applied successfully")
+                )
+            except Exception as e:
+                print(f"Error executing single terminal theme JS: {e}")
+        else:
+            print(f"Single terminal not ready, retrying theme '{theme_name}' in 3 seconds...")
+            QTimer.singleShot(3000, lambda: self.handle_single_theme_check(True, terminal, theme_js, theme_name))
+
     def cleanup(self):
         """
         Cleanup method to properly close the terminal and free resources.
@@ -366,13 +432,26 @@ class TerminalTabWidget(QTabWidget):
             # Add theme submenu
             theme_menu = menu.addMenu("Terminal Theme")
 
-            # Create theme actions
-            for theme_name, theme_data in terminal_themes.items():
-                action = theme_menu.addAction(theme_name)
+            # Get available themes from the dynamic ThemeLibrary instead of hardcoded themes
+            available_themes = self.parent.theme_manager.get_theme_names()
+
+            # Create theme actions using the dynamic theme system
+            for theme_name in available_themes:
+                # Convert theme name to display name (e.g., "dark_mode" -> "Dark Mode")
+                display_name = theme_name.replace('_', ' ').title()
+
+                action = theme_menu.addAction(display_name)
                 action.setCheckable(True)
                 action.setChecked(theme_name == self.current_term_theme)
+                # Pass the specific tab index to the theme change function
                 action.triggered.connect(
-                    lambda checked, tn=theme_name: self.change_terminal_theme(tn))
+                    lambda checked, tn=theme_name, tab_index=index: self.change_single_terminal_theme(tn, tab_index))
+
+            menu.addSeparator()
+
+            # ADD ONLY THIS: Rename tab action
+            rename_action = menu.addAction("Rename Tab")
+            rename_action.triggered.connect(lambda: self.rename_tab(index))
 
             menu.addSeparator()
 
@@ -392,16 +471,28 @@ class TerminalTabWidget(QTabWidget):
 
             menu.exec(self.tabBar().mapToGlobal(position))
 
-    def change_terminal_theme(self, theme_name: str):
-        """Change theme for current terminal and save preference."""
-        self.current_term_theme = theme_name
-        if hasattr(self, 'view'):
-            THEME_MAPPING = ThemeMapper(self.parent.theme_manager)
-            QTimer.singleShot(3000, lambda: self.view.page().runJavaScript(
-                terminal_themes.get(THEME_MAPPING[self.current_term_theme], terminal_themes["Green"])["js"],
-                lambda result: print(f"{self.current_term_theme} theme applied")
-            ))
+    def rename_tab(self, index: int):
+        """Show dialog to rename the tab"""
+        from PyQt6.QtWidgets import QInputDialog
 
+        current_text = self.tabText(index)
+
+        new_name, ok = QInputDialog.getText(
+            self,
+            "Rename Tab",
+            "Enter new tab name:",
+            text=current_text
+        )
+
+        if ok and new_name.strip():
+            self.setTabText(index, new_name.strip())
+
+    def change_terminal_theme(self, theme_name: str):
+        """Change theme for all terminals using dynamic theme system."""
+        self.current_term_theme = theme_name
+
+        # Apply theme to all terminals via the update_theme method
+        # This is the key line that applies themes to all existing terminals
         self.update_theme(theme_name)
 
     def close_other_tabs(self, keep_index: int):

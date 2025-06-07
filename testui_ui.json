@@ -1,0 +1,15 @@
+{
+  "default": {
+    "hostname": "usa1-rtr-1",
+    "ip_address": "172.16.101.100",
+    "platform": "cisco_ios_xe",
+    "username": "cisco",
+    "password": "cisco",
+    "secret": "",
+    "port": 22,
+    "timeout": 10,
+    "auth_timeout": 10,
+    "fast_cli": false,
+    "verbose": true
+  }
+}

@@ -11,10 +11,11 @@ from pathlib import Path
 
 import yaml
 
+from termtel.helpers.theme_bootstrap import ThemeBootstrap
 from termtel.widgets.qtssh_widget import Ui_Terminal
 from termtel.widgets.session_navigator import SessionNavigator
-from termtel.widgets.TelemetryWidget import TelemetryWidget
-
+# from termtel.widgets.TelemetryWidget import TelemetryWidget
+from termtel.termtelwidgets.telemetry_widget import TelemetryWidget
 from termtel.themes3 import ThemeLibrary, LayeredHUDFrame, ThemeMapper
 
 from PyQt6.QtGui import QPalette, QColor
@@ -82,6 +83,7 @@ class termtelWindow(QMainWindow):
         self.session_file = session_file
         self.cred_manager = SecureCredentials()
         self.settings_manager = SettingsManager()
+        self.setup_themes()
 
         # Override theme with saved preference if it exists
         self.theme = self.settings_manager.get_app_theme()
@@ -98,6 +100,42 @@ class termtelWindow(QMainWindow):
 
     def launch_telemetry(self):
         pass
+
+    def setup_themes(self):
+        """Set up theme system with one-time auto-bootstrap"""
+        try:
+            from termtel.helpers.resource_manager import resource_manager
+
+            # Set up themes directory
+            themes_dir = Path('./themes')
+
+            # Initialize theme bootstrap
+            self.theme_bootstrap = ThemeBootstrap(resource_manager, themes_dir)
+
+            # Check if this is first run
+            if not self.theme_bootstrap._is_bootstrap_complete():
+                logger.info("First run detected - bootstrapping themes from package...")
+                results = self.theme_bootstrap.bootstrap_themes()
+
+                if results:
+                    successful = sum(results.values())
+                    total = len(results)
+                    logger.info(f"First-run theme setup: {successful}/{total} themes installed")
+
+                    # Update theme manager to scan the populated directory
+                    if hasattr(self.theme_manager, 'rescan_themes'):
+                        self.theme_manager.rescan_themes()
+                    print(f"Initial themes bootstrapped, restart application")
+                    sys.exit(0)
+            else:
+                logger.info("Theme bootstrap already completed - using existing user themes")
+                # Still rescan in case user added themes manually
+                if hasattr(self.theme_manager, 'rescan_themes'):
+                    self.theme_manager.rescan_themes()
+
+        except Exception as e:
+            logger.error(f"Theme setup failed: {e}")
+            # Continue with basic themes only
 
     def load_saved_settings(self):
         """Load and apply saved settings."""
@@ -352,50 +390,50 @@ class termtelWindow(QMainWindow):
         setup_menus(self)
 
     # In termtel.py, add this import
-    def launch_telemetry(window):
-        """Launch the telemetry interface in a tab"""
-        try:
-            # Check if telemetry tab already exists
-            for i in range(window.terminal_tabs.count()):
-                if "Telemetry" in window.terminal_tabs.tabText(i):
-                    # Tab already exists, just select it
-                    window.terminal_tabs.setCurrentIndex(i)
-                    return
-
-            # Create new telemetry tab
-            frontend_path = Path(__file__).parent / 'termtelng' / 'frontend'
-            telemetry_widget = TelemetryWidget(parent=window, base_path=frontend_path)
-
-            # Connect cleanup signal
-            telemetry_widget.cleanup_requested.connect(window.handle_telemetry_cleanup)
-
-            # Add tab with an icon if available
-            try:
-                from PyQt6.QtGui import QIcon
-                icon_path = Path(__file__).parent / 'termtelng' / 'frontend' / 'radar.svg'
-
-                if icon_path.exists():
-                    tab_icon = QIcon(str(icon_path))
-                    index = window.terminal_tabs.addTab(telemetry_widget, tab_icon, "Telemetry")
-                else:
-                    index = window.terminal_tabs.addTab(telemetry_widget, "Telemetry")
-
-                window.terminal_tabs.setTabToolTip(index, "Terminal Telemetry Dashboard")
-                window.terminal_tabs.setCurrentIndex(index)  # Switch to the new tab
-
-                # Store reference if needed for cleanup
-                if not hasattr(window, 'telemetry_widgets'):
-                    window.telemetry_widgets = []
-                window.telemetry_widgets.append(telemetry_widget)
-
-            except Exception as e:
-                logger.error(f"Error adding telemetry tab: {e}")
-                traceback.print_exc()
-
-        except Exception as e:
-            logger.error(f"Failed to launch telemetry: {e}")
-            traceback.print_exc()
-            QMessageBox.warning(window, "Error", f"Failed to launch telemetry: {e}")
+    # def launch_telemetry(window):
+    #     """Launch the telemetry interface in a tab"""
+    #     try:
+    #         # Check if telemetry tab already exists
+    #         for i in range(window.terminal_tabs.count()):
+    #             if "Telemetry" in window.terminal_tabs.tabText(i):
+    #                 # Tab already exists, just select it
+    #                 window.terminal_tabs.setCurrentIndex(i)
+    #                 return
+    #
+    #         # Create new telemetry tab
+    #         frontend_path = Path(__file__).parent / 'termtelng' / 'frontend'
+    #         telemetry_widget = TelemetryWidget(parent=window, base_path=frontend_path)
+    #
+    #         # Connect cleanup signal
+    #         telemetry_widget.cleanup_requested.connect(window.handle_telemetry_cleanup)
+    #
+    #         # Add tab with an icon if available
+    #         try:
+    #             from PyQt6.QtGui import QIcon
+    #             icon_path = Path(__file__).parent / 'termtelng' / 'frontend' / 'radar.svg'
+    #
+    #             if icon_path.exists():
+    #                 tab_icon = QIcon(str(icon_path))
+    #                 index = window.terminal_tabs.addTab(telemetry_widget, tab_icon, "Telemetry")
+    #             else:
+    #                 index = window.terminal_tabs.addTab(telemetry_widget, "Telemetry")
+    #
+    #             window.terminal_tabs.setTabToolTip(index, "Terminal Telemetry Dashboard")
+    #             window.terminal_tabs.setCurrentIndex(index)  # Switch to the new tab
+    #
+    #             # Store reference if needed for cleanup
+    #             if not hasattr(window, 'telemetry_widgets'):
+    #                 window.telemetry_widgets = []
+    #             window.telemetry_widgets.append(telemetry_widget)
+    #
+    #         except Exception as e:
+    #             logger.error(f"Error adding telemetry tab: {e}")
+    #             traceback.print_exc()
+    #
+    #     except Exception as e:
+    #         logger.error(f"Failed to launch telemetry: {e}")
+    #         traceback.print_exc()
+    #         QMessageBox.warning(window, "Error", f"Failed to launch telemetry: {e}")
 
     # Then in the termtelWindow class, add this method
     def add_telemetry_tab(self):
@@ -405,10 +443,11 @@ class termtelWindow(QMainWindow):
             frontend_path = Path(__file__).parent / 'termtelng' / 'frontend'
 
             # Create the telemetry widget
-            telemetry_widget = TelemetryWidget(parent=self, base_path=frontend_path)
+            # telemetry_widget = TelemetryWidget(parent=self, base_path=frontend_path)
 
+            telemetry_widget = TelemetryWidget()
             # Connect cleanup signal
-            telemetry_widget.cleanup_requested.connect(self.handle_telemetry_cleanup)
+            # telemetry_widget.cleanup_requested.connect(self.handle_telemetry_cleanup)
 
             # Add tab with an icon if available
             from PyQt6.QtGui import QIcon

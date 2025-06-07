@@ -1,0 +1,210 @@
+graph TD
+    %% User Interface Layer
+    UI[EnhancedTelemetryMainWindow<br/>Menu system with platform management]
+    TS[Theme Selector<br/>gruvbox, cyberpunk, etc.]
+    CONN[Connection Dialog<br/>Device credentials & platform selection]
+    
+    %% Platform Configuration System (Updated File Structure)
+    subgraph "Platform Configuration System"
+        PCM[PlatformConfigManager<br/>JSON-driven configuration loader]
+        PJSON[config/platforms/platforms.json<br/>Single consolidated file<br/>6+ vendor definitions]
+        PCAP[Platform Capabilities<br/>supports_vrf supports_cdp<br/>neighbor_protocol etc]
+        PCMD[Command Definitions<br/>route_table route_table_vrf<br/>cdp_neighbors arp_table]
+        PMAP[Field Mappings<br/>Protocol normalization<br/>S-Static C-Connected]
+    end
+
+    %% NEW: Threaded Controller Architecture
+    subgraph "Threaded Telemetry Architecture"
+        TTC[ThreadedTelemetryController<br/>Main thread wrapper<br/>Signal forwarding & management]
+        TWS[TelemetryWorkerThread<br/>Worker thread<br/>SSH communication & parsing]
+        LEGACY[EnhancedPlatformAwareTelemetryController<br/>Legacy controller wrapped]
+    end
+
+    %% Real Device Communication (Updated)
+    subgraph "Device Communication (Worker Thread)"
+        NETMIKO[Netmiko Integration<br/>Real SSH connections<br/>ConnectHandler instances]
+        CREDS[ConnectionCredentials<br/>username, password, secret<br/>port, timeout]
+        CMGR[Connection Management<br/>Worker thread connection tracking]
+    end
+
+    %% Actual Devices
+    DEV1[Cisco IOS XE Device<br/>cal-cr-core-01<br/>10.68.57.104]
+    DEV2[Arista EOS Device<br/>leaf switch<br/>10.255.0.1]
+    DEV3[Other Platforms<br/>cisco_nxos, aruba_aos_cx<br/>linux_rhel, etc.]
+
+    %% Template System (Updated File Structure)
+    subgraph "Local Template & Parsing System"
+        TLIB[Local Template Library<br/>templates/textfsm/<br/>200+ TextFSM templates]
+        TFILES[Template Files<br/>cisco_ios_show_version.textfsm<br/>cisco_ios_show_ip_route.textfsm<br/>arista_eos_show_version.textfsm]
+        TPARSE[LocalTemplateParser<br/>Raw output to Structured data<br/>Platform-aware selection]
+        TEDITOR[Template Editor<br/>Widget integration<br/>Live template editing & testing]
+    end
+
+    %% Data Normalization Pipeline
+    subgraph "Data Normalization Pipeline"
+        NORM[ConfigDrivenFieldNormalizer<br/>Platform-aware normalization<br/>Vendor-agnostic data structures]
+        NROUTE[NormalizedRouteData<br/>network, next_hop, protocol<br/>mask, interface, metric]
+        NNEIGH[NormalizedNeighborData<br/>local_interface, neighbor_device<br/>neighbor_interface, protocol_used]
+        NARP[NormalizedArpData<br/>ip_address, mac_address<br/>interface, age, state]
+        NSYS[NormalizedSystemMetrics<br/>cpu_usage_percent, memory_used_percent<br/>temperature_celsius, platform]
+    end
+
+    %% Enhanced Signal System (Thread-Safe)
+    subgraph "Thread-Safe Signal Architecture"
+        RSIG[Raw Signals<br/>raw_route_output<br/>raw_cdp_output<br/>raw_arp_output<br/>raw_system_info_output]
+        NSIG[Normalized Signals<br/>normalized_routes_ready<br/>normalized_neighbors_ready<br/>normalized_arp_ready<br/>normalized_system_metrics_ready]
+        CSIG[Connection Signals<br/>connection_status_changed<br/>device_info_updated<br/>connection_established]
+        TSIG[Theme Signals<br/>theme_changed]
+    end
+
+    %% Enhanced Widgets (Current Implementation)
+    subgraph "Template-Editable Widgets"
+        RWIDGET[FixedRouteWidget<br/>VRF-aware with dropdown<br/>Protocol filtering<br/>Template editor gear<br/>Threaded data updates]
+        NWIDGET[EnhancedNeighborWidget<br/>CDP/LLDP auto-detection<br/>Platform-specific parsing<br/>Template editor gear]
+        AWIDGET[EnhancedArpWidget<br/>Cross-platform ARP display<br/>State color coding<br/>Template editor gear]
+        CWIDGET[EnhancedCPUEnvironmentWidget<br/>System metrics with merge logic<br/>Platform-agnostic CPU/Memory<br/>Theme-aware progress bars]
+        SWIDGET[ConnectionStatusWidget<br/>Real-time device info<br/>Threaded connection state]
+        LWIDGET[SimplifiedLogWidget<br/>Live log streaming<br/>Raw log display]
+    end
+
+    %% Theme System (Current File Structure)
+    subgraph "Theme System"
+        TL[OptimizedThemeLibrary<br/>23+ themes with lazy loading]
+        TDIR[themes/<br/>cyberpunk.json<br/>gruvbox.json<br/>matrix-green.json]
+        TFW[ThemedFrameWidget<br/>Base themed styling]
+    end
+
+    %% Data Flow - UI to Controller
+    UI --> CONN
+    UI --> TS
+    CONN --> TTC
+    
+    %% NEW: Threaded Controller Flow
+    TTC --> TWS
+    TWS --> LEGACY
+    TTC -.forwards_signals.-> UI
+    
+    %% Platform Configuration Flow
+    TWS --> PCM
+    LEGACY --> PCM
+    PCM --> PJSON
+    PCM --> PCAP
+    PCM --> PCMD
+    PCM --> PMAP
+
+    %% Device Connection Flow (Worker Thread)
+    TWS --> CREDS
+    TWS --> NETMIKO
+    TWS --> CMGR
+    NETMIKO --> DEV1
+    NETMIKO --> DEV2
+    NETMIKO --> DEV3
+
+    %% Command Execution Flow (Worker Thread)
+    TWS -.get_platform_command.-> PCM
+    TWS -.execute_command.-> NETMIKO
+    NETMIKO -.command_output.-> TWS
+
+    %% Template Processing Flow (Worker Thread)
+    TWS --> TPARSE
+    TPARSE --> TLIB
+    TPARSE --> TFILES
+    TPARSE -.parsed_data.-> NORM
+
+    %% Data Normalization Flow (Worker Thread)
+    NORM --> NROUTE
+    NORM --> NNEIGH
+    NORM --> NARP
+    NORM --> NSYS
+
+    %% Signal Flow - From Worker Thread to Main Thread
+    TWS --> RSIG
+    TWS --> NSIG
+    TWS --> CSIG
+    TTC --> TSIG
+
+    %% Signal Flow - To Widgets (Main Thread)
+    NSIG -.normalized_routes_ready.-> RWIDGET
+    NSIG -.normalized_neighbors_ready.-> NWIDGET
+    NSIG -.normalized_arp_ready.-> AWIDGET
+    NSIG -.normalized_system_metrics_ready.-> CWIDGET
+    CSIG -.device_info_updated.-> SWIDGET
+    RSIG -.raw_log_output.-> LWIDGET
+    TSIG -.theme_changed.-> RWIDGET
+    TSIG -.theme_changed.-> NWIDGET
+    TSIG -.theme_changed.-> AWIDGET
+
+    %% Theme Flow
+    TS --> TL
+    TL --> TDIR
+    TL -.theme_changed.-> TTC
+    TFW --> RWIDGET
+    TFW --> NWIDGET
+    TFW --> AWIDGET
+
+    %% Template Editor Integration (Main Thread)
+    TEDITOR -.template_saved.-> RWIDGET
+    TEDITOR -.template_saved.-> NWIDGET
+    TEDITOR -.template_saved.-> AWIDGET
+    RWIDGET -.gear_button.-> TEDITOR
+    NWIDGET -.gear_button.-> TEDITOR
+    AWIDGET -.gear_button.-> TEDITOR
+
+    %% VRF-Specific Flow (Cross-Thread)
+    RWIDGET -.vrf_changed.-> TTC
+    TTC -.vrf_request.-> TWS
+
+    %% Widget Status Flow (Cross-Thread)
+    RWIDGET -.refresh_request.-> TTC
+    NWIDGET -.refresh_request.-> TTC
+    AWIDGET -.refresh_request.-> TTC
+    TTC -.refresh_command.-> TWS
+
+    %% Thread Boundaries
+    subgraph "Main UI Thread"
+        UI
+        TS
+        CONN
+        TTC
+        RWIDGET
+        NWIDGET
+        AWIDGET
+        CWIDGET
+        SWIDGET
+        LWIDGET
+        TEDITOR
+        TL
+        TDIR
+        TFW
+    end
+    
+    subgraph "Worker Thread"
+        TWS
+        LEGACY
+        PCM
+        NETMIKO
+        CMGR
+        TPARSE
+        NORM
+    end
+
+    %% Styling
+    classDef controller fill:#0a8993,stroke:#0ff5ff,color:#0affff
+    classDef widget fill:#065359,stroke:#0a8993,color:#0affff
+    classDef theme fill:#1a1a1a,stroke:#0a8993,color:#0affff
+    classDef platform fill:#2a2a2a,stroke:#ffff66,color:#ffff66
+    classDef data fill:#333333,stroke:#0a8993,color:#0affff
+    classDef device fill:#1a4a1a,stroke:#00ff88,color:#00ff88
+    classDef normalization fill:#4a1a4a,stroke:#ff88ff,color:#ff88ff
+    classDef templates fill:#4a4a1a,stroke:#ffff88,color:#ffff88
+    classDef threaded fill:#4a2a1a,stroke:#ff8844,color:#ff8844
+
+    class TTC,TWS,PCM,CMGR controller
+    class LEGACY threaded
+    class RWIDGET,NWIDGET,AWIDGET,CWIDGET,SWIDGET,LWIDGET,TFW widget
+    class TL,TDIR,TS theme
+    class PJSON,PCAP,PCMD,PMAP platform
+    class RSIG,NSIG,CSIG,TSIG,CREDS data
+    class DEV1,DEV2,DEV3,NETMIKO device
+    class NORM,NROUTE,NNEIGH,NARP,NSYS normalization
+    class TLIB,TFILES,TPARSE,TEDITOR templates

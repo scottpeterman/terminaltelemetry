@@ -190,9 +190,13 @@ class LMDownloader(QWidget):
         self.setWindowTitle('LogicMonitor Import')
         self.setMinimumWidth(400)
         self.setMinimumHeight(300)
+
+        # Set defaults
         self.default_company = "yourcompany"
         self.default_access_id = "your_id_here"
         self.default_access_key = "your long key here"
+        self.default_cert_path = ""
+
         # Create main frame with parent's theme
         self.main_frame = LayeredHUDFrame(
             self,
@@ -203,9 +207,56 @@ class LMDownloader(QWidget):
         # Initialize UI
         self.initUI()
 
+        # Load saved settings after UI is created
+        self.load_settings()
+
         # Apply parent's theme
         if hasattr(parent, 'theme_manager'):
             parent.theme_manager.apply_theme(self, self.theme)
+
+    def load_settings(self):
+        """Load settings from JSON file if it exists"""
+        try:
+            if os.path.exists("logicmonitor_settings.json"):
+                with open("logicmonitor_settings.json", "r") as f:
+                    settings = json.load(f)
+
+                # Update the input fields with saved values
+                self.companyField.setText(settings.get("company", self.default_company))
+                self.accessIdField.setText(settings.get("access_id", self.default_access_id))
+                self.accessKeyField.setText(settings.get("access_key", self.default_access_key))
+                self.certPathField.setText(settings.get("cert_path", self.default_cert_path))
+
+                print("Settings loaded successfully")
+            else:
+                print("No settings file found, using defaults")
+
+        except Exception as e:
+            print(f"Failed to load settings: {e}")
+            # If loading fails, keep the defaults that are already set
+
+    def save_settings(self):
+        """Save current field values to JSON file"""
+        try:
+            settings = {
+                "company": self.companyField.text(),
+                "access_id": self.accessIdField.text(),
+                "access_key": self.accessKeyField.text(),
+                "cert_path": self.certPathField.text()
+            }
+
+            with open("logicmonitor_settings.json", "w") as f:
+                json.dump(settings, f, indent=2)
+
+            print("Settings saved successfully")
+
+        except Exception as e:
+            print(f"Failed to save settings: {e}")
+
+    def closeEvent(self, event):
+        """Override close event to auto-save settings"""
+        self.save_settings()
+        event.accept()  # Allow the widget to close
 
     def initUI(self):
         # Main layout
@@ -225,26 +276,26 @@ class LMDownloader(QWidget):
         # Company input
         self.companyField = QLineEdit(self)
         self.companyField.setPlaceholderText('Enter your LogicMonitor company name')
-        self.companyField.setText(self.default_company)
+        self.companyField.setText(self.default_company)  # This will be overridden by load_settings()
         layout.addWidget(self.companyField)
 
         # Access ID input
         self.accessIdField = QLineEdit(self)
         self.accessIdField.setPlaceholderText('Enter your Access ID')
-        self.accessIdField.setText(self.default_access_id)
+        self.accessIdField.setText(self.default_access_id)  # This will be overridden by load_settings()
         layout.addWidget(self.accessIdField)
 
         # Access Key input
         self.accessKeyField = QLineEdit(self)
         self.accessKeyField.setPlaceholderText('Enter your Access Key')
-        self.accessKeyField.setText(self.default_access_key)
+        self.accessKeyField.setText(self.default_access_key)  # This will be overridden by load_settings()
         self.accessKeyField.setEchoMode(QLineEdit.EchoMode.Password)
         layout.addWidget(self.accessKeyField)
 
         # Certificate Path input
         self.certPathField = QLineEdit(self)
         self.certPathField.setPlaceholderText('Enter path to Zscaler certificate (optional)')
-        # self.certPathField.setText(self.default_cert_path)
+        self.certPathField.setText(self.default_cert_path)  # This will be overridden by load_settings()
         layout.addWidget(self.certPathField)
 
         # Download button
@@ -308,6 +359,9 @@ class LMDownloader(QWidget):
         """)
 
     def startDownloadThread(self):
+        # Save settings before starting download
+        self.save_settings()
+
         self.downloadButton.setEnabled(False)
         self.downloadThread = DownloadThread(
             self.companyField.text(),
@@ -336,8 +390,6 @@ class LMDownloader(QWidget):
 
     def updateStatusLabel(self, text):
         self.statusLabel.setText(f"Status: {text}")
-
-
 class ParentWindow(QMainWindow):
     def __init__(self):
         super().__init__()

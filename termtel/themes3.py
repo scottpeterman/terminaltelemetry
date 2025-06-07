@@ -281,6 +281,15 @@ class ThemeLibrary:
 
     def generate_stylesheet(self, theme: ThemeColors) -> str:
         """Generate Qt stylesheet from theme colors with WebEngine context menu support"""
+
+        def make_opaque(color_string):
+            """Convert any rgba color to fully opaque version"""
+            if color_string.startswith('rgba('):
+                # Extract RGB values from rgba(r, g, b, a)
+                rgb_part = color_string[5:-1].split(',')[:3]  # Get just r, g, b
+                return f"rgb({', '.join(rgb_part)})"
+            return color_string
+
         # Get context menu colors, with fully opaque background
         if isinstance(theme, dict):
             # Create a temporary ThemeColors object from the dict
@@ -308,11 +317,12 @@ class ThemeLibrary:
             'border': theme.border_light
         }
 
-        # Ensure background color is fully opaque by converting any rgba to solid color
-        menu_bg = context_menu['background']
-        if menu_bg.startswith('rgba'):
-            # If it's rgba, convert to solid color using theme.secondary
-            menu_bg = theme.secondary
+        # Force all menu colors to be opaque
+        menu_bg = make_opaque(context_menu['background'])
+        menu_text = make_opaque(context_menu['text'])
+        menu_selected_bg = make_opaque(context_menu['selected_bg'])
+        menu_selected_text = make_opaque(context_menu['selected_text'])
+        menu_border = make_opaque(context_menu['border'])
 
         return f"""
             QMainWindow, QWidget {{
@@ -380,8 +390,8 @@ class ThemeLibrary:
             }}
             QMenu {{
                 background-color: {menu_bg} !important;
-                color: {context_menu['text']};
-                border: 1px solid {context_menu['border']};
+                color: {menu_text};
+                border: 1px solid {menu_border};
                 padding: 5px;
             }}
             QMenu::item {{
@@ -390,45 +400,45 @@ class ThemeLibrary:
                 border: 1px solid transparent;
             }}
             QMenu::item:selected {{
-                background-color: {context_menu['selected_bg']};
-                color: {context_menu['selected_text']};
+                background-color: {menu_selected_bg};
+                color: {menu_selected_text};
             }}
             QMenu::separator {{
                 height: 1px;
-                background: {context_menu['border']} !important;
+                background: {menu_border} !important;
                 margin: 5px 0px 5px 0px;
             }}
 
             QScrollBar:vertical {{
-    background-color: {theme.scrollbar_bg};
-    width: 10px;
-    margin: 0;
-    border: none;
-}}
+                background-color: {theme.scrollbar_bg};
+                width: 10px;
+                margin: 0;
+                border: none;
+            }}
 
-QScrollBar::handle:vertical {{
-    background: {theme.scrollbar_handle if hasattr(theme, 'scrollbar_handle') else theme.border_light};
-    min-height: 20px;
-    border-radius: 4px;
-    border: none;
-}}
+            QScrollBar::handle:vertical {{
+                background: {theme.scrollbar_handle if hasattr(theme, 'scrollbar_handle') else theme.border_light};
+                min-height: 20px;
+                border-radius: 4px;
+                border: none;
+            }}
 
-QScrollBar::handle:vertical:hover {{
-    background: {theme.scrollbar_handle_hover if hasattr(theme, 'scrollbar_handle_hover') else theme.text};
-}}
+            QScrollBar::handle:vertical:hover {{
+                background: {theme.scrollbar_handle_hover if hasattr(theme, 'scrollbar_handle_hover') else theme.text};
+            }}
 
-QScrollBar::add-line:vertical,
-QScrollBar::sub-line:vertical {{
-    height: 0;
-    background: none;
-    border: none;
-}}
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {{
+                height: 0;
+                background: none;
+                border: none;
+            }}
 
-QScrollBar::add-page:vertical,
-QScrollBar::sub-page:vertical {{
-    background: {theme.scrollbar_bg};
-    border: none;
-}}
+            QScrollBar::add-page:vertical,
+            QScrollBar::sub-page:vertical {{
+                background: {theme.scrollbar_bg};
+                border: none;
+            }}
         """
 
     def apply_theme(self, widget, theme_name: str):

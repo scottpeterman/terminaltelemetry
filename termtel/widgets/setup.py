@@ -1,9 +1,8 @@
 """
 Termtel - UI Setup Module
-Handles menu system and dialog setup
+Handles menu system with proper theme signaling for telemetry widgets
 """
 import sys
-
 import yaml
 from PyQt6.QtGui import QActionGroup, QAction, QDesktopServices
 from PyQt6.QtWidgets import (
@@ -11,7 +10,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout, QLabel, QWidget, QGroupBox, QPushButton, QMessageBox
 )
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import QUrl, Qt, QProcess, QProcessEnvironment
+from PyQt6.QtCore import QUrl, Qt, QProcess, QProcessEnvironment, pyqtSignal
 import logging
 import os
 
@@ -20,7 +19,16 @@ from termtel.widgets.credential_manager import CredentialManagerDialog
 from termtel.widgets.lmtosession import LMDownloader
 from termtel.widgets.nbtosession import App as NetboxExporter
 from termtel.logo import get_themed_svg
+
 logger = logging.getLogger('termtel.setup')
+
+# Import main theme manager
+try:
+    from termtel.themes3 import ThemeLibrary
+    MAIN_THEME_MANAGER_AVAILABLE = True
+except ImportError:
+    MAIN_THEME_MANAGER_AVAILABLE = False
+    logger.warning("Main theme manager not available")
 
 
 class AboutDialog(QDialog):
@@ -53,7 +61,6 @@ class AboutDialog(QDialog):
             border_color = "#444444"
 
         # Get the themed SVG content
-        # You can import the get_themed_svg function from your svg_theme module
         try:
             if theme_colors:
                 svg_content = get_themed_svg(theme_colors)
@@ -153,16 +160,12 @@ class AboutDialog(QDialog):
             margin: 0 auto;
         }}
         
-        .svg-container svg 
+        .svg-container svg {{
             width: 100%;
             height: 100%;
+        }}
 
-::-webkit-scrollbar {{
-    width: 10px;
-    height: 10px;
-}}
-
-::-webkit-scrollbar {{
+        ::-webkit-scrollbar {{
             width: 10px;
             height: 10px;
         }}
@@ -244,37 +247,6 @@ class AboutDialog(QDialog):
         if hasattr(parent, 'theme_manager'):
             parent.theme_manager.apply_theme(self, theme_name)
 
-class TelemetryDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Telemetry Settings")
-        self.setMinimumSize(500, 400)
-
-        layout = QVBoxLayout()
-
-        # Data Collection Group
-        collection_group = QGroupBox("Data Collection")
-        collection_layout = QVBoxLayout()
-        # TODO: Add data collection settings
-        collection_group.setLayout(collection_layout)
-
-        # Export Group
-        export_group = QGroupBox("Data Export")
-        export_layout = QVBoxLayout()
-        export_btn = QPushButton("Export Telemetry Data")
-        export_btn.clicked.connect(self.export_telemetry)
-        export_layout.addWidget(export_btn)
-        export_group.setLayout(export_layout)
-
-        layout.addWidget(collection_group)
-        layout.addWidget(export_group)
-        self.setLayout(layout)
-
-    def export_telemetry(self):
-        # TODO: Implement telemetry export
-        logger.info("Telemetry export requested")
-        pass
-
 
 def setup_menus(window):
     """Setup menu system for the main window"""
@@ -299,7 +271,7 @@ def setup_menus(window):
     # Get available themes from ThemeLibrary
     available_themes = window.theme_manager.get_theme_names()
 
-    # Create theme actions
+    # Create theme actions with safe theme switching
     for theme_name in available_themes:
         # Convert theme name to display name (e.g., "dark_mode" -> "Dark Mode")
         display_name = theme_name.replace('_', ' ').title()
@@ -308,11 +280,8 @@ def setup_menus(window):
         theme_action.setCheckable(True)
         theme_action.setChecked(theme_name == window.theme)
         theme_action.triggered.connect(
-            lambda checked, t=theme_name: window.switch_theme(t)
+            lambda checked, t=theme_name: safe_switch_theme(window, t)
         )
-        if hasattr(window.parent, 'theme_manager') and hasattr(window.parent, 'theme'):
-            current_theme = window.parent.theme
-            # diff_tool.apply_theme(window.parent.theme_manager, current_theme)
 
         theme_group.addAction(theme_action)
         themes_menu.addAction(theme_action)
@@ -345,8 +314,9 @@ def setup_menus(window):
     lm_action = tools_menu.addAction("&LogicMonitor Import")
     lm_action.triggered.connect(lambda: show_logicmonitor_importer(window))
 
+    # Use safe telemetry tab creation
     telemetry_action = tools_menu.addAction('Telemetry Dashboard')
-    telemetry_action.triggered.connect(lambda: window.terminal_tabs.create_telemetry_tab("Telemetry"))
+    telemetry_action.triggered.connect(lambda: safe_create_telemetry_tab(window))
 
     manage_sessions_action = tools_menu.addAction('Manage Sessions')
     manage_sessions_action.triggered.connect(lambda: show_session_manager(window))
@@ -381,9 +351,97 @@ def setup_menus(window):
 
     # Help Menu
     help_menu = menubar.addMenu("&Help")
-
     about_action = help_menu.addAction("&About")
     about_action.triggered.connect(lambda: show_about_dialog(window))
+
+def safe_switch_theme(window, theme_name):
+    """
+    Safe theme switching that handles both old and new telemetry properly
+    """
+    print(f"🎨 Safe theme switch to: {theme_name}")
+
+    try:
+        # Apply theme to main window using existing method
+        if hasattr(window, 'switch_theme'):
+            try:
+                window.switch_theme(theme_name)
+            except Exception as e:
+                print(f"⚠️ Error in main switch_theme: {e}")
+                # Fallback: apply directly if switch_theme fails
+                if hasattr(window, 'theme_manager'):
+                    window.theme_manager.apply_theme(window, theme_name)
+                    window.theme = theme_name
+
+        # Handle new telemetry widgets
+        if hasattr(window, 'telemetry_widgets'):
+            for widget in window.telemetry_widgets:
+                try:
+                    if hasattr(widget, 'set_theme_from_parent'):
+                        widget.set_theme_from_parent(theme_name)
+                    elif hasattr(widget, '_apply_theme'):
+                        widget._apply_theme(theme_name)
+                except Exception as e:
+                    print(f"⚠️ Could not apply theme to telemetry widget: {e}")
+
+        # Emit theme change signal for other components
+        if hasattr(window, 'theme_changed'):
+            window.theme_changed.emit(theme_name)
+
+        print(f"✅ Theme switch to {theme_name} completed")
+
+    except Exception as e:
+        print(f"❌ Error in safe_switch_theme: {e}")
+        QMessageBox.warning(
+            window,
+            "Theme Switch Warning",
+            f"Theme change partially failed: {str(e)}"
+        )
+
+
+def safe_create_telemetry_tab(window):
+    """
+    Safe telemetry tab creation with theme manager registration
+    """
+    try:
+        # Initialize telemetry theme manager if this is the first telemetry tab
+        if  not hasattr(window, 'telemetry_theme_manager'):
+            # window.telemetry_theme_manager = TelemetryWidgetThemeManager(window)
+            print("✅ Initialized telemetry theme manager")
+
+        # Create telemetry tab using existing method
+        if hasattr(window.terminal_tabs, 'create_telemetry_tab'):
+            tab = window.terminal_tabs.create_telemetry_tab("Telemetry")
+
+            # Register with theme manager if it's a new-style widget
+            if (hasattr(window, 'telemetry_theme_manager')):
+
+                telemetry_widget = None
+
+                # Find the telemetry widget in the tab
+                if hasattr(tab, 'telemetry_widget'):
+                    telemetry_widget = tab.telemetry_widget
+                elif hasattr(tab, 'set_theme_from_parent'):
+                    telemetry_widget = tab
+
+                if telemetry_widget:
+                    try:
+                        window.telemetry_theme_manager.register_telemetry_widget(telemetry_widget)
+                        print("✅ Registered telemetry widget with theme manager")
+
+                        # Apply current theme to new widget
+                        if hasattr(window, 'theme'):
+                            telemetry_widget.set_theme_from_parent(window.theme)
+
+                    except Exception as e:
+                        print(f"⚠️ Could not register telemetry widget: {e}")
+        else:
+            # Fallback to old method
+            window.terminal_tabs.create_telemetry_tab("Telemetry")
+
+    except Exception as e:
+        print(f"❌ Error creating telemetry tab: {e}")
+        QMessageBox.warning(window, "Telemetry Error", f"Could not create telemetry tab: {str(e)}")
+
 
 def reload_theme_menu(window, themes_menu, theme_group):
     """Reload the themes menu with current themes from ThemeLibrary"""
@@ -395,7 +453,7 @@ def reload_theme_menu(window, themes_menu, theme_group):
     # Reload themes from library
     window.theme_manager._load_custom_themes()
 
-    # Add new theme actions
+    # Add new theme actions with safe switching
     available_themes = window.theme_manager.get_theme_names()
     for theme_name in available_themes:
         display_name = theme_name.replace('_', ' ').title()
@@ -403,34 +461,24 @@ def reload_theme_menu(window, themes_menu, theme_group):
         theme_action.setCheckable(True)
         theme_action.setChecked(theme_name == window.theme)
         theme_action.triggered.connect(
-            lambda checked, t=theme_name: window.switch_theme(t)
+            lambda checked, t=theme_name: safe_switch_theme(window, t)
         )
         theme_group.addAction(theme_action)
         themes_menu.insertAction(themes_menu.actions()[-2], theme_action)  # Insert before separator
 
-# Remove TelemetryDialog and show_telemetry_dialog since they're not needed anymore
-def toggle_telemetry(window, telemetry_action):
-    """Toggle telemetry frame visibility and save state"""
-    is_visible = telemetry_action.isChecked()
-    window.telemetry_frame.setVisible(is_visible)
-    # Save state to settings
-    window.settings_manager.set_view_setting('telemetry_visible', is_visible)
+
 def show_session_manager(window):
     """Launch the session manager dialog"""
     from termtel.widgets.session_editor import SessionEditorDialog
 
     dialog = SessionEditorDialog(window, session_file=window.session_file_with_path)
     if dialog.exec() == dialog.DialogCode.Accepted:
-        # Reload the sessions after editing
-        # window.load_sessions(window, window.session_file_with_path)
         try:
             with open(window.session_file_with_path) as f:
                 sessions_data = yaml.safe_load(f)
                 window.session_navigator.load_sessions(file_content_to_load=sessions_data)
-
         except Exception as e:
             logger.error(f"Failed to load sessions: {str(e)}")
-
 
 
 def show_netbox_importer(window):
@@ -441,6 +489,7 @@ def show_netbox_importer(window):
         dialog.show()
     except Exception as e:
         logger.error(f"Error showing Netbox importer: {e}")
+
 
 def handle_open_sessions(window):
     """Handle opening a new sessions file"""
@@ -469,14 +518,6 @@ def show_credentials_dialog(window):
         logger.error(f"Error showing credentials dialog: {e}")
 
 
-def show_telemetry_dialog(window):
-    """Show the telemetry settings dialog"""
-    try:
-        window.launch_telemetry()
-    except Exception as e:
-        logger.error(f"Error showing telemetry dialog: {e}")
-
-
 def show_about_dialog(window):
     """Show the about dialog"""
     try:
@@ -484,6 +525,7 @@ def show_about_dialog(window):
         dialog.exec()
     except Exception as e:
         logger.error(f"Error showing about dialog: {e}")
+
 
 def show_logicmonitor_importer(window):
     """Show the LogicMonitor to Session importer"""
@@ -495,92 +537,24 @@ def show_logicmonitor_importer(window):
         logger.error(f"Error showing LogicMonitor importer: {e}")
 
 
-def launch_telemetry(window):
+def safe_close_telemetry_tab(window, tab_widget):
     """
-    Launch the telemetry backend using the current Python interpreter.
-    Handles process management and error cases.
-
-    Args:
-        window: The main application window instance
+    Safe cleanup when closing telemetry tabs
+    Call this when a telemetry tab is closed
     """
     try:
-        # Create a QProcess instance
-        process = QProcess(window)
+        if hasattr(window, 'telemetry_widgets'):
+            # Remove from telemetry widgets list
+            if hasattr(tab_widget, 'telemetry_widget') and tab_widget.telemetry_widget in window.telemetry_widgets:
+                window.telemetry_widgets.remove(tab_widget.telemetry_widget)
+            elif hasattr(tab_widget, 'set_theme_from_parent') and tab_widget in window.telemetry_widgets:
+                window.telemetry_widgets.remove(tab_widget)
 
-        # Set up environment
-        env = QProcessEnvironment.systemEnvironment()
-        process.setProcessEnvironment(env)
-
-        # Set up the command and arguments
-        python_path = sys.executable
-        args = ['-m', 'termtel.backend.launcher']
-
-        # Optional: Log the command being executed
-        print(f"Launching telemetry with: {python_path} {' '.join(args)}")
-
-        # Connect signals for monitoring
-        process.errorOccurred.connect(lambda error: _handle_error(window, error))
-        process.finished.connect(lambda code, status: _handle_finish(window, code, status))
-        process.readyReadStandardError.connect(lambda: _handle_stderr(process))
-        process.readyReadStandardOutput.connect(lambda: _handle_stdout(process))
-
-        # Start the process
-        process.start(python_path, args)
-
-        # Store process reference if needed later
-        window.telemetry_process = process
+        # Call cleanup on telemetry widget if it has one
+        if hasattr(tab_widget, 'telemetry_widget') and hasattr(tab_widget.telemetry_widget, 'cleanup'):
+            tab_widget.telemetry_widget.cleanup()
+        elif hasattr(tab_widget, 'cleanup'):
+            tab_widget.cleanup()
 
     except Exception as e:
-        QMessageBox.critical(
-            window,
-            "Telemetry Launch Error",
-            f"Failed to start telemetry process: {str(e)}"
-        )
-
-
-def _handle_error(window, error):
-    """Handle QProcess errors"""
-    error_messages = {
-        QProcess.ProcessError.FailedToStart: "The process failed to start",
-        QProcess.ProcessError.Crashed: "The process crashed",
-        QProcess.ProcessError.Timedout: "The process timed out",
-        QProcess.ProcessError.WriteError: "Write error occurred",
-        QProcess.ProcessError.ReadError: "Read error occurred",
-        QProcess.ProcessError.UnknownError: "Unknown error occurred"
-    }
-
-    error_msg = error_messages.get(error, "An unknown error occurred")
-    # QMessageBox.critical(
-    #     window,
-    #     "Telemetry Error",
-    #     f"Telemetry process error: {error_msg}"
-    # )
-
-
-def _handle_finish(window, exit_code, exit_status):
-    """Handle process completion"""
-    pass
-    # if exit_code != 0:
-    #     QMessageBox.warning(
-    #         window,
-    #         "Telemetry Warning",
-    #         f"Telemetry process exited with code {exit_code}"
-    #     )
-
-    # Clean up process reference
-    if hasattr(window, 'telemetry_process'):
-        delattr(window, 'telemetry_process')
-
-
-def _handle_stdout(process):
-    """Handle process standard output"""
-    data = process.readAllStandardOutput()
-    stdout = bytes(data).decode('utf8')
-    print(f"Telemetry stdout: {stdout}")
-
-
-def _handle_stderr(process):
-    """Handle process standard error"""
-    data = process.readAllStandardError()
-    stderr = bytes(data).decode('utf8')
-    print(f"Telemetry stderr: {stderr}")
+        print(f"⚠️ Error during telemetry tab cleanup: {e}")

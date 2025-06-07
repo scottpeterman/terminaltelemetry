@@ -9,10 +9,10 @@ import traceback
 from pathlib import Path
 
 # Import your message router
-from termtel.termtelng.backend.message_router import MessageRouter
-from termtel.termtelng.backend.sessions import TelemetrySession
+# from termtel.termtelng.backend.message_router import MessageRouter
+# from termtel.termtelng.backend.sessions import TelemetrySession
 
-
+# from termtelwidgets import
 class TelemetryWidget(QWidget):
     """A widget that encapsulates the Terminal Telemetry web interface"""
 
@@ -63,17 +63,17 @@ class TelemetryWidget(QWidget):
             self.channel = QWebChannel()
 
             # Create message router
-            self.message_router = MessageRouter(parent=self)
+            # self.message_router = MessageRouter(parent=self)
 
             # Register objects with channel
-            self.channel.registerObject("messageRouter", self.message_router)
+            # self.channel.registerObject("messageRouter", self.message_router)
 
             # Set up the web page
             self.web_view.page().setWebChannel(self.channel)
             self.web_view.page().setZoomFactor(1.0)
 
             # Connect to loadFinished signal to apply theme after page loads
-            self.web_view.loadFinished.connect(self.on_page_load_finished)
+            # self.web_view.loadFinished.connect(self.on_page_load_finished)
 
             # Load the frontend
             frontend_path = self.base_path / 'index.html'
@@ -405,74 +405,74 @@ class TelemetryWidget(QWidget):
         if self._cleanup_done:
             return
 
-        try:
-            print("Starting comprehensive telemetry cleanup...")
-
-            # Use the synchronous cleanup method instead of the async one
-            if hasattr(self.message_router, 'cleanup_sync'):
-                self.message_router.cleanup_sync()
-            else:
-                print("Warning: MessageRouter does not have cleanup_sync method")
-
-            self._cleanup_done = True
-            print("Telemetry cleanup completed")
-
-        except Exception as e:
-            print(f"Error during telemetry cleanup: {e}")
-            traceback.print_exc()
-
-        # Emit cleanup signal to notify parent
-        self.cleanup_requested.emit()
+        # try:
+        #     print("Starting comprehensive telemetry cleanup...")
+        #
+        #     # Use the synchronous cleanup method instead of the async one
+        #     if hasattr(self.message_router, 'cleanup_sync'):
+        #         self.message_router.cleanup_sync()
+        #     else:
+        #         print("Warning: MessageRouter does not have cleanup_sync method")
+        #
+        #     self._cleanup_done = True
+        #     print("Telemetry cleanup completed")
+        #
+        # except Exception as e:
+        #     print(f"Error during telemetry cleanup: {e}")
+        #     traceback.print_exc()
+        #
+        # # Emit cleanup signal to notify parent
+        # self.cleanup_requested.emit()
 
     def cleanup_sync(self):
         """Synchronous cleanup for widget usage"""
         print("Running MessageRouter cleanup_sync")
-        for session_id, session in list(self.sessions.items()):
-            try:
-                # Special handling for TelemetrySession
-                if isinstance(session, TelemetrySession):
-                    print(f"Cleaning up telemetry session: {session_id}")
-                    # Stop the collector if it exists
-                    if hasattr(session, 'collector') and session.collector:
-                        if hasattr(session.collector, 'isRunning') and session.collector.isRunning():
-                            print(f"Stopping collector thread")
-                            session.collector._is_running = False
-                            session.collector.quit()
-                            session.collector.wait(1000)  # Wait with timeout
+        # for session_id, session in list(self.sessions.items()):
+        #     try:
+                # # Special handling for TelemetrySession
+                # if isinstance(session, TelemetrySession):
+                #     print(f"Cleaning up telemetry session: {session_id}")
+                #     # Stop the collector if it exists
+                #     if hasattr(session, 'collector') and session.collector:
+                #         if hasattr(session.collector, 'isRunning') and session.collector.isRunning():
+                #             print(f"Stopping collector thread")
+                #             session.collector._is_running = False
+                #             session.collector.quit()
+                #             session.collector.wait(1000)  # Wait with timeout
+                #
+                #     # Mark session as inactive
+                #     session._active = False
+                #
+                #     # Create and run a temporary event loop to synchronously disconnect
+                #     try:
+                #         temp_loop = asyncio.new_event_loop()
+                #         asyncio.set_event_loop(temp_loop)
+                #         temp_loop.run_until_complete(session.disconnect())
+                #         temp_loop.close()
+                #     except Exception as e:
+                #         print(f"Error in sync disconnect: {e}")
 
-                    # Mark session as inactive
-                    session._active = False
-
-                    # Create and run a temporary event loop to synchronously disconnect
-                    try:
-                        temp_loop = asyncio.new_event_loop()
-                        asyncio.set_event_loop(temp_loop)
-                        temp_loop.run_until_complete(session.disconnect())
-                        temp_loop.close()
-                    except Exception as e:
-                        print(f"Error in sync disconnect: {e}")
-
-                # For other session types
-                elif hasattr(session, 'stop_sync'):
-                    session.stop_sync()
-                # Fallback to async if needed
-                elif hasattr(session, 'stop'):
-                    try:
-                        temp_loop = asyncio.new_event_loop()
-                        asyncio.set_event_loop(temp_loop)
-                        temp_loop.run_until_complete(session.stop())
-                        temp_loop.close()
-                    except Exception as e:
-                        print(f"Error in fallback async stop: {e}")
-
-            except Exception as e:
-                print(f"Error stopping session {session_id}: {e}")
-                traceback.print_exc()
+            #     # For other session types
+            #     elif hasattr(session, 'stop_sync'):
+            #         session.stop_sync()
+            #     # Fallback to async if needed
+            #     elif hasattr(session, 'stop'):
+            #         try:
+            #             temp_loop = asyncio.new_event_loop()
+            #             asyncio.set_event_loop(temp_loop)
+            #             temp_loop.run_until_complete(session.stop())
+            #             temp_loop.close()
+            #         except Exception as e:
+            #             print(f"Error in fallback async stop: {e}")
+            #
+            # except Exception as e:
+            #     print(f"Error stopping session {session_id}: {e}")
+            #     traceback.print_exc()
 
     def closeEvent(self, event):
         """Handle widget close event"""
         self.cleanup()
-        self.cleanup_requested.emit()
+        # self.cleanup_requested.emit()
         event.accept()
 
 
