@@ -553,6 +553,11 @@ class TelemetryWidget(QWidget):
 
         # Raw output signals
         self.controller.raw_log_output.connect(self._on_log_output)
+        if hasattr(self.controller, 'connection_error_occurred'):
+            self.controller.connection_error_occurred.connect(self._on_connection_error_occurred)
+            print("✅ Connected to enhanced error signal")
+        else:
+            print("⚠️ Enhanced error signal not available")
 
     def _apply_initial_theme(self):
         """Apply initial theme"""
@@ -570,27 +575,52 @@ class TelemetryWidget(QWidget):
             pass
 
     def _show_connection_dialog(self):
-        """Show connection dialog"""
+        """Show connection dialog - FIXED to store dialog reference properly"""
         try:
             from termtel.termtelwidgets.connection_dialog import DeviceConnectionDialog
-            dialog = DeviceConnectionDialog(self.theme_library, parent=self.parent_app)
-            dialog.connection_requested.connect(self._handle_connection_request)
-            result = dialog.exec()
+            print("🎯 Creating connection dialog...")
+
+            # Store dialog reference BEFORE connecting signals
+            self.active_connection_dialog = DeviceConnectionDialog(self.theme_library, parent=self.parent_app)
+
+            print(f"🎯 Dialog created: {self.active_connection_dialog}")
+
+            # Connect the signal
+            self.active_connection_dialog.connection_requested.connect(self._handle_connection_request)
+
+            print(f"🎯 Signal connected, showing modal dialog...")
+            result = self.active_connection_dialog.exec()
+            print(f"🎯 Dialog closed with result: {result}")
+
+            # Clear reference when dialog is closed
+            self.active_connection_dialog = None
+
         except ImportError as e:
             print(f"Import error: {e}")
             QMessageBox.information(self, "Connection", "Connection dialog not available.")
 
     @pyqtSlot(str, str, str, object)
     def _handle_connection_request(self, hostname, ip_address, platform, credentials):
-        """Handle connection request from dialog"""
+        """Handle connection request from dialog - FIXED with proper dialog storage"""
         print(f"🚀 Connection requested: {hostname} ({ip_address}) - {platform}")
+
+        # CRITICAL: Get dialog reference from the sender (the dialog that emitted the signal)
+        dialog = self.sender()  # This is the actual dialog object
+
+        print(f"🎯 Dialog from sender: {dialog}")
+        print(f"🎯 Active dialog reference: {getattr(self, 'active_connection_dialog', None)}")
+
+        # Also store in backup attributes for threaded access
+        self._connection_dialog = dialog
+        self._connection_hostname = hostname
+        self._connection_ip = ip_address
+
+        print(f"🎯 Stored dialog reference: {self._connection_dialog is not None}")
 
         try:
             # Update UI immediately
             self.connect_button.setEnabled(False)
             self.disconnect_button.setEnabled(False)
-
-            # Update device info display
             self.device_info_label.setText(f"Connecting to {hostname}...")
 
             # Start the worker thread
@@ -598,19 +628,94 @@ class TelemetryWidget(QWidget):
 
             if success:
                 print(f"✅ Worker thread started for {hostname}")
-                # Emit widget-level signal
                 self.widget_status_changed.emit(f"Connecting to {hostname}")
-            else:
-                QMessageBox.warning(self, "Failed", f"Failed to start connection to {hostname}")
-                self._reset_connection_ui()
 
-            return success
+                # Set up connection timeout
+                if not hasattr(self, 'connection_timeout_timer'):
+                    self.connection_timeout_timer = QTimer()
+                    self.connection_timeout_timer.setSingleShot(True)
+                    self.connection_timeout_timer.timeout.connect(self._handle_connection_timeout)
+
+                self.connection_timeout_timer.start(30000)  # 30 second timeout
+                return success
+            else:
+                self._handle_immediate_connection_failure("Failed to start connection")
+                return False
 
         except Exception as e:
             print(f"❌ Connection error: {e}")
-            QMessageBox.critical(self, "Connection Error", f"Failed to connect: {str(e)}")
-            self._reset_connection_ui()
+            self._handle_immediate_connection_failure(f"Connection error: {str(e)}")
             return False
+
+    def _handle_immediate_connection_failure(self, error_msg):
+        """Handle immediate connection failures"""
+        print(f"💥 Immediate connection failure: {error_msg}")
+
+        dialog = getattr(self, '_connection_dialog', None)
+        hostname = getattr(self, '_connection_hostname', 'Unknown')
+        ip_address = getattr(self, '_connection_ip', '')
+
+        print(f"🎯 Immediate failure - Dialog available: {dialog is not None}")
+
+        if dialog and hasattr(dialog, 'handle_connection_failure'):
+            print(f"📞 Calling dialog.handle_connection_failure for immediate failure")
+            dialog.handle_connection_failure(hostname, ip_address, error_msg)
+        else:
+            print(f"⚠️ No dialog reference, showing fallback error message")
+            QMessageBox.critical(self, "Connection Error", error_msg)
+
+        self._reset_connection_ui()
+        self._clear_connection_monitoring()
+
+    def _handle_connection_timeout(self):
+        """Handle connection timeout"""
+        print("⏰ Connection timeout")
+
+        dialog = getattr(self, '_connection_dialog', None)
+        hostname = getattr(self, '_connection_hostname', 'Unknown')
+        ip_address = getattr(self, '_connection_ip', '')
+
+        print(f"🎯 Timeout - Dialog available: {dialog is not None}")
+
+        if dialog and hasattr(dialog, 'handle_connection_failure'):
+            print(f"📞 Calling dialog.handle_connection_failure for timeout")
+            dialog.handle_connection_failure(hostname, ip_address, "Connection timeout after 30 seconds")
+        else:
+            print(f"⚠️ No dialog reference for timeout")
+            QMessageBox.critical(self, "Connection Timeout", "Connection attempt timed out after 30 seconds")
+
+        self._reset_connection_ui()
+        self._clear_connection_monitoring()
+
+    @pyqtSlot(str, str, str)  # NEW SLOT
+    def _on_connection_error_occurred(self, device_ip, hostname, error_message):
+        """Handle detailed connection error - NEW METHOD"""
+        print(f"💥 DETAILED ERROR: {hostname} ({device_ip}) -> {error_message}")
+
+        # Stop timeout timer
+        if hasattr(self, 'connection_timeout_timer'):
+            self.connection_timeout_timer.stop()
+
+        # Reset UI
+        self._reset_connection_ui()
+
+        # Get stored dialog
+        dialog = getattr(self, '_connection_dialog', None)
+
+        print(f"🎯 Error handler - Dialog available: {dialog is not None}")
+
+        if dialog and hasattr(dialog, 'handle_connection_failure'):
+            print(f"📞 Calling dialog.handle_connection_failure with detailed error")
+            dialog.handle_connection_failure(hostname, device_ip, error_message)
+        else:
+            print(f"⚠️ No dialog reference, showing fallback error message")
+            QMessageBox.critical(self, "Connection Failed", f"Failed to connect to {hostname}:\n\n{error_message}")
+
+        # Emit error signal
+        self.device_error.emit(hostname, device_ip, error_message)
+
+        # Clear connection monitoring
+        self._clear_connection_monitoring()
 
     def _disconnect_device(self):
         """Disconnect from current device"""
@@ -671,30 +776,97 @@ class TelemetryWidget(QWidget):
 
     @pyqtSlot(str, str)
     def _on_connection_status_changed(self, device_ip, status):
-        """Handle connection status changes from worker thread"""
-        print(f"📡 Connection status: {device_ip} -> {status}")
+        """Handle connection status changes - FIXED success handling"""
+        print(f"📡 Connection status: '{device_ip}' -> '{status}'")
 
         self.connection_status = status
 
         if status == "connected":
+            print(f"✅ Connection successful to {device_ip}")
+
+            # Stop timeout timer
+            if hasattr(self, 'connection_timeout_timer'):
+                self.connection_timeout_timer.stop()
+
+            # Update UI
             self.connect_button.setEnabled(False)
             self.disconnect_button.setEnabled(True)
             self.refresh_button.setEnabled(True)
             self.auto_refresh_button.setEnabled(True)
+
+            dialog = getattr(self, '_connection_dialog', None)
+            hostname = getattr(self, '_connection_hostname', 'Unknown')
+            dialog.accept()
+            print(f"🎯 Success handler - Dialog available: {dialog is not None}")
+            print(f"🎯 Success handler - Dialog type: {type(dialog) if dialog else 'None'}")
+
+            if dialog and hasattr(dialog, 'handle_connection_success'):
+                print(f"📞 Calling dialog.handle_connection_success('{hostname}', '{device_ip}')")
+                try:
+                    dialog.handle_connection_success(hostname, device_ip)
+                    print(f"✅ Success handler called successfully")
+                except Exception as e:
+                    print(f"❌ Error calling success handler: {e}")
+            else:
+                print(f"⚠️ No dialog reference or method for success feedback")
+                print(f"    Dialog: {dialog}")
+                print(f"    Has method: {hasattr(dialog, 'handle_connection_success') if dialog else False}")
 
             # Emit widget-level signals
             if hasattr(self, 'current_hostname'):
                 self.device_connected.emit(self.current_hostname, device_ip, None)
             self.widget_status_changed.emit(f"Connected to {device_ip}")
 
-        elif status == "failed":
+            # Clear monitoring
+            self._clear_connection_monitoring()
+
+        elif "failed" in status:
+            print(f"❌ Connection failed to {device_ip}")
+
+            # Stop timeout timer
+            if hasattr(self, 'connection_timeout_timer'):
+                self.connection_timeout_timer.stop()
+
+            # Reset UI
             self._reset_connection_ui()
+
+            # Get stored dialog and call failure handler
+            dialog = getattr(self, '_connection_dialog', None)
+            hostname = getattr(self, '_connection_hostname', 'Unknown')
+
+            print(f"🎯 Failure handler - Dialog available: {dialog is not None}")
+
+            if dialog and hasattr(dialog, 'handle_connection_failure'):
+                print(f"📞 Calling dialog.handle_connection_failure")
+                dialog.handle_connection_failure(hostname, device_ip,
+                                                 "Connection failed - check credentials and network connectivity")
+            else:
+                print(f"⚠️ No dialog reference for failure feedback")
+                print(f"status: {status}")
+                QMessageBox.critical(self, f"Connection Failed", f"{status}")
+
+            # Emit error signal
             self.device_error.emit("", device_ip, "Connection failed")
+
+            # Clear monitoring
+            self._clear_connection_monitoring()
 
         elif status == "disconnected":
             self._reset_connection_ui()
             if hasattr(self, 'current_hostname'):
                 self.device_disconnected.emit(self.current_hostname, device_ip)
+
+    def _clear_connection_monitoring(self):
+        """Clear connection monitoring state - ENHANCED"""
+        print(f"🧹 Clearing connection monitoring state")
+
+        if hasattr(self, 'connection_timeout_timer'):
+            self.connection_timeout_timer.stop()
+
+        # Clear all dialog references
+        self._connection_dialog = None
+        self._connection_hostname = None
+        self._connection_ip = None
 
     @pyqtSlot(object)
     def _on_device_info_updated(self, device_info):

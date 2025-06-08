@@ -2,6 +2,7 @@
 Device Connection Dialog for Netmiko Connections
 Provides UI for entering device credentials and connection parameters
 WITH credential integration AND dynamic platform loading from platforms.json
+FIXED: Removed problematic status box and improved layout
 """
 import json
 import os
@@ -56,7 +57,7 @@ class DeviceConnectionDialog(QDialog):
     def __init__(self, theme_library=None, credential_manager=None, controller=None, parent=None):
         super().__init__(parent)
         self.theme_library = theme_library
-        self.controller = controller  # NEW: Store controller reference
+        self.controller = controller
 
         # Store parent reference for theme access (don't override the built-in parent)
         self.parent_widget = parent
@@ -76,9 +77,9 @@ class DeviceConnectionDialog(QDialog):
 
         self.setWindowTitle("Connect to Network Device")
         self.setModal(True)
-        # Slightly taller if we have credentials
+        # FIXED: Increased height to accommodate better spacing
         height = 650 if self.credential_manager else 600
-        self.setFixedSize(500, height)
+        self.setFixedSize(520, height)
 
         # Store connection test thread
         self.test_thread = None
@@ -378,8 +379,9 @@ class DeviceConnectionDialog(QDialog):
             pass  # Silently fail if file doesn't exist or can't be read
 
     def _setup_ui(self):
-        """Setup the dialog UI"""
+        """Setup the dialog UI - FIXED: Removed problematic status box"""
         layout = QVBoxLayout(self)
+        # FIXED: Remove any status display that was causing the crowded box at top
 
         # Tab widget for different connection types
         self.tab_widget = QTabWidget()
@@ -425,14 +427,16 @@ class DeviceConnectionDialog(QDialog):
         """Setup basic connection parameters tab"""
         layout = QVBoxLayout(tab_widget)
 
-        creds_group = QGroupBox("Saved Credentials")
-        creds_layout = QFormLayout(creds_group)
+        # FIXED: Only show credentials group if we have a credential manager
+        if self.credential_manager or hasattr(self, 'parent_widget') and hasattr(self.parent_widget, 'cred_manager'):
+            creds_group = QGroupBox("Saved Credentials")
+            creds_layout = QFormLayout(creds_group)
 
-        self.credentials_combo = QComboBox()
-        self.credentials_combo.currentIndexChanged.connect(self._on_credential_selected)
-        creds_layout.addRow("Saved Credentials:", self.credentials_combo)
+            self.credentials_combo = QComboBox()
+            self.credentials_combo.currentIndexChanged.connect(self._on_credential_selected)
+            creds_layout.addRow("Saved Credentials:", self.credentials_combo)
 
-        layout.addWidget(creds_group)
+            layout.addWidget(creds_group)
 
         # Device information group
         device_group = QGroupBox("Device Information")
@@ -634,10 +638,8 @@ class DeviceConnectionDialog(QDialog):
         """Test connection without connecting"""
         valid, message = self._validate_inputs()
         if not valid:
-            self._update_status(f"Validation Error: {message}", "error")
+            QMessageBox.warning(self, "Validation Error", message)
             return
-
-        self._update_status("Testing connection...", "connecting")
 
         # Disable buttons during test
         self.test_button.setEnabled(False)
@@ -666,14 +668,20 @@ class DeviceConnectionDialog(QDialog):
         self.connect_button.setEnabled(True)
 
         if success:
-            self._update_status("Connection test successful!", "success")
+            QMessageBox.information(self, "Connection Test", "Connection test successful!")
         else:
-            self._update_status(f"Connection test failed: {message}", "error")
+            QMessageBox.warning(self, "Connection Test", f"Connection test failed: {message}")
 
         self.test_thread = None
 
     def _connect_device(self):
         """Connect to device and close dialog"""
+        # Validate inputs first
+        valid, message = self._validate_inputs()
+        if not valid:
+            QMessageBox.warning(self, "Validation Error", message)
+            return
+
         # NEW: Emit connection request signal with platform ID
         self.connection_requested.emit(
             self.hostname_edit.text().strip(),
@@ -683,12 +691,6 @@ class DeviceConnectionDialog(QDialog):
         )
 
         self.accept()
-
-    def _update_status(self, message: str, status_type: str = "info"):
-        """Update status display"""
-        # Show errors as message boxes
-        if status_type == "error":
-            QMessageBox.warning(self, "Connection Error", message)
 
     def _apply_theme_to_children(self, theme_name):
         """Apply theme to all child widgets - RESTORED ORIGINAL WORKING VERSION"""
@@ -710,16 +712,18 @@ class DeviceConnectionDialog(QDialog):
             print(f"Error applying theme to dialog children: {e}")
 
     def _apply_cyberpunk_styling(self):
-        """Apply specific cyberpunk styling to form elements"""
-        # Enhanced styling for input fields
+        """Apply specific cyberpunk styling to form elements with proper spacing"""
+        # Enhanced styling for input fields with better spacing
         input_style = """
             QLineEdit {
                 background-color: #1a1a1a;
                 border: 2px solid #00ffff;
-                border-radius: 4px;
-                padding: 6px;
+                border-radius: 6px;
+                padding: 8px 12px;
                 color: #ffffff;
-                font-size: 12px;
+                font-size: 13px;
+                min-height: 20px;
+                margin: 2px;
             }
             QLineEdit:focus {
                 border-color: #00ff88;
@@ -735,16 +739,18 @@ class DeviceConnectionDialog(QDialog):
             }
         """
 
-        # Enhanced styling for combo boxes
+        # Enhanced styling for combo boxes with better spacing
         combo_style = """
             QComboBox {
                 background-color: #1a1a1a;
                 border: 2px solid #00ffff;
-                border-radius: 4px;
-                padding: 6px;
+                border-radius: 6px;
+                padding: 8px 12px;
                 color: #ffffff;
-                font-size: 12px;
-                min-width: 100px;
+                font-size: 13px;
+                min-width: 120px;
+                min-height: 20px;
+                margin: 2px;
             }
             QComboBox:hover {
                 border-color: #00ff88;
@@ -752,14 +758,15 @@ class DeviceConnectionDialog(QDialog):
             QComboBox::drop-down {
                 border: none;
                 background: #00ffff;
-                width: 20px;
+                width: 24px;
+                border-radius: 4px;
             }
             QComboBox::down-arrow {
                 image: none;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                border-top: 5px solid #000000;
-                margin-right: 5px;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 6px solid #000000;
+                margin-right: 6px;
             }
             QComboBox QAbstractItemView {
                 background-color: #1a1a1a;
@@ -767,19 +774,22 @@ class DeviceConnectionDialog(QDialog):
                 selection-background-color: #00ffff;
                 selection-color: #000000;
                 color: #ffffff;
+                padding: 4px;
             }
         """
 
-        # Enhanced styling for buttons
+        # Enhanced styling for buttons with better spacing
         button_style = """
             QPushButton {
                 background-color: #1a1a1a;
                 border: 2px solid #00ffff;
-                border-radius: 4px;
-                padding: 8px 16px;
+                border-radius: 6px;
+                padding: 10px 20px;
                 color: #00ffff;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 13px;
+                min-height: 16px;
+                margin: 4px;
             }
             QPushButton:hover {
                 background-color: #00ffff;
@@ -793,17 +803,24 @@ class DeviceConnectionDialog(QDialog):
                 border-color: #00ff88;
                 color: #00ff88;
             }
+            QPushButton:flat {
+                border: none;
+                padding: 4px 8px;
+                margin: 2px;
+            }
         """
 
-        # Enhanced styling for spinboxes
+        # Enhanced styling for spinboxes with better spacing
         spinbox_style = """
             QSpinBox {
                 background-color: #1a1a1a;
                 border: 2px solid #00ffff;
-                border-radius: 4px;
-                padding: 6px;
+                border-radius: 6px;
+                padding: 8px 12px;
                 color: #ffffff;
-                font-size: 12px;
+                font-size: 13px;
+                min-height: 20px;
+                margin: 2px;
             }
             QSpinBox:focus {
                 border-color: #00ff88;
@@ -811,32 +828,36 @@ class DeviceConnectionDialog(QDialog):
             QSpinBox::up-button, QSpinBox::down-button {
                 background-color: #00ffff;
                 border: none;
-                width: 16px;
+                width: 20px;
+                border-radius: 3px;
             }
             QSpinBox::up-arrow, QSpinBox::down-arrow {
-                border-left: 3px solid transparent;
-                border-right: 3px solid transparent;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
             }
             QSpinBox::up-arrow {
-                border-bottom: 3px solid #000000;
+                border-bottom: 4px solid #000000;
             }
             QSpinBox::down-arrow {
-                border-top: 3px solid #000000;
+                border-top: 4px solid #000000;
             }
         """
 
-        # Enhanced styling for checkboxes
+        # Enhanced styling for checkboxes with better spacing
         checkbox_style = """
             QCheckBox {
                 color: #ffffff;
-                font-size: 12px;
+                font-size: 13px;
+                padding: 4px;
+                margin: 2px;
             }
             QCheckBox::indicator {
-                width: 16px;
-                height: 16px;
+                width: 18px;
+                height: 18px;
                 border: 2px solid #00ffff;
-                border-radius: 3px;
+                border-radius: 4px;
                 background-color: #1a1a1a;
+                margin: 2px;
             }
             QCheckBox::indicator:checked {
                 background-color: #00ffff;
@@ -847,6 +868,25 @@ class DeviceConnectionDialog(QDialog):
             }
             QCheckBox::indicator:disabled {
                 border-color: #444444;
+                background-color: #0a0a0a;
+            }
+        """
+
+        # Add better spacing for group boxes and form layouts
+        groupbox_style = """
+            QGroupBox {
+                font-size: 14px;
+                font-weight: bold;
+                color: #00ffff;
+                border: 2px solid #00ffff;
+                border-radius: 8px;
+                margin: 8px 4px;
+                padding: 16px 8px 8px 8px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 12px;
+                padding: 0 8px 0 8px;
                 background-color: #0a0a0a;
             }
         """
@@ -866,6 +906,20 @@ class DeviceConnectionDialog(QDialog):
 
         for checkbox in self.findChildren(QCheckBox):
             checkbox.setStyleSheet(checkbox_style)
+
+        for groupbox in self.findChildren(QGroupBox):
+            groupbox.setStyleSheet(groupbox_style)
+
+        # Add spacing to form layouts
+        for form_layout in self.findChildren(QFormLayout):
+            form_layout.setVerticalSpacing(12)
+            form_layout.setHorizontalSpacing(8)
+            form_layout.setContentsMargins(12, 12, 12, 12)
+
+        # Add spacing to main layouts
+        for layout in self.findChildren(QVBoxLayout):
+            layout.setSpacing(8)
+            layout.setContentsMargins(8, 8, 8, 8)
 
     def _open_session_picker(self):
         """Open the session picker dialog"""

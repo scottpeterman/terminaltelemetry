@@ -149,6 +149,7 @@ class TelemetryWorkerThread(QThread):
 
         except NetmikoAuthenticationException as e:
             self.connection_failed.emit(f"Authentication failed: {str(e)}")
+
             return False
         except NetmikoTimeoutException as e:
             self.connection_failed.emit(f"Connection timeout: {str(e)}")
@@ -635,6 +636,8 @@ class ThreadedTelemetryController(QObject):
     Controller that manages worker thread for telemetry collection
     Completely replaces blocking netmiko operations
     """
+    connection_status_changed = pyqtSignal(str, str)  # device_ip, status
+    connection_error_occurred = pyqtSignal(str, str, str)
 
     # Forward all the same signals as original controller
     raw_cdp_output = pyqtSignal(object)
@@ -657,7 +660,8 @@ class ThreadedTelemetryController(QObject):
 
     def __init__(self, original_controller):
         super().__init__()
-
+        self.connection_hostname = ""
+        self.connection_ip = ""
         self.original_controller = original_controller
         self.worker_thread = None
         self.is_connected = False
@@ -670,6 +674,10 @@ class ThreadedTelemetryController(QObject):
     def connect_to_device(self, hostname: str, ip_address: str, platform: str, credentials) -> bool:
         """Connect to device using worker thread"""
         print(f"🚀 Starting threaded connection to {hostname} ({ip_address})")
+
+        # Store connection details for error reporting
+        self.connection_hostname = hostname
+        self.connection_ip = ip_address
 
         # Stop any existing worker
         if self.worker_thread and self.worker_thread.isRunning():
@@ -701,13 +709,10 @@ class ThreadedTelemetryController(QObject):
         self.worker_thread.connection_established.connect(self._on_connection_established)
         self.worker_thread.connection_failed.connect(self._on_connection_failed)
         self.worker_thread.data_collected.connect(self._on_data_collected)
-        self.worker_thread.collection_cycle_complete.connect(self._on_collection_complete)
-        self.worker_thread.status_update.connect(self._on_status_update)
 
         # Start worker thread
         self.worker_thread.start()
-
-        return True  # Return immediately, actual connection is async
+        return True
 
     def _on_connection_established(self, device_info):
         """Handle successful connection from worker"""
@@ -725,10 +730,12 @@ class ThreadedTelemetryController(QObject):
         self.device_info_updated.emit(device_info)
 
     def _on_connection_failed(self, error_message: str):
-        """Handle connection failure from worker"""
+        """Handle connection failure from worker - FIXED VERSION"""
         print(f"❌ Worker connection failed: {error_message}")
         self.is_connected = False
-        self.connection_status_changed.emit("", "failed")
+        # Only emit status change - don't show dialog here
+        self.connection_status_changed.emit("", f"connection failed: {error_message}")
+        # The widget will handle showing the error to the user
 
     def _on_data_collected(self, data_type: str, raw_output, parsed_data, normalized_data):
         """Handle data from worker thread - FIXED VERSION"""
