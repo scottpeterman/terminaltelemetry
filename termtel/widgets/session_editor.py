@@ -112,17 +112,17 @@ class SessionPropertyDialog(QDialog):
                     # Extract just the keys for the combo box
                     platforms = [item[0] for item in platform_items]
 
-                    print(f"✓ Loaded {len(platforms)} platforms from config")
+                    print(f"Loaded {len(platforms)} platforms from config")
                     for key, display in platform_items:
                         print(f"  - {key}: {display}")
 
             else:
-                print("⚠ Could not load platforms config, using fallback list")
+                print("Could not load platforms config, using fallback list")
 
         except json.JSONDecodeError as e:
-            print(f"⚠ Error parsing platforms.json: {e}")
+            print(f"Error parsing platforms.json: {e}")
         except Exception as e:
-            print(f"⚠ Error loading platforms: {e}")
+            print(f"Error loading platforms: {e}")
 
         # Fallback to basic list if config loading fails
         if not platforms:
