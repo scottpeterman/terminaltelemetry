@@ -1,5 +1,5 @@
 import sys
-
+import json
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QPushButton,
                              QTreeWidget, QTreeWidgetItem, QMenu, QLineEdit, QFormLayout, QComboBox,
                              QWidget, QLabel, QMessageBox, QSpinBox, QFileDialog, QApplication)
@@ -7,12 +7,8 @@ from PyQt6.QtCore import Qt
 import yaml
 from pathlib import Path
 
-from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QPushButton,
-                             QTreeWidget, QTreeWidgetItem, QMenu, QLineEdit, QFormLayout, QComboBox,
-                             QWidget, QLabel, QMessageBox, QSpinBox)
-from PyQt6.QtCore import Qt
-import yaml
-from pathlib import Path
+# Import the resource manager
+from termtel.helpers.resource_manager import resource_manager
 
 
 class RestrictedTreeWidget(QTreeWidget):
@@ -77,15 +73,77 @@ class RestrictedTreeWidget(QTreeWidget):
 
         super().dropEvent(event)
 
+
 class SessionPropertyDialog(QDialog):
     def __init__(self, session_data=None, parent=None):
         super().__init__(parent)
         self.session_data = session_data or {}
+        self.available_platforms = self._load_available_platforms()
         self.setup_ui()
         self.load_data()
 
+    def _load_available_platforms(self):
+        """
+        Load available platforms from platforms.json via resource manager
+        Returns list of platform keys for the dropdown
+        """
+        platforms = []
+
+        try:
+            # Get platforms config content
+            config_content = resource_manager.get_platforms_config()
+
+            if config_content:
+                config_data = json.loads(config_content)
+
+                # Extract platform keys and their display names
+                if 'platforms' in config_data:
+                    platforms_dict = config_data['platforms']
+
+                    # Create list of tuples (key, display_name) for better UX
+                    platform_items = []
+                    for key, platform_config in platforms_dict.items():
+                        display_name = platform_config.get('display_name', key)
+                        platform_items.append((key, display_name))
+
+                    # Sort by display name for better user experience
+                    platform_items.sort(key=lambda x: x[1])
+
+                    # Extract just the keys for the combo box
+                    platforms = [item[0] for item in platform_items]
+
+                    print(f"✓ Loaded {len(platforms)} platforms from config")
+                    for key, display in platform_items:
+                        print(f"  - {key}: {display}")
+
+            else:
+                print("⚠ Could not load platforms config, using fallback list")
+
+        except json.JSONDecodeError as e:
+            print(f"⚠ Error parsing platforms.json: {e}")
+        except Exception as e:
+            print(f"⚠ Error loading platforms: {e}")
+
+        # Fallback to basic list if config loading fails
+        if not platforms:
+            platforms = [
+                "linux",
+                "cisco_ios",
+                "cisco_ios_xe",
+                "cisco_nxos",
+                "arista_eos",
+                "hp_procurve",
+                "juniper_junos",
+                "aruba_aos_s",
+                "aruba_aos_cx"
+            ]
+            print(f"Using fallback platform list: {platforms}")
+
+        return platforms
+
     def setup_ui(self):
         self.setWindowTitle("Edit Session Properties")
+        self.setMinimumWidth(400)  # Make dialog a bit wider
         layout = QFormLayout(self)
 
         # Create form fields
@@ -93,7 +151,7 @@ class SessionPropertyDialog(QDialog):
             'display_name': QLineEdit(),
             'host': QLineEdit(),
             'port': QSpinBox(),
-            'DeviceType': QComboBox(),
+            'DeviceType': QComboBox(),  # This will be populated dynamically
             'Model': QLineEdit(),
             'SerialNumber': QLineEdit(),
             'SoftwareVersion': QLineEdit(),
@@ -103,52 +161,149 @@ class SessionPropertyDialog(QDialog):
 
         # Configure widgets
         self.fields['port'].setRange(1, 65535)
-        self.fields['DeviceType'].addItems(["Linux", "cisco_ios", "hp_procurve"])
+        self.fields['port'].setValue(22)  # Default SSH port
 
-        # Add fields to layout
+        # Configure DeviceType combo box
+        device_combo = self.fields['DeviceType']
+        device_combo.setEditable(True)  # Allow custom entries
+        device_combo.setInsertPolicy(QComboBox.InsertPolicy.InsertAlphabetically)
+
+        # Add platforms to combo box
+        device_combo.addItems(self.available_platforms)
+
+        # Set up auto-completion for better UX
+        device_combo.setDuplicatesEnabled(False)
+        device_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+
+        # Add tooltip explaining the field
+        device_combo.setToolTip(
+            "Select a platform type for telemetry support, or enter custom value for terminal-only use.\n"
+            "Platform types enable network monitoring features."
+        )
+
+        # Add fields to layout with better labels
         layout.addRow("Display Name:", self.fields['display_name'])
-        layout.addRow("Host:", self.fields['host'])
-        layout.addRow("Port:", self.fields['port'])
-        layout.addRow("Device Type:", self.fields['DeviceType'])
+        layout.addRow("Host/IP:", self.fields['host'])
+        layout.addRow("SSH Port:", self.fields['port'])
+        layout.addRow("Platform Type:", self.fields['DeviceType'])
         layout.addRow("Model:", self.fields['Model'])
         layout.addRow("Serial Number:", self.fields['SerialNumber'])
         layout.addRow("Software Version:", self.fields['SoftwareVersion'])
         layout.addRow("Vendor:", self.fields['Vendor'])
         layout.addRow("Credentials ID:", self.fields['credsid'])
 
+        # Add helpful text
+        help_label = QLabel(
+            "Platform Type: Select from list for telemetry support, or enter custom value for terminal-only sessions."
+        )
+        help_label.setStyleSheet("color: #666; font-size: 10px; margin: 5px;")
+        help_label.setWordWrap(True)
+        layout.addRow(help_label)
+
         # Add buttons
         button_box = QHBoxLayout()
+
+        # Add refresh platforms button
+        refresh_btn = QPushButton("Refresh Platforms")
+        refresh_btn.clicked.connect(self._refresh_platforms)
+        refresh_btn.setToolTip("Reload platform list from configuration")
+
         save_btn = QPushButton("Save")
         save_btn.clicked.connect(self.accept)
+        save_btn.setDefault(True)  # Make this the default button
+
         cancel_btn = QPushButton("Cancel")
         cancel_btn.clicked.connect(self.reject)
+
+        button_box.addWidget(refresh_btn)
+        button_box.addStretch()
         button_box.addWidget(save_btn)
         button_box.addWidget(cancel_btn)
 
         layout.addRow(button_box)
 
+    def _refresh_platforms(self):
+        """Refresh the platform list from config"""
+        device_combo = self.fields['DeviceType']
+        current_text = device_combo.currentText()
+
+        # Clear and reload platforms
+        device_combo.clear()
+        self.available_platforms = self._load_available_platforms()
+        device_combo.addItems(self.available_platforms)
+
+        # Restore previous selection if it exists
+        if current_text:
+            index = device_combo.findText(current_text)
+            if index >= 0:
+                device_combo.setCurrentIndex(index)
+            else:
+                # If not found in list, set as custom text
+                device_combo.setCurrentText(current_text)
+
+        QMessageBox.information(self, "Platforms Refreshed",
+                                f"Loaded {len(self.available_platforms)} platform types from configuration.")
+
     def load_data(self):
+        """Load session data into form fields"""
         for key, widget in self.fields.items():
             value = self.session_data.get(key, '')
+
             if isinstance(widget, QLineEdit):
                 widget.setText(str(value))
             elif isinstance(widget, QComboBox):
-                index = widget.findText(value)
+                # For combo box, try to find the value in the list
+                index = widget.findText(str(value))
                 if index >= 0:
                     widget.setCurrentIndex(index)
+                else:
+                    # If not in list, set as custom text (editable combo box)
+                    widget.setCurrentText(str(value))
             elif isinstance(widget, QSpinBox):
                 widget.setValue(int(value) if value else 22)
 
     def get_data(self):
+        """Extract data from form fields"""
         data = {}
         for key, widget in self.fields.items():
             if isinstance(widget, QLineEdit):
                 data[key] = widget.text()
             elif isinstance(widget, QComboBox):
+                # Get the current text (works for both selected and custom entries)
                 data[key] = widget.currentText()
             elif isinstance(widget, QSpinBox):
                 data[key] = str(widget.value())
         return data
+
+    def validate_data(self):
+        """Validate form data before saving"""
+        data = self.get_data()
+
+        # Required fields
+        if not data.get('display_name', '').strip():
+            QMessageBox.warning(self, "Validation Error", "Display Name is required.")
+            return False
+
+        if not data.get('host', '').strip():
+            QMessageBox.warning(self, "Validation Error", "Host/IP is required.")
+            return False
+
+        # Validate port range
+        try:
+            port = int(data.get('port', 22))
+            if not (1 <= port <= 65535):
+                QMessageBox.warning(self, "Validation Error", "Port must be between 1 and 65535.")
+                return False
+        except ValueError:
+            QMessageBox.warning(self, "Validation Error", "Port must be a valid number.")
+            return False
+
+        return True
+
+    def accept(self):
+        """Override accept to add validation"""
+        if self.validate_data():
+            super().accept()
 
 
 class SessionEditorDialog(QDialog):
@@ -303,7 +458,7 @@ class SessionEditorDialog(QDialog):
             'display_name': 'New Session',
             'host': '',
             'port': '22',
-            'DeviceType': 'Linux',
+            'DeviceType': 'linux',
             'Model': '',
             'SerialNumber': '',
             'SoftwareVersion': '',
@@ -335,6 +490,8 @@ class SessionEditorDialog(QDialog):
                 parent.removeChild(item)
             else:
                 self.tree.takeTopLevelItem(self.tree.indexOfTopLevelItem(item))
+
+
 def main():
     app = QApplication(sys.argv)
 
