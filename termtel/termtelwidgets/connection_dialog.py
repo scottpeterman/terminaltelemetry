@@ -70,9 +70,9 @@ class DeviceConnectionDialog(QDialog):
         if credential_manager and hasattr(credential_manager, 'parent_app'):
             try:
                 self.credential_manager = credential_manager.parent_app.cred_manager
-                print(f"✅ Got credential manager: {type(self.credential_manager)}")
+                print(f" Got credential manager: {type(self.credential_manager)}")
             except Exception as e:
-                print(f"❌ Error getting credential manager: {e}")
+                print(f" Error getting credential manager: {e}")
                 self.credential_manager = None
 
         self.setWindowTitle("Connect to Network Device")
@@ -102,15 +102,15 @@ class DeviceConnectionDialog(QDialog):
 
             if self.parent_widget and hasattr(self.parent_widget, 'theme'):
                 current_theme = self.parent_widget.theme
-                print(f"✅ Found theme from parent.theme: {current_theme}")
+                print(f" Found theme from parent.theme: {current_theme}")
             elif parent and hasattr(parent, 'current_theme'):
                 current_theme = parent.current_theme
-                print(f"✅ Found theme from parent.current_theme: {current_theme}")
+                print(f" Found theme from parent.current_theme: {current_theme}")
             elif parent and hasattr(parent, 'controller') and hasattr(parent.controller, 'current_theme'):
                 current_theme = parent.controller.current_theme
-                print(f"✅ Found theme from parent.controller.current_theme: {current_theme}")
+                print(f" Found theme from parent.controller.current_theme: {current_theme}")
             else:
-                print(f"❌ No theme found, using default: {current_theme}")
+                print(f" No theme found, using default: {current_theme}")
 
             print(f"Applying theme '{current_theme}' to connection dialog")
             theme_library.apply_theme(self, current_theme)
@@ -128,7 +128,7 @@ class DeviceConnectionDialog(QDialog):
                 platform_config = self.controller.platform_config
                 platform_names = platform_config.get_available_platforms()
 
-                print(f"✅ Found {len(platform_names)} platforms from controller")
+                print(f" Found {len(platform_names)} platforms from controller")
 
                 for platform_name in platform_names:
                     platform_def = platform_config.get_platform(platform_name)
@@ -137,14 +137,14 @@ class DeviceConnectionDialog(QDialog):
 
             # Method 2: Fallback - create our own platform config manager
             elif not self.available_platforms:
-                print("🔄 Creating fallback platform config manager...")
+                print(" Creating fallback platform config manager...")
 
                 try:
                     from termtel.termtelwidgets.platform_config_manager import PlatformConfigManager
                     platform_config = PlatformConfigManager()
                     platform_names = platform_config.get_available_platforms()
 
-                    print(f"✅ Fallback loaded {len(platform_names)} platforms")
+                    print(f" Fallback loaded {len(platform_names)} platforms")
 
                     for platform_name in platform_names:
                         platform_def = platform_config.get_platform(platform_name)
@@ -152,11 +152,11 @@ class DeviceConnectionDialog(QDialog):
                             self.available_platforms[platform_name] = platform_def
 
                 except Exception as e:
-                    print(f"❌ Error creating fallback platform config: {e}")
+                    print(f" Error creating fallback platform config: {e}")
 
             # Method 3: Last resort - hardcoded fallback
             if not self.available_platforms:
-                print("⚠️ Using hardcoded platform fallback")
+                print(" Using hardcoded platform fallback")
                 self.available_platforms = {
                     'cisco_ios_xe': type('Platform', (), {'display_name': 'Cisco IOS XE', 'description': 'Cisco IOS XE devices'})(),
                     'cisco_ios': type('Platform', (), {'display_name': 'Cisco IOS', 'description': 'Cisco IOS devices'})(),
@@ -169,10 +169,10 @@ class DeviceConnectionDialog(QDialog):
                     'aruba_aos_cx': type('Platform', (), {'display_name': 'Aruba AOS-CX', 'description': 'Aruba AOS-CX switches'})(),
                 }
 
-            print(f"📋 Available platforms: {list(self.available_platforms.keys())}")
+            print(f" Available platforms: {list(self.available_platforms.keys())}")
 
         except Exception as e:
-            print(f"❌ Error loading platforms: {e}")
+            print(f" Error loading platforms: {e}")
             # Minimal fallback
             self.available_platforms = {
                 'cisco_ios_xe': type('Platform', (), {'display_name': 'Cisco IOS XE', 'description': 'Cisco IOS XE devices'})()
@@ -201,7 +201,7 @@ class DeviceConnectionDialog(QDialog):
             # Add to combo with platform_id as data
             self.platform_combo.addItem(combo_text, platform_id)
 
-        print(f"✅ Populated platform combo with {self.platform_combo.count()} platforms")
+        print(f" Populated platform combo with {self.platform_combo.count()} platforms")
 
     def _on_platform_changed(self, index):
         """NEW: Handle platform selection change to show platform info"""
@@ -246,7 +246,7 @@ class DeviceConnectionDialog(QDialog):
 
         try:
             if not self.parent_widget.cred_manager.is_initialized:
-                print("❌ Credential manager not initialized")
+                print(" Credential manager not initialized")
                 if hasattr(self, 'credentials_combo'):
                     self.credentials_combo.setEnabled(False)
                     self.credentials_combo.clear()
@@ -254,7 +254,7 @@ class DeviceConnectionDialog(QDialog):
                 return
 
             if not self.parent_widget.cred_manager.is_unlocked():
-                print("❌ Credential manager not unlocked")
+                print(" Credential manager not unlocked")
                 if hasattr(self, 'credentials_combo'):
                     self.credentials_combo.setEnabled(True)
                     self.credentials_combo.clear()
@@ -264,14 +264,14 @@ class DeviceConnectionDialog(QDialog):
             # Load credentials from file
             creds_path = self.parent_widget.cred_manager.config_dir / "credentials.yaml"
             if not creds_path.exists():
-                print("❌ No credentials file found")
+                print(" No credentials file found")
                 if hasattr(self, 'credentials_combo'):
                     self.credentials_combo.clear()
                     self.credentials_combo.addItem("-- No saved credentials --", None)
                 return
 
             self.saved_credentials = self.parent_widget.cred_manager.load_credentials(creds_path)
-            print(f"✅ Loaded {len(self.saved_credentials)} credentials")
+            print(f" Loaded {len(self.saved_credentials)} credentials")
 
             # Populate the combo box
             if len(self.saved_credentials) > 0:
@@ -283,7 +283,7 @@ class DeviceConnectionDialog(QDialog):
                     self.credentials_combo.addItem(display_name, cred)
 
                 self.credentials_combo.setEnabled(True)
-                print(f"✅ Combo box populated with {self.credentials_combo.count()} items")
+                print(f" Combo box populated with {self.credentials_combo.count()} items")
 
         except Exception as e:
             logger.error(f"Failed to load saved credentials: {e}")

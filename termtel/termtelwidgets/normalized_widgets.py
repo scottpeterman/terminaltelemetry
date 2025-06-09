@@ -105,7 +105,7 @@ class TemplateEditableWidget:
 
     def _on_template_saved(self, widget_type: str, platform: str, template_content: str):
         """Handle template save - refresh widget data"""
-        print(f"✅ Template saved for {widget_type} on platform {platform}")
+        print(f" Template saved for {widget_type} on platform {platform}")
         if hasattr(self, 'data_source_label'):
             self.data_source_label.setText("Template Updated")
             self.data_source_label.setStyleSheet("font-size: 10px; color: #00ffff; font-weight: bold;")
@@ -742,7 +742,7 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
             try:
                 signal = getattr(self.controller, signal_name)
                 signal.connect(self.update_with_normalized_data)
-                print(f"✅ Connected to {signal_name}")
+                print(f" Connected to {signal_name}")
                 break  # Only connect to the first one found
             except AttributeError:
                 continue
@@ -760,7 +760,7 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
             try:
                 signal = getattr(self.controller, signal_name)
                 signal.connect(slot_method)
-                print(f"✅ Connected to {signal_name}")
+                print(f" Connected to {signal_name}")
             except AttributeError:
                 pass
 
@@ -964,7 +964,7 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
     @pyqtSlot(object)
     def process_raw_route_output(self, raw_output):
         """Process raw route output"""
-        print(f"🔄 Processing raw route output: {raw_output.command}")
+        print(f" Processing raw route output: {raw_output.command}")
         self.platform_label.setText(f"Platform: {raw_output.platform} | Command: {raw_output.command}")
         self.data_source_label.setText("Raw")
         self.data_source_label.setStyleSheet("font-size: 10px; color: #ff6600;")
@@ -972,12 +972,12 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
     @pyqtSlot(object)
     def process_vrf_list_output(self, raw_output):
         """Process VRF list output"""
-        print(f"🔄 Processing VRF list output: {raw_output.command}")
+        print(f" Processing VRF list output: {raw_output.command}")
 
     @pyqtSlot(list)
     def update_with_normalized_data(self, normalized_routes):
         """Update widget with normalized route data - FIXED VERSION"""
-        print(f"\n✅ Normalized route data received: {len(normalized_routes)} routes")
+        print(f"\n Normalized route data received: {len(normalized_routes)} routes")
 
         # Update the UI to show we received normalized data
         self.data_source_label.setText("Normalized")
@@ -1002,16 +1002,16 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
         for route in normalized_routes:
             if route.protocol:
                 protocols.add(route.protocol)
-        print(f"📋 Available protocols: {sorted(protocols)}")
+        print(f" Available protocols: {sorted(protocols)}")
 
     def _update_table_with_normalized_data(self, routes):
         """Update table with normalized route data - FIXED FILTERING"""
-        print(f"🔄 Updating route table with {len(routes)} routes")
+        print(f" Updating route table with {len(routes)} routes")
 
         # FIXED: Apply current filter properly
         filtered_routes = self._apply_current_filter(routes)
-        print(f"📋 After filtering: {len(filtered_routes)} routes")
-        print(f"📋 Current filter: '{self.protocol_filter.currentText()}'")
+        print(f" After filtering: {len(filtered_routes)} routes")
+        print(f" Current filter: '{self.protocol_filter.currentText()}'")
 
         self.route_table.setRowCount(len(filtered_routes))
 
@@ -1046,11 +1046,11 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
         # NEW: Update export button state based on filtered data
         self.export_button.setEnabled(len(filtered_routes) > 0)
 
-        print(f"✅ Route table updated successfully")
+        print(f" Route table updated successfully")
 
     def _update_protocol_filter(self, routes):
         """Update protocol filter dropdown - FIXED VERSION"""
-        print(f"🔄 Updating protocol filter...")
+        print(f" Updating protocol filter...")
 
         # Get all unique protocols from routes
         protocols = set(['All Protocols'])
@@ -1058,11 +1058,11 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
             if route.protocol and route.protocol.strip():
                 protocols.add(route.protocol)
 
-        print(f"📋 Found protocols: {sorted(protocols)}")
+        print(f" Found protocols: {sorted(protocols)}")
 
         # Store current selection
         current_filter = self.protocol_filter.currentText()
-        print(f"📋 Current filter: '{current_filter}'")
+        print(f" Current filter: '{current_filter}'")
 
         # FIXED: Temporarily disconnect signal to avoid triggering filter during update
         self.protocol_filter.currentTextChanged.disconnect()
@@ -1075,10 +1075,10 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
         # Restore selection if it still exists, otherwise default to "All Protocols"
         if current_filter in protocols:
             self.protocol_filter.setCurrentText(current_filter)
-            print(f"📋 Restored filter: '{current_filter}'")
+            print(f" Restored filter: '{current_filter}'")
         else:
             self.protocol_filter.setCurrentText("All Protocols")
-            print(f"📋 Reset filter to: 'All Protocols'")
+            print(f" Reset filter to: 'All Protocols'")
 
         # Reconnect signal
         self.protocol_filter.currentTextChanged.connect(self._apply_filters)
@@ -1089,10 +1089,10 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
     def _apply_current_filter(self, routes):
         """Apply current protocol filter to routes - FIXED VERSION"""
         current_filter = self.protocol_filter.currentText()
-        print(f"🔍 Applying filter: '{current_filter}' to {len(routes)} routes")
+        print(f" Applying filter: '{current_filter}' to {len(routes)} routes")
 
         if current_filter == "All Protocols":
-            print(f"📋 No filter applied, returning all {len(routes)} routes")
+            print(f" No filter applied, returning all {len(routes)} routes")
             return routes
 
         filtered_routes = []
@@ -1100,31 +1100,31 @@ class FixedRouteWidget(TemplateEditableWidget, QWidget):
             if route.protocol == current_filter:
                 filtered_routes.append(route)
 
-        print(f"📋 Filter '{current_filter}' matched {len(filtered_routes)} routes")
+        print(f" Filter '{current_filter}' matched {len(filtered_routes)} routes")
 
         # Debug: Show what protocols we actually have
         actual_protocols = set()
         for route in routes:
             actual_protocols.add(route.protocol)
-        print(f"📋 Actual protocols in data: {sorted(actual_protocols)}")
+        print(f" Actual protocols in data: {sorted(actual_protocols)}")
 
         return filtered_routes
 
     def _apply_filters(self):
         """Apply filters to current data - triggered by filter change"""
-        print(f"🔄 Filter changed, reapplying to {len(self._current_data)} routes...")
+        print(f" Filter changed, reapplying to {len(self._current_data)} routes...")
         if self._current_data:
             self._update_table_with_normalized_data(self._current_data)
 
     @pyqtSlot(str)
     def on_vrf_changed(self, vrf_name: str):
         """Handle VRF selection change"""
-        print(f"🔄 VRF changed to: {vrf_name}")
+        print(f" VRF changed to: {vrf_name}")
         self.selected_vrf_label.setText(f"VRF: {vrf_name}")
 
     def refresh_route_table(self):
         """Refresh route table"""
-        print(f"🔄 Refresh button clicked")
+        print(f" Refresh button clicked")
         if hasattr(self.controller, 'collect_telemetry_data'):
             self.controller.collect_telemetry_data()
 
@@ -1271,11 +1271,11 @@ class EnhancedRouteWidget(TemplateEditableWidget, QWidget):
 
     def _update_table_with_normalized_data(self, routes):
         """Update table with normalized route data - FIXED FILTERING"""
-        print(f"🔄 Updating route table with {len(routes)} routes")
+        print(f" Updating route table with {len(routes)} routes")
 
         # Apply current filter properly
         filtered_routes = self._apply_current_filter(routes)
-        print(f"📋 After filtering: {len(filtered_routes)} routes")
+        print(f" After filtering: {len(filtered_routes)} routes")
 
         # DEBUG: Show what protocols we're getting
         if filtered_routes:
@@ -1283,7 +1283,7 @@ class EnhancedRouteWidget(TemplateEditableWidget, QWidget):
             for route in filtered_routes[:5]:  # First 5 routes
                 protocols_in_data.add(route.protocol)
                 print(f"  Route: {route.network} via {route.next_hop} ({route.protocol})")
-            print(f"📋 Protocols in filtered data: {sorted(protocols_in_data)}")
+            print(f" Protocols in filtered data: {sorted(protocols_in_data)}")
 
         self.route_table.setRowCount(len(filtered_routes))
 
@@ -1342,7 +1342,7 @@ class EnhancedRouteWidget(TemplateEditableWidget, QWidget):
         self.route_table.resizeColumnsToContents()
 
 
-        print(f"✅ Route table updated successfully")
+        print(f" Route table updated successfully")
     def _update_table_with_raw_data(self, routes: List[Dict]):
         """Update table with raw parsed data"""
         self.route_table.setRowCount(len(routes))
@@ -1614,7 +1614,7 @@ class ConnectionStatusWidget(QWidget):
         layout.addWidget(title)
 
         # Status indicator
-        self.status_indicator = QLabel("●")
+        self.status_indicator = QLabel("")
         self.status_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.status_indicator.setStyleSheet("font-size: 24px; color: #ff4400;")
         layout.addWidget(self.status_indicator)

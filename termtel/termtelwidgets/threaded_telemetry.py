@@ -66,12 +66,12 @@ class TelemetryWorkerThread(QThread):
     def run(self):
         """Main worker thread execution"""
         thread_name = threading.current_thread().name
-        print(f"🔄 Worker thread {thread_name} starting...")
+        print(f" Worker thread {thread_name} starting...")
 
         try:
             # Step 1: Establish connection in worker thread
             if self._establish_connection():
-                print(f"✅ Worker thread connected successfully")
+                print(f" Worker thread connected successfully")
 
                 # Step 2: Initial data collection
                 self._collect_telemetry_cycle()
@@ -84,16 +84,16 @@ class TelemetryWorkerThread(QThread):
                 self.exec()  # Start event loop in worker thread
 
             else:
-                print(f"❌ Worker thread connection failed")
+                print(f" Worker thread connection failed")
 
         except Exception as e:
-            print(f"❌ Worker thread error: {e}")
+            print(f" Worker thread error: {e}")
             self.connection_failed.emit(str(e))
 
         finally:
             # Step 5: Clean up
             self._cleanup_connection()
-            print(f"🔌 Worker thread {thread_name} shutting down")
+            print(f" Worker thread {thread_name} shutting down")
 
     def _establish_connection(self) -> bool:
         """Establish netmiko connection in worker thread"""
@@ -127,7 +127,7 @@ class TelemetryWorkerThread(QThread):
                 'fast_cli': fast_cli,
             }
 
-            print(f"🔌 Worker connecting to {self.connection_config.ip_address} as {device_type}...")
+            print(f" Worker connecting to {self.connection_config.ip_address} as {device_type}...")
 
             # Create connection in THIS thread
             self.connection = ConnectHandler(**connection_params)
@@ -180,7 +180,7 @@ class TelemetryWorkerThread(QThread):
 
     def _gather_device_info(self):
         """FIXED: Gather device information using worker connection"""
-        print("🔍 Worker gathering device information...")
+        print(" Worker gathering device information...")
 
 
 
@@ -199,57 +199,57 @@ class TelemetryWorkerThread(QThread):
                 self.connection_config.platform, 'system_info'
             )
 
-            print(f"📋 System info command: {sys_info_command}")
+            print(f" System info command: {sys_info_command}")
 
             if not sys_info_command.startswith("#"):
-                print(f"📡 Executing system info command...")
+                print(f" Executing system info command...")
                 output = self.connection.send_command(sys_info_command, read_timeout=15)
-                print(f"📋 Got system info output ({len(output)} chars)")
+                print(f" Got system info output ({len(output)} chars)")
 
                 # Parse the output
                 parsed_data = self._parse_system_info(output)
-                print(f"📋 Parsed system info: {parsed_data}")
+                print(f" Parsed system info: {parsed_data}")
 
                 if parsed_data and len(parsed_data) > 0:
                     # Normalize the parsed data
                     normalized_info = self.field_normalizer.normalize_system_info(
                         parsed_data, self.connection_config.platform
                     )
-                    print(f"📋 Normalized system info: {normalized_info}")
+                    print(f" Normalized system info: {normalized_info}")
 
                     # FIXED: Update device info with parsed details
                     if 'hostname' in normalized_info and normalized_info['hostname']:
                         self.device_info.hostname = normalized_info['hostname']
-                        print(f"✅ Updated hostname: {self.device_info.hostname}")
+                        print(f" Updated hostname: {self.device_info.hostname}")
 
                     if 'version' in normalized_info and normalized_info['version']:
                         self.device_info.version = normalized_info['version']
-                        print(f"✅ Updated version: {self.device_info.version}")
+                        print(f" Updated version: {self.device_info.version}")
 
                     if 'model' in normalized_info and normalized_info['model']:
                         self.device_info.model = normalized_info['model']
-                        print(f"✅ Updated model: {self.device_info.model}")
+                        print(f" Updated model: {self.device_info.model}")
 
                     if 'serial' in normalized_info and normalized_info['serial']:
                         self.device_info.serial = normalized_info['serial']
-                        print(f"✅ Updated serial: {self.device_info.serial}")
+                        print(f" Updated serial: {self.device_info.serial}")
 
                     if 'uptime' in normalized_info and normalized_info['uptime']:
                         self.device_info.uptime = normalized_info['uptime']
-                        print(f"✅ Updated uptime: {self.device_info.uptime}")
+                        print(f" Updated uptime: {self.device_info.uptime}")
 
                 else:
-                    print("⚠️ No parsed data from system info command")
+                    print(" No parsed data from system info command")
             else:
-                print(f"⚠️ No system info command configured for platform {self.connection_config.platform}")
+                print(f" No system info command configured for platform {self.connection_config.platform}")
 
         except Exception as e:
-            print(f"⚠️ Could not gather detailed device info: {e}")
+            print(f" Could not gather detailed device info: {e}")
             import traceback
             traceback.print_exc()
 
         # ALWAYS emit the device info, even if parsing failed
-        print(f"📋 Final device info:")
+        print(f" Final device info:")
         print(f"  Hostname: {self.device_info.hostname}")
         print(f"  Model: {self.device_info.model}")
         print(f"  Version: {self.device_info.version}")
@@ -259,7 +259,7 @@ class TelemetryWorkerThread(QThread):
     def _parse_system_info(self, output: str) -> Optional[List[Dict]]:
         """FIXED: Parse system info output with better error handling"""
         try:
-            print("📋 Attempting to parse system info...")
+            print(" Attempting to parse system info...")
 
             template_info = self.platform_config.get_template_info(
                 self.connection_config.platform, 'system_info'
@@ -269,19 +269,19 @@ class TelemetryWorkerThread(QThread):
                 template_platform, template_file = template_info
                 template_command = template_file.replace('.textfsm', '').replace(f'{template_platform}_', '')
 
-                print(f"📋 Using template: {template_platform} / {template_command}")
+                print(f" Using template: {template_platform} / {template_command}")
 
                 parser = LocalTemplateParser()
                 parsed_data = parser.parse(template_platform, template_command, output)
 
-                print(f"📋 Template parsing result: {parsed_data}")
+                print(f" Template parsing result: {parsed_data}")
                 return parsed_data
 
             else:
-                print("❌ No template info found for system_info")
+                print(" No template info found for system_info")
 
         except Exception as e:
-            print(f"❌ System info parsing error: {e}")
+            print(f" System info parsing error: {e}")
             import traceback
             traceback.print_exc()
 
@@ -292,7 +292,7 @@ class TelemetryWorkerThread(QThread):
         if not self.is_connected or not self.connection:
             return
 
-        print(f"🔄 Worker starting telemetry collection cycle...")
+        print(f" Worker starting telemetry collection cycle...")
         self.status_update.emit("Collecting telemetry data...")
 
         telemetry_tasks = [
@@ -315,22 +315,22 @@ class TelemetryWorkerThread(QThread):
                 self.msleep(200)
 
             except Exception as e:
-                print(f"❌ Error collecting {data_type}: {e}")
+                print(f" Error collecting {data_type}: {e}")
                 self.collection_error.emit(data_type, str(e))
 
         self.status_update.emit("Collection complete")
         self.collection_cycle_complete.emit()
-        print(f"✅ Worker telemetry collection cycle complete")
+        print(f" Worker telemetry collection cycle complete")
 
     def _collect_single_telemetry(self, data_type: str, command_type: str, kwargs: Dict):
         """Collect single telemetry data type - FIXED VERSION"""
 
         # === ENHANCED DEBUG FOR LOGS ===
         if data_type == "logs":
-            print(f"\n📋 === _collect_single_telemetry LOGS DEBUG ===")
-            print(f"📋 Data type: {data_type}")
-            print(f"📋 Command type: {command_type}")
-            print(f"📋 Platform: {self.connection_config.platform}")
+            print(f"\n === _collect_single_telemetry LOGS DEBUG ===")
+            print(f" Data type: {data_type}")
+            print(f" Command type: {command_type}")
+            print(f" Platform: {self.connection_config.platform}")
 
         # Get platform command
         command = self.platform_config.format_command(
@@ -339,33 +339,33 @@ class TelemetryWorkerThread(QThread):
 
         # === MORE DEBUG FOR LOGS ===
         if data_type == "logs":
-            print(f"📋 format_command result: '{command}'")
-            print(f"📋 Command starts with #: {command.startswith('#')}")
+            print(f" format_command result: '{command}'")
+            print(f" Command starts with #: {command.startswith('#')}")
 
         if command.startswith("#"):
-            print(f"⚠️ No command configured for {command_type}")
+            print(f" No command configured for {command_type}")
             if data_type == "logs":
-                print(f"📋 LOGS: Command lookup failed - '{command}'")
+                print(f" LOGS: Command lookup failed - '{command}'")
             return
 
         # Execute command using worker's connection
-        print(f"📡 Worker executing: {command}")
+        print(f" Worker executing: {command}")
 
         # === FINAL DEBUG FOR LOGS ===
         if data_type == "logs":
-            print(f"📋 About to execute logs command: '{command}'")
-            print(f"📋 Connection available: {self.connection is not None}")
+            print(f" About to execute logs command: '{command}'")
+            print(f" Connection available: {self.connection is not None}")
         print(f"sending command raw: {command}")
         output = self.connection.send_command(command, read_timeout=30)
         # print(f"raw output: {output}")
         if data_type == "logs":
-            print(f"📋 Logs command output length: {len(output)} characters")
-            print(f"📋 First 200 chars: {output[:200]}")
-            print(f"📋 === END _collect_single_telemetry LOGS DEBUG ===\n")
+            print(f" Logs command output length: {len(output)} characters")
+            print(f" First 200 chars: {output[:200]}")
+            print(f" === END _collect_single_telemetry LOGS DEBUG ===\n")
 
         # Parse output
         if command_type == 'logs':
-            print(f"📋 Logs: Skipping template parsing, using raw output")
+            print(f" Logs: Skipping template parsing, using raw output")
             parsed_data = None  # Skip parsing for logs
             normalized_data = None  # Skip normalization for logs
         else:
@@ -394,7 +394,7 @@ class TelemetryWorkerThread(QThread):
 
         # Emit to main thread
         self.data_collected.emit(data_type, raw_output, parsed_data, normalized_data)
-        print(f"✅ Worker completed {data_type}")
+        print(f" Worker completed {data_type}")
     def _create_system_metrics_from_cpu(self, parsed_data):
         """Create NormalizedSystemMetrics from CPU data"""
         if not parsed_data:
@@ -403,7 +403,7 @@ class TelemetryWorkerThread(QThread):
         try:
 
             cpu_entry = parsed_data[0]
-            print(f"📊 Creating system metrics from CPU data: {list(cpu_entry.keys())}")
+            print(f" Creating system metrics from CPU data: {list(cpu_entry.keys())}")
 
             metrics = NormalizedSystemMetrics()
             metrics.platform = self.connection_config.platform
@@ -463,11 +463,11 @@ class TelemetryWorkerThread(QThread):
                         break
 
             print(
-                f"✅ Created metrics: CPU={metrics.cpu_usage_percent}%, Memory={metrics.memory_used_percent}%, Total_MB={metrics.memory_total_mb}")
+                f" Created metrics: CPU={metrics.cpu_usage_percent}%, Memory={metrics.memory_used_percent}%, Total_MB={metrics.memory_total_mb}")
             return metrics
 
         except Exception as e:
-            print(f"❌ Error creating system metrics: {e}")
+            print(f" Error creating system metrics: {e}")
             return None
 
     def _create_system_metrics_from_memory(self, parsed_data):
@@ -505,11 +505,11 @@ class TelemetryWorkerThread(QThread):
                             metrics.memory_free_mb = free_mb
 
                             print(
-                                f"✅ Created MEMORY-ONLY metrics: Memory={metrics.memory_used_percent}%, Total_MB={metrics.memory_total_mb}")
+                                f" Created MEMORY-ONLY metrics: Memory={metrics.memory_used_percent}%, Total_MB={metrics.memory_total_mb}")
                             return metrics
 
                         except (ValueError, KeyError) as e:
-                            print(f"❌ Error parsing Cisco memory: {e}")
+                            print(f" Error parsing Cisco memory: {e}")
                             continue
 
             elif self.connection_config.platform.startswith('arista'):
@@ -517,11 +517,11 @@ class TelemetryWorkerThread(QThread):
                 return self._create_system_metrics_from_cpu(parsed_data)
 
             # If we couldn't parse memory data, return None instead of empty metrics
-            print(f"❌ No memory data could be parsed for platform: {self.connection_config.platform}")
+            print(f" No memory data could be parsed for platform: {self.connection_config.platform}")
             return None
 
         except Exception as e:
-            print(f"❌ Error creating memory-only metrics: {e}")
+            print(f" Error creating memory-only metrics: {e}")
             return None
 
     def _parse_output(self, command_type: str, output: str):
@@ -541,7 +541,7 @@ class TelemetryWorkerThread(QThread):
             return parser.parse(template_platform, template_command, output)
 
         except Exception as e:
-            print(f"❌ Worker parsing error: {e}")
+            print(f" Worker parsing error: {e}")
             return None
 
     def _normalize_data(self, command_type: str, parsed_data):
@@ -565,7 +565,7 @@ class TelemetryWorkerThread(QThread):
                 return parsed_data
 
         except Exception as e:
-            print(f"❌ Worker normalization error: {e}")
+            print(f" Worker normalization error: {e}")
             return None
 
     def _normalize_cpu_data(self, parsed_data):
@@ -589,7 +589,7 @@ class TelemetryWorkerThread(QThread):
             }
 
         except Exception as e:
-            print(f"❌ CPU normalization error: {e}")
+            print(f" CPU normalization error: {e}")
             return None
 
     def _cleanup_connection(self):
@@ -599,7 +599,7 @@ class TelemetryWorkerThread(QThread):
         if self.connection:
             try:
                 self.connection.disconnect()
-                print(f"🔌 Worker connection cleaned up")
+                print(f" Worker connection cleaned up")
             except:
                 pass
             finally:
@@ -673,7 +673,7 @@ class ThreadedTelemetryController(QObject):
 
     def connect_to_device(self, hostname: str, ip_address: str, platform: str, credentials) -> bool:
         """Connect to device using worker thread"""
-        print(f"🚀 Starting threaded connection to {hostname} ({ip_address})")
+        print(f" Starting threaded connection to {hostname} ({ip_address})")
 
         # Store connection details for error reporting
         self.connection_hostname = hostname
@@ -681,7 +681,7 @@ class ThreadedTelemetryController(QObject):
 
         # Stop any existing worker
         if self.worker_thread and self.worker_thread.isRunning():
-            print("🛑 Stopping existing worker...")
+            print(" Stopping existing worker...")
             self.worker_thread.stop_worker()
             self.worker_thread.wait(3000)
 
@@ -716,8 +716,8 @@ class ThreadedTelemetryController(QObject):
 
     def _on_connection_established(self, device_info):
         """Handle successful connection from worker"""
-        print(f"✅ Worker connection established")
-        print(f"📋 Device info received:")
+        print(f" Worker connection established")
+        print(f" Device info received:")
         print(f"  Hostname: {device_info.hostname}")
         print(f"  Model: {device_info.model}")
         print(f"  Version: {device_info.version}")
@@ -731,7 +731,7 @@ class ThreadedTelemetryController(QObject):
 
     def _on_connection_failed(self, error_message: str):
         """Handle connection failure from worker - FIXED VERSION"""
-        print(f"❌ Worker connection failed: {error_message}")
+        print(f" Worker connection failed: {error_message}")
         self.is_connected = False
         # Only emit status change - don't show dialog here
         self.connection_status_changed.emit("", f"connection failed: {error_message}")
@@ -739,7 +739,7 @@ class ThreadedTelemetryController(QObject):
 
     def _on_data_collected(self, data_type: str, raw_output, parsed_data, normalized_data):
         """Handle data from worker thread - FIXED VERSION"""
-        print(f"📡 Received {data_type} from worker")
+        print(f" Received {data_type} from worker")
 
         # Route to appropriate signals
         if data_type == "neighbors":
@@ -762,12 +762,12 @@ class ThreadedTelemetryController(QObject):
 
             # === FIXED: Convert CPU data to NormalizedSystemMetrics ===
             if normalized_data:
-                print(f"🔄 Converting CPU data to NormalizedSystemMetrics...")
+                print(f" Converting CPU data to NormalizedSystemMetrics...")
 
                 # Check if we already have proper NormalizedSystemMetrics
                 if hasattr(normalized_data, 'cpu_usage_percent'):
                     # It's already a NormalizedSystemMetrics object
-                    print(f"✅ Already proper metrics: CPU={normalized_data.cpu_usage_percent}%")
+                    print(f" Already proper metrics: CPU={normalized_data.cpu_usage_percent}%")
                     self.normalized_system_metrics_ready.emit(normalized_data)
 
                 elif isinstance(normalized_data, dict) and 'cpu_usage' in normalized_data:
@@ -777,11 +777,11 @@ class ThreadedTelemetryController(QObject):
                         platform=normalized_data['platform'],
                         timestamp=normalized_data['timestamp']
                     )
-                    print(f"✅ Created metrics: CPU={metrics.cpu_usage_percent}%")
+                    print(f" Created metrics: CPU={metrics.cpu_usage_percent}%")
                     self.normalized_system_metrics_ready.emit(metrics)
 
                 else:
-                    print(f"❌ Unexpected CPU normalized_data format: {type(normalized_data)}")
+                    print(f" Unexpected CPU normalized_data format: {type(normalized_data)}")
                     print(f"    Data: {normalized_data}")
 
         elif data_type == "memory":
@@ -789,35 +789,35 @@ class ThreadedTelemetryController(QObject):
 
             # Memory data might also contain system metrics
             if normalized_data and hasattr(normalized_data, 'memory_used_percent'):
-                print(f"✅ Memory metrics: {normalized_data.memory_used_percent}%")
+                print(f" Memory metrics: {normalized_data.memory_used_percent}%")
                 self.normalized_system_metrics_ready.emit(normalized_data)
 
         elif data_type == "logs":
             self.raw_log_output.emit(raw_output)
 
         else:
-            print(f"⚠️ Unknown data type: {data_type}")
+            print(f" Unknown data type: {data_type}")
 
     def _on_collection_complete(self):
         """Handle completion of collection cycle"""
-        print(f"🎉 Worker collection cycle complete")
+        print(f" Worker collection cycle complete")
 
     def _on_status_update(self, status: str):
         """Handle status updates from worker"""
-        print(f"📊 Worker status: {status}")
+        print(f" Worker status: {status}")
 
     def collect_telemetry_data(self):
         """Request telemetry collection from worker"""
         if self.worker_thread and self.worker_thread.is_connected:
-            print(f"📡 Requesting immediate collection from worker")
+            print(f" Requesting immediate collection from worker")
             self.worker_thread.request_immediate_collection()
         else:
-            print(f"⚠️ No worker connection available")
+            print(f" No worker connection available")
 
     def disconnect_from_device(self):
         """Disconnect from device"""
         if self.worker_thread and self.worker_thread.isRunning():
-            print(f"🔌 Disconnecting worker thread")
+            print(f" Disconnecting worker thread")
             self.worker_thread.stop_worker()
             self.worker_thread.wait(3000)
 

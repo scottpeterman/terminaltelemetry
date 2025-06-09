@@ -31,14 +31,14 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
 
     def _connect_controller_signals(self):
         """Connect to controller signals"""
-        print("🔍 Connecting Simplified Log widget signals...")
+        print(" Connecting Simplified Log widget signals...")
 
         # Primary log signal
         if hasattr(self.controller, 'raw_log_output'):
             self.controller.raw_log_output.connect(self.process_raw_log_output)
-            print("✅ Connected to raw_log_output")
+            print(" Connected to raw_log_output")
         else:
-            print("❌ raw_log_output signal not found")
+            print(" raw_log_output signal not found")
 
         # Other useful signals
         other_signals = [
@@ -51,7 +51,7 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
             if hasattr(self.controller, signal_name):
                 signal = getattr(self.controller, signal_name)
                 signal.connect(handler)
-                print(f"✅ Connected to {signal_name}")
+                print(f" Connected to {signal_name}")
 
     def _setup_widget(self):
         """Setup the widget UI - Compact horizontal layout"""
@@ -81,7 +81,7 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
         title_row = QHBoxLayout()
         title_row.setContentsMargins(0, 0, 0, 0)
 
-        self.title_label = QLabel("📋 SYSTEM LOGS")
+        self.title_label = QLabel(" SYSTEM LOGS")
         self.title_label.setObjectName("section_title")
         title_row.addWidget(self.title_label)
 
@@ -98,7 +98,7 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
         platform_row = QHBoxLayout()
         platform_row.setContentsMargins(0, 0, 0, 0)
 
-        platform_icon = QLabel("🔗")
+        platform_icon = QLabel("")
         platform_icon.setObjectName("status_icon")
         platform_row.addWidget(platform_icon)
 
@@ -122,7 +122,7 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
         controls_row.addWidget(self.auto_scroll_check)
 
         # Refresh button
-        self.refresh_button = QPushButton("🔄")
+        self.refresh_button = QPushButton("")
         self.refresh_button.setObjectName("primary_button")
         self.refresh_button.setFixedSize(22, 22)
         self.refresh_button.setToolTip("Refresh logs")
@@ -152,14 +152,14 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
         actions_row.addWidget(self.export_button)
 
         # Alternative Option 2: Small icon buttons (uncomment if you prefer buttons)
-        # self.clear_button = QPushButton("🗑️ Clear")
+        # self.clear_button = QPushButton(" Clear")
         # self.clear_button.setObjectName("danger_button")
         # self.clear_button.setFixedHeight(20)
         # self.clear_button.setToolTip("Clear logs")
         # self.clear_button.clicked.connect(self._clear_logs)
         # actions_row.addWidget(self.clear_button)
 
-        # self.export_button = QPushButton("💾 Export")
+        # self.export_button = QPushButton(" Export")
         # self.export_button.setObjectName("secondary_button")
         # self.export_button.setFixedHeight(20)
         # self.export_button.setToolTip("Export logs")
@@ -176,7 +176,7 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
         lines_row = QHBoxLayout()
         lines_row.setContentsMargins(0, 0, 0, 0)
 
-        lines_icon = QLabel("📊")
+        lines_icon = QLabel("")
         lines_icon.setObjectName("status_icon")
         lines_row.addWidget(lines_icon)
 
@@ -190,7 +190,7 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
         time_row = QHBoxLayout()
         time_row.setContentsMargins(0, 0, 0, 0)
 
-        time_icon = QLabel("🕐")
+        time_icon = QLabel("")
         time_icon.setObjectName("status_icon")
         time_row.addWidget(time_icon)
 
@@ -288,16 +288,16 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
                 # Show success message
                 original_text = self.export_button.text()
 
-                self.export_button.setText('<a href="#" style="color: #51cf66; text-decoration: none;">✅ Saved!</a>')
+                self.export_button.setText('<a href="#" style="color: #51cf66; text-decoration: none;"> Saved!</a>')
 
                 # Reset after 2 seconds
                 QTimer.singleShot(2000, lambda: self.export_button.setText(original_text))
 
         except Exception as e:
-            print(f"❌ Export failed: {e}")
+            print(f" Export failed: {e}")
             # Show error state
             original_text = self.export_button.text()
-            self.export_button.setText('<a href="#" style="color: #ff6b6b; text-decoration: none;">❌ Failed!</a>')
+            self.export_button.setText('<a href="#" style="color: #ff6b6b; text-decoration: none;"> Failed!</a>')
             QTimer.singleShot(2000, lambda: self.export_button.setText(original_text))
 
     def _reset_export_button(self, original_text, original_class):
@@ -307,8 +307,8 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
     @pyqtSlot(object)
     def process_raw_log_output(self, raw_output):
         """Process raw log output - SIMPLE: Replace content, don't append"""
-        print(f"📋 Processing raw log output: {raw_output.command}")
-        print(f"📋 Raw output length: {len(raw_output.output)} characters")
+        print(f" Processing raw log output: {raw_output.command}")
+        print(f" Raw output length: {len(raw_output.output)} characters")
 
         # Update status with theme-aware colors (Required by original)
         command_short = raw_output.command.split()[-1] if raw_output.command else "logs"
@@ -330,18 +330,18 @@ class SimplifiedLogWidget(TemplateEditableWidget, QWidget):
             line_count = len(raw_output.output.split('\n'))
             self.lines_count_label.setText(f"Lines: {line_count}")
 
-            print(f"📋 Replaced display with {line_count} raw lines")
+            print(f" Replaced display with {line_count} raw lines")
         else:
             # No output received
             timestamp = time.strftime("%H:%M:%S")
             self.log_display.setPlainText(f"[{timestamp}] No log output received from device")
             self.lines_count_label.setText("Lines: 0")
-            print(f"📋 No log output received")
+            print(f" No log output received")
 
         if self.auto_scroll:
             scrollbar = self.log_display.verticalScrollBar()
             scrollbar.setValue(scrollbar.maximum())
-            print(f"📋 Auto-scrolled to bottom")
+            print(f" Auto-scrolled to bottom")
 
         self._update_timestamp()
 

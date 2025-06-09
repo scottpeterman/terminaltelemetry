@@ -64,9 +64,9 @@ class ThemeBootstrap:
                 results[theme_name] = success
 
                 if success:
-                    logger.info(f"✓ Bootstrapped theme: {theme_name}")
+                    logger.info(f" Bootstrapped theme: {theme_name}")
                 else:
-                    logger.warning(f"✗ Failed to bootstrap theme: {theme_name}")
+                    logger.warning(f" Failed to bootstrap theme: {theme_name}")
 
             except Exception as e:
                 logger.error(f"Error bootstrapping theme {theme_name}: {e}")

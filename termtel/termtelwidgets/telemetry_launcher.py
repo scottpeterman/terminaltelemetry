@@ -28,7 +28,7 @@ class TelemetryLauncher(QMainWindow):
         self._setup_main_widget()
         self._setup_status_bar()
 
-        print("✅ Telemetry Launcher initialized")
+        print(" Telemetry Launcher initialized")
 
     def _setup_menu_bar(self):
         """Setup minimal menu bar"""
@@ -70,7 +70,7 @@ class TelemetryLauncher(QMainWindow):
 
         layout.addWidget(self.telemetry_widget)
 
-        print("✅ Telemetry widget embedded in launcher")
+        print(" Telemetry widget embedded in launcher")
 
     def _setup_status_bar(self):
         """Setup status bar"""
@@ -85,7 +85,7 @@ class TelemetryLauncher(QMainWindow):
     @pyqtSlot(str, str, object)
     def _on_device_connected(self, hostname, ip_address, device_info):
         """Handle device connection from widget"""
-        print(f"📡 Launcher: Device connected - {hostname} ({ip_address})")
+        print(f" Launcher: Device connected - {hostname} ({ip_address})")
         self.status_bar.showMessage(f"Connected to {hostname} ({ip_address})")
 
         # Update window title
@@ -94,7 +94,7 @@ class TelemetryLauncher(QMainWindow):
     @pyqtSlot(str, str)
     def _on_device_disconnected(self, hostname, ip_address):
         """Handle device disconnection from widget"""
-        print(f"📡 Launcher: Device disconnected - {hostname}")
+        print(f" Launcher: Device disconnected - {hostname}")
         self.status_bar.showMessage("Disconnected")
 
         # Reset window title
@@ -103,13 +103,13 @@ class TelemetryLauncher(QMainWindow):
     @pyqtSlot(str, str, str)
     def _on_device_error(self, hostname, ip_address, error_msg):
         """Handle device errors from widget"""
-        print(f"❌ Launcher: Device error - {hostname}: {error_msg}")
+        print(f" Launcher: Device error - {hostname}: {error_msg}")
         self.status_bar.showMessage(f"Error: {error_msg}")
 
     @pyqtSlot(str)
     def _on_status_changed(self, status_message):
         """Handle general status changes from widget"""
-        print(f"📊 Launcher: Status - {status_message}")
+        print(f" Launcher: Status - {status_message}")
         self.status_bar.showMessage(status_message, 3000)  # Show for 3 seconds
 
     # ===== MENU ACTIONS =====
@@ -141,12 +141,12 @@ Built with PyQt6 and Python
 
     def closeEvent(self, event):
         """Handle application close"""
-        print("🔌 Launcher: Closing application")
+        print(" Launcher: Closing application")
 
         # Ensure telemetry widget is properly disconnected
         if hasattr(self.telemetry_widget, 'connection_status'):
             if self.telemetry_widget.connection_status == "connected":
-                print("🔌 Launcher: Disconnecting device before close")
+                print(" Launcher: Disconnecting device before close")
                 self.telemetry_widget._disconnect_device()
 
         event.accept()
@@ -180,7 +180,7 @@ def main():
     launcher = TelemetryLauncher()
     launcher.show()
 
-    print("🚀 Telemetry Launcher started")
+    print(" Telemetry Launcher started")
     sys.exit(app.exec())
 
 

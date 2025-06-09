@@ -69,20 +69,20 @@ class PlatformAgnosticCPUWidget(TemplateEditableWidget, QWidget):
             if hasattr(self.controller, signal_name):
                 signal = getattr(self.controller, signal_name)
                 signal.connect(handler)
-                print(f"✅ CPU Widget connected to {signal_name}")
+                print(f" CPU Widget connected to {signal_name}")
                 connected_count += 1
             else:
-                print(f"⚠️ Signal {signal_name} not available")
+                print(f" Signal {signal_name} not available")
 
         if connected_count == 0:
-            print(f"❌ CPU Widget: NO SIGNALS CONNECTED!")
+            print(f" CPU Widget: NO SIGNALS CONNECTED!")
         else:
-            print(f"✅ CPU Widget: {connected_count} signals connected")
+            print(f" CPU Widget: {connected_count} signals connected")
 
         # Also connect to raw outputs for debugging/template editing
         if hasattr(self.controller, 'raw_system_info_output'):
             self.controller.raw_system_info_output.connect(self.handle_raw_output_for_debugging)
-            print(f"✅ CPU Widget connected to raw_system_info_output")
+            print(f" CPU Widget connected to raw_system_info_output")
 
     def _setup_widget(self):
         """Setup the widget UI - same as before but cleaner"""
@@ -232,14 +232,14 @@ class PlatformAgnosticCPUWidget(TemplateEditableWidget, QWidget):
     @pyqtSlot(object)  # NormalizedSystemMetrics
     def update_system_metrics(self, metrics: NormalizedSystemMetrics):
         """Update with normalized system metrics - FIXED merge logic"""
-        print(f"✅ Received normalized system metrics for platform: {metrics.platform}")
-        print(f"📊 Incoming data - CPU: {metrics.cpu_usage_percent}%, Memory: {metrics.memory_used_percent}%")
+        print(f" Received normalized system metrics for platform: {metrics.platform}")
+        print(f" Incoming data - CPU: {metrics.cpu_usage_percent}%, Memory: {metrics.memory_used_percent}%")
 
         # Store the current metrics, but merge with existing data intelligently
         if self._current_metrics is None:
             # First time - use all data
             self._current_metrics = metrics
-            print(f"📋 First update - using all data")
+            print(f" First update - using all data")
         else:
             # Subsequent updates - only update fields that have meaningful new data
 
@@ -248,12 +248,12 @@ class PlatformAgnosticCPUWidget(TemplateEditableWidget, QWidget):
                 if metrics.cpu_usage_percent != self._current_metrics.cpu_usage_percent:
                     old_cpu = self._current_metrics.cpu_usage_percent
                     self._current_metrics.cpu_usage_percent = metrics.cpu_usage_percent
-                    print(f"📊 CPU updated: {old_cpu}% -> {metrics.cpu_usage_percent}%")
+                    print(f" CPU updated: {old_cpu}% -> {metrics.cpu_usage_percent}%")
                 else:
-                    print(f"📊 CPU unchanged: {metrics.cpu_usage_percent}%")
+                    print(f" CPU unchanged: {metrics.cpu_usage_percent}%")
             else:
                 print(
-                    f"📊 CPU preserved: keeping {self._current_metrics.cpu_usage_percent}% (ignoring {metrics.cpu_usage_percent}%)")
+                    f" CPU preserved: keeping {self._current_metrics.cpu_usage_percent}% (ignoring {metrics.cpu_usage_percent}%)")
 
             # Memory: Only update if new value is > 0 OR if we don't have any memory data yet
             if metrics.memory_used_percent > 0 or self._current_metrics.memory_used_percent == 0:
@@ -263,18 +263,18 @@ class PlatformAgnosticCPUWidget(TemplateEditableWidget, QWidget):
                     self._current_metrics.memory_total_mb = metrics.memory_total_mb
                     self._current_metrics.memory_free_mb = metrics.memory_free_mb
                     self._current_metrics.memory_used_mb = metrics.memory_used_mb
-                    print(f"💾 Memory updated: {old_memory}% -> {metrics.memory_used_percent}%")
+                    print(f" Memory updated: {old_memory}% -> {metrics.memory_used_percent}%")
                 else:
-                    print(f"💾 Memory unchanged: {metrics.memory_used_percent}%")
+                    print(f" Memory unchanged: {metrics.memory_used_percent}%")
             else:
-                print(f"💾 Memory preserved: keeping {self._current_metrics.memory_used_percent}%")
+                print(f" Memory preserved: keeping {self._current_metrics.memory_used_percent}%")
 
             # Temperature: Only update if new value is > 0
             if metrics.temperature_celsius > 0:
                 if metrics.temperature_celsius != self._current_metrics.temperature_celsius:
                     old_temp = self._current_metrics.temperature_celsius
                     self._current_metrics.temperature_celsius = metrics.temperature_celsius
-                    print(f"🌡️ Temperature updated: {old_temp}°C -> {metrics.temperature_celsius}°C")
+                    print(f" Temperature updated: {old_temp}°C -> {metrics.temperature_celsius}°C")
 
             # Always update timestamp and platform
             self._current_metrics.timestamp = metrics.timestamp
@@ -315,7 +315,7 @@ class PlatformAgnosticCPUWidget(TemplateEditableWidget, QWidget):
         self.platform_label.setText(f"Platform: {current.platform}")
         self._update_timestamp()
 
-        print(f"✅ Final UI state - CPU: {cpu_percent}%, Memory: {memory_percent}%")
+        print(f" Final UI state - CPU: {cpu_percent}%, Memory: {memory_percent}%")
     @pyqtSlot(object)  # CPU-specific normalized data
     def update_cpu_data(self, cpu_data):
         """Update CPU data from normalized CPU signal"""
@@ -350,7 +350,7 @@ class PlatformAgnosticCPUWidget(TemplateEditableWidget, QWidget):
     @pyqtSlot(object)  # Fallback for general system data
     def update_system_data(self, system_data):
         """Fallback handler for general system data"""
-        print(f"⚠️ Using fallback system data handler")
+        print(f" Using fallback system data handler")
         # Handle various system data formats as fallback
         pass
 
@@ -369,7 +369,7 @@ class PlatformAgnosticCPUWidget(TemplateEditableWidget, QWidget):
         if 'cpu' in raw_output.command.lower() or 'memory' in raw_output.command.lower():
             self.data_source_label.setText("Raw Data (needs normalization)")
             self.data_source_label.setStyleSheet("font-size: 10px; color: #ff6600;")
-            print(f"⚠️ CPU widget received raw data for: {raw_output.command}")
+            print(f" CPU widget received raw data for: {raw_output.command}")
             print(f"    This should be normalized by the controller first!")
 
     # ============ UTILITY METHODS ============

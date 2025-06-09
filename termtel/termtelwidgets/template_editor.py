@@ -245,7 +245,7 @@ class ImprovedFieldRequirementsWidget(QWidget):
         header_layout.setContentsMargins(12, 12, 12, 12)
 
         # Title with icon
-        title = QLabel(f"📊 {self.widget_template.widget_display_name}")
+        title = QLabel(f" {self.widget_template.widget_display_name}")
         title.setStyleSheet("""
             QLabel {
                 font-weight: bold; 
@@ -277,7 +277,7 @@ class ImprovedFieldRequirementsWidget(QWidget):
         # Required fields section with improved styling
         if self.widget_template.required_fields:
             required_group = self._create_improved_field_group(
-                "🔴 Required Fields",
+                " Required Fields",
                 self.widget_template.required_fields,
                 "#ff6b6b",
                 "#2a0f0f"
@@ -287,7 +287,7 @@ class ImprovedFieldRequirementsWidget(QWidget):
         # Optional fields section with improved styling
         if self.widget_template.optional_fields:
             optional_group = self._create_improved_field_group(
-                "🟢 Optional Fields",
+                " Optional Fields",
                 self.widget_template.optional_fields,
                 "#4ecdc4",
                 "#0f2a2a"
@@ -450,7 +450,7 @@ class WidgetTemplateEditor(QDialog):
             elif hasattr(self.controller, 'current_theme'):
                 current_theme = self.controller.current_theme
 
-            print(f"🎨 Applying theme '{current_theme}' to template editor")
+            print(f" Applying theme '{current_theme}' to template editor")
 
             # Apply theme using the theme library
             self.theme_library.apply_theme(self, current_theme)
@@ -459,7 +459,7 @@ class WidgetTemplateEditor(QDialog):
             self._apply_cyberpunk_enhancements()
 
         except Exception as e:
-            print(f"❌ Error applying theme: {e}")
+            print(f" Error applying theme: {e}")
 
     def _apply_cyberpunk_enhancements(self):
         """Apply additional cyberpunk styling enhancements"""
@@ -640,7 +640,7 @@ class WidgetTemplateEditor(QDialog):
         header_layout.setContentsMargins(15, 10, 15, 10)
 
         # Widget info with icon
-        widget_label = QLabel(f"🔧 Template Editor: {self.widget_template.widget_display_name}")
+        widget_label = QLabel(f" Template Editor: {self.widget_template.widget_display_name}")
         widget_label.setStyleSheet("""
             QLabel {
                 font-weight: bold; 
@@ -694,7 +694,7 @@ class WidgetTemplateEditor(QDialog):
         header_layout.addWidget(self.platform_combo)
 
         # Template status
-        self.template_status = QLabel("📄 Template: Loading...")
+        self.template_status = QLabel(" Template: Loading...")
         self.template_status.setStyleSheet("""
             QLabel {
                 color: #888888; 
@@ -749,7 +749,7 @@ class WidgetTemplateEditor(QDialog):
         # Editor header with better styling
         editor_header = QHBoxLayout()
 
-        title = QLabel("📝 Template Editor")
+        title = QLabel(" Template Editor")
         title.setStyleSheet("""
             QLabel {
                 font-weight: bold; 
@@ -763,7 +763,7 @@ class WidgetTemplateEditor(QDialog):
         editor_header.addStretch()
 
         # Improved load from device button
-        load_from_device_btn = QPushButton("📡 Load from Device")
+        load_from_device_btn = QPushButton(" Load from Device")
         load_from_device_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -804,7 +804,7 @@ class WidgetTemplateEditor(QDialog):
         layout.addWidget(self.template_editor)
 
         # Template validation status with better styling
-        self.validation_status = QLabel("🔍 Validation: Click 'Run Test' to validate")
+        self.validation_status = QLabel(" Validation: Click 'Run Test' to validate")
         self.validation_status.setStyleSheet("""
             QLabel {
                 font-size: 11px; 
@@ -837,7 +837,7 @@ class WidgetTemplateEditor(QDialog):
         # Test header with prominent test button
         test_header = QHBoxLayout()
 
-        title = QLabel("🧪 Test & Preview")
+        title = QLabel(" Test & Preview")
         title.setStyleSheet("""
             QLabel {
                 font-weight: bold; 
@@ -851,7 +851,7 @@ class WidgetTemplateEditor(QDialog):
         test_header.addStretch()
 
         # Prominent test button
-        test_btn = QPushButton("🧪 RUN TEST")
+        test_btn = QPushButton(" RUN TEST")
         test_btn.clicked.connect(self._run_template_test)
         test_btn.setStyleSheet("""
             QPushButton {
@@ -886,11 +886,11 @@ class WidgetTemplateEditor(QDialog):
 
         # Sample data tab
         sample_tab = self._create_improved_sample_data_tab()
-        test_tabs.addTab(sample_tab, "📄 Sample Data")
+        test_tabs.addTab(sample_tab, " Sample Data")
 
         # Widget preview tab
         preview_tab = self._create_improved_widget_preview_tab()
-        test_tabs.addTab(preview_tab, "🎯 Widget Preview")
+        test_tabs.addTab(preview_tab, " Widget Preview")
 
         layout.addWidget(test_tabs)
 
@@ -915,7 +915,7 @@ class WidgetTemplateEditor(QDialog):
         # Load controls with better styling
         load_layout = QHBoxLayout()
 
-        load_file_btn = QPushButton("📁 Load from File")
+        load_file_btn = QPushButton(" Load from File")
         load_file_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -933,7 +933,7 @@ class WidgetTemplateEditor(QDialog):
         load_file_btn.clicked.connect(self._load_sample_from_file)
         load_layout.addWidget(load_file_btn)
 
-        clear_btn = QPushButton("🗑️ Clear")
+        clear_btn = QPushButton(" Clear")
         clear_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -963,7 +963,7 @@ class WidgetTemplateEditor(QDialog):
         layout.setContentsMargins(8, 8, 8, 8)
 
         # Preview header
-        preview_header = QLabel("🎯 Widget Preview - How data will appear in the actual widget")
+        preview_header = QLabel(" Widget Preview - How data will appear in the actual widget")
         preview_header.setStyleSheet("""
             QLabel {
                 font-weight: bold; 
@@ -1012,7 +1012,7 @@ class WidgetTemplateEditor(QDialog):
         layout.addWidget(self.widget_preview_table)
 
         # Field coverage report
-        coverage_label = QLabel("📊 Field Coverage Report:")
+        coverage_label = QLabel(" Field Coverage Report:")
         coverage_label.setStyleSheet("""
             QLabel {
                 font-weight: bold; 
@@ -1057,7 +1057,7 @@ class WidgetTemplateEditor(QDialog):
         button_layout.setContentsMargins(15, 8, 15, 8)
 
         # Validation button
-        validate_btn = QPushButton("🔍 Check Syntax")
+        validate_btn = QPushButton(" Check Syntax")
         validate_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -1078,7 +1078,7 @@ class WidgetTemplateEditor(QDialog):
         button_layout.addWidget(validate_btn)
 
         # Save button
-        self.save_btn = QPushButton("💾 Save Template")
+        self.save_btn = QPushButton(" Save Template")
         self.save_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -1106,7 +1106,7 @@ class WidgetTemplateEditor(QDialog):
         button_layout.addStretch()
 
         # Reset button
-        reset_btn = QPushButton("🔄 Reset")
+        reset_btn = QPushButton(" Reset")
         reset_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -1126,7 +1126,7 @@ class WidgetTemplateEditor(QDialog):
         button_layout.addWidget(reset_btn)
 
         # Cancel button
-        cancel_btn = QPushButton("❌ Cancel")
+        cancel_btn = QPushButton(" Cancel")
         cancel_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -1146,7 +1146,7 @@ class WidgetTemplateEditor(QDialog):
         button_layout.addWidget(cancel_btn)
 
         # Close button
-        close_btn = QPushButton("✅ Close")
+        close_btn = QPushButton(" Close")
         close_btn.setStyleSheet("""
             QPushButton {
                 background-color: #2a2a2a;
@@ -1187,7 +1187,7 @@ class WidgetTemplateEditor(QDialog):
         template_filename = f"{platform}_{command_name}.textfsm"
         template_path = os.path.join("templates/textfsm", template_filename)
 
-        self.template_status.setText(f"📄 Template: {template_filename}")
+        self.template_status.setText(f" Template: {template_filename}")
 
         try:
             if os.path.exists(template_path):
@@ -1200,9 +1200,9 @@ class WidgetTemplateEditor(QDialog):
                 self.save_btn.setEnabled(False)
 
                 self.template_status.setStyleSheet("color: #00ff00;")
-                self.template_status.setText(f"📄 Template: {template_filename} (Loaded)")
+                self.template_status.setText(f" Template: {template_filename} (Loaded)")
 
-                self.validation_status.setText("🔍 Validation: Template loaded - click 'RUN TEST' to validate")
+                self.validation_status.setText(" Validation: Template loaded - click 'RUN TEST' to validate")
                 self.validation_status.setStyleSheet("color: #888888;")
 
             else:
@@ -1213,7 +1213,7 @@ class WidgetTemplateEditor(QDialog):
                 self.save_btn.setEnabled(True)
 
                 self.template_status.setStyleSheet("color: #ff6600;")
-                self.template_status.setText(f"📄 Template: {template_filename} (New)")
+                self.template_status.setText(f" Template: {template_filename} (New)")
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to load template: {str(e)}")
@@ -1261,7 +1261,7 @@ class WidgetTemplateEditor(QDialog):
         self.has_unsaved_changes = (current_content != self.current_template_content)
         self.save_btn.setEnabled(self.has_unsaved_changes)
 
-        self.validation_status.setText("🔍 Validation: Content changed - click 'RUN TEST' to validate")
+        self.validation_status.setText(" Validation: Content changed - click 'RUN TEST' to validate")
         self.validation_status.setStyleSheet("color: #888888;")
 
     def _validate_template_syntax_only(self):
@@ -1269,7 +1269,7 @@ class WidgetTemplateEditor(QDialog):
         template_content = self.template_editor.toPlainText()
 
         if not template_content.strip():
-            self.validation_status.setText("🔍 Validation: No template content")
+            self.validation_status.setText(" Validation: No template content")
             self.validation_status.setStyleSheet("color: #888888;")
             return False
 
@@ -1288,17 +1288,17 @@ class WidgetTemplateEditor(QDialog):
             covered_optional = optional_fields.intersection(template_fields)
 
             if missing_required:
-                self.validation_status.setText(f"⚠️ Syntax OK, but missing required fields: {', '.join(missing_required)}")
+                self.validation_status.setText(f" Syntax OK, but missing required fields: {', '.join(missing_required)}")
                 self.validation_status.setStyleSheet("color: #ff6600;")
                 return False
             else:
                 coverage_pct = (len(covered_optional) / len(optional_fields) * 100) if optional_fields else 100
-                self.validation_status.setText(f"✅ Syntax valid! Optional coverage: {coverage_pct:.0f}%")
+                self.validation_status.setText(f" Syntax valid! Optional coverage: {coverage_pct:.0f}%")
                 self.validation_status.setStyleSheet("color: #00ff00;")
                 return True
 
         except Exception as e:
-            self.validation_status.setText(f"❌ Syntax error: {str(e)}")
+            self.validation_status.setText(f" Syntax error: {str(e)}")
             self.validation_status.setStyleSheet("color: #ff4444;")
             return False
 
@@ -1347,12 +1347,12 @@ class WidgetTemplateEditor(QDialog):
         sample_data = self.sample_data_editor.toPlainText()
 
         if not template_content.strip():
-            self.field_mapping_status.setText("📋 Status: No template to test")
+            self.field_mapping_status.setText(" Status: No template to test")
             self.field_mapping_status.setStyleSheet("color: #ff6600; font-weight: bold;")
             return
 
         if not sample_data.strip():
-            self.field_mapping_status.setText("📋 Status: No sample data to test against")
+            self.field_mapping_status.setText(" Status: No sample data to test against")
             self.field_mapping_status.setStyleSheet("color: #ff6600; font-weight: bold;")
             return
 
@@ -1366,20 +1366,20 @@ class WidgetTemplateEditor(QDialog):
             parsed_rows = template.ParseText(sample_data)
             headers = template.header
 
-            self.field_mapping_status.setText(f"Field Mapping: ✅ Test passed - {len(parsed_rows)} entries")
+            self.field_mapping_status.setText(f"Field Mapping:  Test passed - {len(parsed_rows)} entries")
             self.field_mapping_status.setStyleSheet("color: #00ff00;")
 
-            self.validation_status.setText(f"🔍 Validation: ✅ Template tested successfully")
+            self.validation_status.setText(f" Validation:  Template tested successfully")
             self.validation_status.setStyleSheet("color: #00ff00;")
 
             self._update_widget_preview(parsed_rows, headers)
             self._update_field_coverage(headers)
 
         except Exception as e:
-            self.field_mapping_status.setText("Field Mapping: ❌ Test failed")
+            self.field_mapping_status.setText("Field Mapping:  Test failed")
             self.field_mapping_status.setStyleSheet("color: #ff4444;")
 
-            self.validation_status.setText(f"🔍 Validation: ❌ Template test failed")
+            self.validation_status.setText(f" Validation:  Template test failed")
             self.validation_status.setStyleSheet("color: #ff4444;")
 
             self.field_coverage_display.setPlainText(f"Template test error:\n{str(e)}")
@@ -1393,7 +1393,7 @@ class WidgetTemplateEditor(QDialog):
 
         # DEBUG: Show what protocols we're getting from the template
         if self.widget_type == 'route_widget':
-            print(f"\n🔍 TEMPLATE EDITOR PREVIEW DEBUG")
+            print(f"\n TEMPLATE EDITOR PREVIEW DEBUG")
             print(f"Widget type: {self.widget_type}")
             print(f"Headers found: {headers}")
 
@@ -1416,7 +1416,7 @@ class WidgetTemplateEditor(QDialog):
         if not widget_columns:
             self.widget_preview_table.setRowCount(0)
             self.widget_preview_table.setColumnCount(0)
-            self.field_mapping_status.setText("Field Mapping: ❌ No fields mapped to widget columns")
+            self.field_mapping_status.setText("Field Mapping:  No fields mapped to widget columns")
             self.field_mapping_status.setStyleSheet("color: #ff4444;")
             return
 
@@ -1479,7 +1479,7 @@ class WidgetTemplateEditor(QDialog):
 
         mapped_count = len(widget_columns)
         total_count = len(self.widget_template.required_fields) + len(self.widget_template.optional_fields)
-        self.field_mapping_status.setText(f"Field Mapping: ✅ {mapped_count}/{total_count} fields mapped")
+        self.field_mapping_status.setText(f"Field Mapping:  {mapped_count}/{total_count} fields mapped")
         self.field_mapping_status.setStyleSheet("color: #00ff00;")
 
     def _normalize_protocol_for_preview(self, raw_protocol: str) -> str:
@@ -1521,23 +1521,23 @@ class WidgetTemplateEditor(QDialog):
         report_lines = []
 
         if covered_required:
-            report_lines.append(f"✅ Required fields covered ({len(covered_required)}):")
+            report_lines.append(f" Required fields covered ({len(covered_required)}):")
             report_lines.extend(f"  + {field}" for field in sorted(covered_required))
 
         if missing_required:
-            report_lines.append(f"\n❌ Required fields missing ({len(missing_required)}):")
+            report_lines.append(f"\n Required fields missing ({len(missing_required)}):")
             report_lines.extend(f"  - {field}" for field in sorted(missing_required))
 
         if covered_optional:
-            report_lines.append(f"\n✅ Optional fields covered ({len(covered_optional)}):")
+            report_lines.append(f"\n Optional fields covered ({len(covered_optional)}):")
             report_lines.extend(f"  + {field}" for field in sorted(covered_optional))
 
         if missing_optional:
-            report_lines.append(f"\n⚠️ Optional fields missing ({len(missing_optional)}):")
+            report_lines.append(f"\n Optional fields missing ({len(missing_optional)}):")
             report_lines.extend(f"  - {field}" for field in sorted(missing_optional))
 
         if extra_fields:
-            report_lines.append(f"\nℹ️ Extra fields in template ({len(extra_fields)}):")
+            report_lines.append(f"\n Extra fields in template ({len(extra_fields)}):")
             report_lines.extend(f"  ? {field}" for field in sorted(extra_fields))
 
         self.field_coverage_display.setPlainText('\n'.join(report_lines))

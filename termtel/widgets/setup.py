@@ -132,7 +132,7 @@ class AboutDialog(QDialog):
                     position: relative;
                 }}
                 .feature-list li:before {{
-                    content: "✓";
+                    content: "";
                     color: {text_color};
                     position: absolute;
                     left: 0;
@@ -358,7 +358,7 @@ def safe_switch_theme(window, theme_name):
     """
     Safe theme switching that handles both old and new telemetry properly
     """
-    print(f"🎨 Safe theme switch to: {theme_name}")
+    print(f" Safe theme switch to: {theme_name}")
 
     try:
         # Apply theme to main window using existing method
@@ -366,7 +366,7 @@ def safe_switch_theme(window, theme_name):
             try:
                 window.switch_theme(theme_name)
             except Exception as e:
-                print(f"⚠️ Error in main switch_theme: {e}")
+                print(f"️ Error in main switch_theme: {e}")
                 # Fallback: apply directly if switch_theme fails
                 if hasattr(window, 'theme_manager'):
                     window.theme_manager.apply_theme(window, theme_name)
@@ -381,16 +381,16 @@ def safe_switch_theme(window, theme_name):
                     elif hasattr(widget, '_apply_theme'):
                         widget._apply_theme(theme_name)
                 except Exception as e:
-                    print(f"⚠️ Could not apply theme to telemetry widget: {e}")
+                    print(f"️ Could not apply theme to telemetry widget: {e}")
 
         # Emit theme change signal for other components
         if hasattr(window, 'theme_changed'):
             window.theme_changed.emit(theme_name)
 
-        print(f"✅ Theme switch to {theme_name} completed")
+        print(f" Theme switch to {theme_name} completed")
 
     except Exception as e:
-        print(f"❌ Error in safe_switch_theme: {e}")
+        print(f" Error in safe_switch_theme: {e}")
         QMessageBox.warning(
             window,
             "Theme Switch Warning",
@@ -406,7 +406,7 @@ def safe_create_telemetry_tab(window):
         # Initialize telemetry theme manager if this is the first telemetry tab
         if  not hasattr(window, 'telemetry_theme_manager'):
             # window.telemetry_theme_manager = TelemetryWidgetThemeManager(window)
-            print("✅ Initialized telemetry theme manager")
+            print(" Initialized telemetry theme manager")
 
         # Create telemetry tab using existing method
         if hasattr(window.terminal_tabs, 'create_telemetry_tab'):
@@ -426,20 +426,20 @@ def safe_create_telemetry_tab(window):
                 if telemetry_widget:
                     try:
                         window.telemetry_theme_manager.register_telemetry_widget(telemetry_widget)
-                        print("✅ Registered telemetry widget with theme manager")
+                        print(" Registered telemetry widget with theme manager")
 
                         # Apply current theme to new widget
                         if hasattr(window, 'theme'):
                             telemetry_widget.set_theme_from_parent(window.theme)
 
                     except Exception as e:
-                        print(f"⚠️ Could not register telemetry widget: {e}")
+                        print(f"️ Could not register telemetry widget: {e}")
         else:
             # Fallback to old method
             window.terminal_tabs.create_telemetry_tab("Telemetry")
 
     except Exception as e:
-        print(f"❌ Error creating telemetry tab: {e}")
+        print(f" Error creating telemetry tab: {e}")
         QMessageBox.warning(window, "Telemetry Error", f"Could not create telemetry tab: {str(e)}")
 
 
@@ -557,4 +557,4 @@ def safe_close_telemetry_tab(window, tab_widget):
             tab_widget.cleanup()
 
     except Exception as e:
-        print(f"⚠️ Error during telemetry tab cleanup: {e}")
+        print(f"️ Error during telemetry tab cleanup: {e}")

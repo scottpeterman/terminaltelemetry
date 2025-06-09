@@ -828,32 +828,191 @@ def redirect_output():
 
 def main():
     """termtel - A modern terminal emulator."""
-    # Set up logging before anything else
-    setup_logging()
 
-    # Redirect output if running in GUI mode
-    redirect_output()
+    # Import Qt classes at the top to avoid scoping issues
+    from PyQt6.QtWidgets import QApplication, QMessageBox
+
+    # CRITICAL: Install global exception handler FIRST (before any other code)
+    import time
+    import traceback
+    from pathlib import Path
+
+    def global_exception_handler(exc_type, exc_value, exc_traceback):
+        """Handle all unhandled exceptions - critical for pythonw.exe debugging"""
+
+        # Skip keyboard interrupts (let them work normally)
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_traceback)
+            return
+
+        # Create crash log in user's home directory
+        crash_log = Path.home() / "termtel_crash.log"
+
+        try:
+            with open(crash_log, "a", encoding='utf-8') as f:
+                f.write(f"\n{'=' * 60}\n")
+                f.write(f"TERMTEL CRASH - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write(f"{'=' * 60}\n")
+                f.write(f"Python Executable: {sys.executable}\n")
+                f.write(f"Running under pythonw: {sys.executable.endswith('pythonw.exe')}\n")
+                f.write(f"Working Directory: {os.getcwd()}\n")
+                f.write(f"Exception Type: {exc_type.__name__}\n")
+                f.write(f"Exception Message: {exc_value}\n")
+                f.write(f"\nFull Traceback:\n")
+                f.write("".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+                f.write(f"\n{'=' * 60}\n\n")
+        except Exception as log_error:
+            # If we can't write to the log file, try a backup location
+            try:
+                backup_log = Path("termtel_crash_backup.log")
+                with open(backup_log, "a", encoding='utf-8') as f:
+                    f.write(f"CRASH: {exc_type.__name__}: {exc_value}\n")
+                    f.write(f"Log error: {log_error}\n")
+            except:
+                pass  # Last resort: fail silently
+
+        # Try to show error dialog if Qt is available
+        try:
+            existing_app = QApplication.instance()
+            if existing_app:
+                error_msg = (
+                    f"TermTel has encountered a critical error:\n\n"
+                    f"{exc_type.__name__}: {exc_value}\n\n"
+                    f"Details have been logged to:\n{crash_log}\n\n"
+                    f"Please report this error with the log file contents."
+                )
+                QMessageBox.critical(None, "TermTel Critical Error", error_msg)
+            else:
+                # Qt not available, try creating minimal app for the dialog
+                temp_app = QApplication(sys.argv)
+                QMessageBox.critical(None, "TermTel Critical Error",
+                                     f"Critical error occurred. Check {crash_log} for details.")
+                temp_app.quit()
+        except Exception:
+            pass  # If Qt dialog fails, continue silently
+
+        # Also try to write to stderr if it exists (for console debugging)
+        try:
+            if sys.stderr:
+                print(f"\nCRITICAL ERROR: {exc_type.__name__}: {exc_value}", file=sys.stderr)
+                print(f"Details logged to: {crash_log}", file=sys.stderr)
+        except:
+            pass
+
+    # Install the global exception handler
+    sys.excepthook = global_exception_handler
+
+    # Create a startup logger for this session
+    startup_log = Path.home() / "termtel_startup.log"
 
     try:
+        # Set up logging before anything else
+        setup_logging()
+
+        # Log startup information
+        startup_logger = logging.getLogger('termtel.startup')
+        startup_logger.info("=" * 50)
+        startup_logger.info(f"TERMTEL STARTUP - {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        startup_logger.info(f"Python: {sys.version}")
+        startup_logger.info(f"Executable: {sys.executable}")
+        startup_logger.info(f"Running under pythonw: {sys.executable.endswith('pythonw.exe')}")
+        startup_logger.info(f"stdout available: {sys.stdout is not None}")
+        startup_logger.info(f"stderr available: {sys.stderr is not None}")
+        startup_logger.info(f"Working directory: {os.getcwd()}")
+
+        # Redirect output if running in GUI mode
+        startup_logger.info("Redirecting output...")
+        redirect_output()
+
+        startup_logger.info("Initializing sessions...")
         initialize_sessions()
+
+        startup_logger.info("Creating QApplication...")
         app = QApplication(sys.argv)
         app.setApplicationName("termtel")
 
+        # Install Qt-specific error handling
+        def qt_message_handler(msg_type, context, message):
+            """Handle Qt framework messages"""
+            qt_logger = logging.getLogger('termtel.qt')
+            if msg_type == 0:  # QtDebugMsg
+                qt_logger.debug(f"Qt: {message}")
+            elif msg_type == 1:  # QtWarningMsg
+                qt_logger.warning(f"Qt: {message}")
+            elif msg_type == 2:  # QtCriticalMsg
+                qt_logger.error(f"Qt Critical: {message}")
+            elif msg_type == 3:  # QtFatalMsg
+                qt_logger.critical(f"Qt Fatal: {message}")
+                # Qt fatal errors should trigger our crash handler
+                raise RuntimeError(f"Qt Fatal Error: {message}")
+
+        # Install Qt message handler (if available in PyQt6)
+        try:
+            from PyQt6.QtCore import qInstallMessageHandler
+            qInstallMessageHandler(qt_message_handler)
+            startup_logger.info("Qt message handler installed")
+        except ImportError:
+            startup_logger.warning("Qt message handler not available")
+
         theme = "cyberpunk"
+        startup_logger.info(f"Setting theme: {theme}")
+
         # Create theme manager instance
+        startup_logger.info("Creating theme manager...")
         theme_manager = ThemeLibrary()
 
         # Validate theme
         if theme not in theme_manager.themes:
+            startup_logger.warning(f"Theme '{theme}' not found, using 'cyberpunk'")
             logging.warning(f"Theme '{theme}' not found, using 'cyberpunk'")
             theme = 'cyberpunk'
 
+        startup_logger.info("Creating main window...")
         window = termtelWindow(theme=theme)
+
+        startup_logger.info("Showing main window...")
         window.show()
 
-        return app.exec()
+        startup_logger.info("Starting Qt event loop...")
+        result = app.exec()
+
+        startup_logger.info(f"Application exited normally with code: {result}")
+        return result
+
     except Exception as e:
-        logging.exception("Fatal error in main")
+        # This catch block handles exceptions in the startup process itself
+        error_msg = f"Fatal error during startup: {e}"
+
+        # Log to file
+        try:
+            with open(startup_log, "a", encoding='utf-8') as f:
+                f.write(f"\n{time.strftime('%Y-%m-%d %H:%M:%S')} - STARTUP FAILURE\n")
+                f.write(f"Error: {error_msg}\n")
+                f.write(traceback.format_exc())
+                f.write("\n" + "=" * 50 + "\n")
+        except:
+            pass
+
+        # Log using logging system if available
+        try:
+            logging.exception("Fatal error in main")
+        except:
+            pass
+
+        # Try to show error dialog
+        try:
+            existing_app = QApplication.instance()
+            if existing_app:
+                app = existing_app
+            else:
+                app = QApplication(sys.argv)
+            QMessageBox.critical(None, "Startup Error",
+                                 f"TermTel failed to start:\n\n{error_msg}\n\nCheck {startup_log} for details.")
+        except Exception as dialog_error:
+            # If showing dialog fails, just continue silently
+            pass
+
+        # Re-raise to trigger global exception handler
         raise
 
 

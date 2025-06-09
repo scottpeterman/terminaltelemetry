@@ -259,19 +259,19 @@ class LocalTemplateParser:
             List of dictionaries with parsed data or None if parsing fails
         """
         if not TEXTFSM_AVAILABLE:
-            print("❌ TextFSM not available")
+            print(" TextFSM not available")
             return None
 
         # Build template filename
         template_name = f"{platform}_{command}.textfsm"
 
-        print(f"🔍 Looking for template: {template_name}")
+        print(f" Looking for template: {template_name}")
 
         # Try to get template content using resource manager
         template_content = self._get_template_content(template_name)
 
         if not template_content:
-            print(f"❌ Template not found: {template_name}")
+            print(f" Template not found: {template_name}")
             return None
 
         try:
@@ -294,17 +294,17 @@ class LocalTemplateParser:
             for row in parsed_rows:
                 result.append(dict(zip(headers, row)))
 
-            print(f"✅ Template parsing successful: {len(result)} entries parsed")
+            print(f" Template parsing successful: {len(result)} entries parsed")
             if result:
-                print(f"📋 Fields found: {list(result[0].keys())}")
+                print(f" Fields found: {list(result[0].keys())}")
 
             return result
 
         except Exception as e:
-            print(f"❌ Template parsing failed for {template_name}: {e}")
+            print(f" Template parsing failed for {template_name}: {e}")
             # Show a sample of the data for debugging
             sample_data = data[:200].replace('\n', '\\n') if data else "No data"
-            print(f"📋 Sample data: {sample_data}...")
+            print(f" Sample data: {sample_data}...")
             return None
 
     def _get_template_content(self, template_name: str) -> Optional[str]:
@@ -319,7 +319,7 @@ class LocalTemplateParser:
         template_content = resource_manager.get_template_content(template_name)
 
         if template_content:
-            print(f"✅ Loaded template from package resources: {template_name}")
+            print(f" Loaded template from package resources: {template_name}")
             self._template_cache[template_name] = template_content
             return template_content
 
@@ -330,13 +330,13 @@ class LocalTemplateParser:
                 try:
                     with open(template_path, 'r', encoding='utf-8') as f:
                         template_content = f.read()
-                    print(f"✅ Loaded template from file system: {template_path}")
+                    print(f" Loaded template from file system: {template_path}")
                     self._template_cache[template_name] = template_content
                     return template_content
                 except Exception as e:
-                    print(f"❌ Error reading template file {template_path}: {e}")
+                    print(f" Error reading template file {template_path}: {e}")
 
-        print(f"❌ Template not found: {template_name}")
+        print(f" Template not found: {template_name}")
         return None
 
     def list_available_templates(self) -> List[str]:
@@ -406,7 +406,7 @@ class LocalTemplateParser:
     def clear_cache(self):
         """Clear the template cache"""
         self._template_cache.clear()
-        print("🗑️ Template cache cleared")
+        print(" Template cache cleared")
 
     def get_cache_info(self) -> Dict[str, any]:
         """Get information about the current cache"""
@@ -675,9 +675,9 @@ class ConfigDrivenFieldNormalizer:
             # Validate and add entry
             if self._is_valid_route_entry(normalized_entry):
                 normalized.append(normalized_entry)
-                print(f"  ✅ Entry added: {normalized_entry.network} via {normalized_entry.next_hop} ({normalized_entry.protocol})")
+                print(f"   Entry added: {normalized_entry.network} via {normalized_entry.next_hop} ({normalized_entry.protocol})")
             else:
-                print(f"  ❌ Entry rejected - validation failed")
+                print(f"   Entry rejected - validation failed")
                 self._log_validation_failure(normalized_entry)
 
         print(f"\n=== NORMALIZATION COMPLETE ===")
@@ -759,7 +759,7 @@ class ConfigDrivenFieldNormalizer:
         """
         result = NormalizedRouteData(network="", next_hop="", protocol="")
 
-        print(f"\n🔍 EXTRACTING FIELDS DEBUG:")
+        print(f"\n EXTRACTING FIELDS DEBUG:")
         print(f"  Raw entry: {entry}")
 
         # Extract each field using the mapping priority
@@ -815,7 +815,7 @@ class ConfigDrivenFieldNormalizer:
 
             if value:
                 setattr(result, norm_field, value)
-                print(f"    ✅ Set {norm_field} = '{value}'")
+                print(f"     Set {norm_field} = '{value}'")
 
         # Special handling for network field combination
         result = self._handle_network_combination(result, entry, platform)
@@ -863,7 +863,7 @@ class ConfigDrivenFieldNormalizer:
         """
         Handle platform-specific next hop determination logic - FIXED for Arista
         """
-        print(f"🔍 NEXT HOP DEBUG:")
+        print(f" NEXT HOP DEBUG:")
         print(f"  Platform: {platform}")
         print(f"  Current next_hop: '{result.next_hop}'")
         print(f"  Current interface: '{result.interface}'")
@@ -879,32 +879,32 @@ class ConfigDrivenFieldNormalizer:
         if direct_value == 'directly':
             if not result.next_hop or result.next_hop in ['', 'connected']:
                 result.next_hop = "Directly Connected"
-                print(f"    ✅ Set to 'Directly Connected' (DIRECT='directly')")
+                print(f"     Set to 'Directly Connected' (DIRECT='directly')")
             else:
-                print(f"    ℹ️ DIRECT='directly' but already have next_hop: '{result.next_hop}'")
+                print(f"     DIRECT='directly' but already have next_hop: '{result.next_hop}'")
 
         # If we have a valid next_hop, keep it
         elif result.next_hop and result.next_hop not in ['', 'connected']:
-            print(f"    ✅ Keeping existing next_hop: '{result.next_hop}'")
+            print(f"     Keeping existing next_hop: '{result.next_hop}'")
 
         # If no next_hop but we have an interface, it might be directly connected
         elif not result.next_hop and result.interface:
             # For Cisco Connected/Local routes
             if platform.startswith('cisco') and result.protocol in ['C', 'Connected', 'L', 'Local']:
                 result.next_hop = "Directly Connected"
-                print(f"    ✅ Cisco connected route, set to 'Directly Connected'")
+                print(f"     Cisco connected route, set to 'Directly Connected'")
             # For other platforms, be more conservative
             elif result.protocol in ['Connected', 'C']:
                 result.next_hop = "Directly Connected"
-                print(f"    ✅ Connected protocol, set to 'Directly Connected'")
+                print(f"     Connected protocol, set to 'Directly Connected'")
             else:
                 result.next_hop = "Interface Only"
-                print(f"    ⚠️ No next_hop but has interface, set to 'Interface Only'")
+                print(f"    No next_hop but has interface, set to 'Interface Only'")
 
         # Last resort
         elif not result.next_hop:
             result.next_hop = "Unspecified"
-            print(f"    ❌ No next_hop found, set to 'Unspecified'")
+            print(f"     No next_hop found, set to 'Unspecified'")
 
         print(f"    Final next_hop: '{result.next_hop}'")
         return result
@@ -915,14 +915,14 @@ class ConfigDrivenFieldNormalizer:
         """
         Normalize protocol codes using platform configuration - ENHANCED VERSION
         """
-        print(f"🔍 CONTROLLER DEBUG: Normalizing protocol '{protocol}' for platform '{platform}'")
+        print(f" CONTROLLER DEBUG: Normalizing protocol '{protocol}' for platform '{platform}'")
 
         # Get protocol mapping from platform config first
         protocol_mapping = self.platform_config.get_field_mapping(platform, 'protocols')
 
         if protocol_mapping and protocol in protocol_mapping:
             result = protocol_mapping[protocol]
-            print(f"  ✅ Platform config mapping: '{protocol}' -> '{result}'")
+            print(f"   Platform config mapping: '{protocol}' -> '{result}'")
             return result
 
         # Enhanced fallback platform-specific mappings (same as template editor)
@@ -989,14 +989,14 @@ class ConfigDrivenFieldNormalizer:
         # Try exact match
         if protocol_clean in platform_map:
             result = platform_map[protocol_clean]
-            print(f"  ✅ Exact match: '{protocol_clean}' -> '{result}'")
+            print(f"   Exact match: '{protocol_clean}' -> '{result}'")
             return result
 
         # Try case-insensitive match
         for code, name in platform_map.items():
             if code.lower() == protocol_clean.lower():
                 result = name
-                print(f"  ✅ Case-insensitive match: '{protocol_clean}' -> '{result}'")
+                print(f"   Case-insensitive match: '{protocol_clean}' -> '{result}'")
                 return result
 
         # Try without flags
@@ -1007,18 +1007,18 @@ class ConfigDrivenFieldNormalizer:
                 result = f"{base_name} Default"
             else:
                 result = base_name
-            print(f"  ✅ Base match: '{protocol_clean}' -> '{result}'")
+            print(f"   Base match: '{protocol_clean}' -> '{result}'")
             return result
 
         # For already spelled-out protocols (case insensitive)
         protocol_upper = protocol_clean.upper()
         if protocol_upper in ['BGP', 'OSPF', 'EIGRP', 'ISIS', 'RIP', 'STATIC', 'CONNECTED', 'KERNEL']:
             result = protocol_clean.title()
-            print(f"  ✅ Spelled-out match: '{protocol_clean}' -> '{result}'")
+            print(f"   Spelled-out match: '{protocol_clean}' -> '{result}'")
             return result
 
         # Return original if no mapping found
-        print(f"  ❌ No mapping found for '{protocol_clean}', returning as-is")
+        print(f"   No mapping found for '{protocol_clean}', returning as-is")
         return protocol_clean
     def _is_valid_route_entry(self, entry: NormalizedRouteData) -> bool:
         """
@@ -1047,12 +1047,12 @@ class ConfigDrivenFieldNormalizer:
 
     def normalize_system_info(self, parsed_data: List[Dict], platform: str) -> Dict:
         """Normalize system information using platform-specific field mappings from JSON config"""
-        print(f"🔍 DEBUG normalize_system_info (config-driven):")
+        print(f" DEBUG normalize_system_info (config-driven):")
         print(f"  Input parsed_data: {parsed_data}")
         print(f"  Platform: {platform}")
 
         if not parsed_data:
-            print(f"  ❌ No parsed data provided")
+            print(f"   No parsed data provided")
             return {}
 
         # Take the first entry (should only be one for show version)
@@ -1071,7 +1071,7 @@ class ConfigDrivenFieldNormalizer:
                 if template_field in entry and entry[template_field]:
                     value = str(entry[template_field]).strip()
                     normalized[normalized_field] = value
-                    print(f"    ✅ Found {normalized_field} = '{value}' from template field '{template_field}'")
+                    print(f"     Found {normalized_field} = '{value}' from template field '{template_field}'")
         else:
             # Fallback to hardcoded mappings
             print(f"  No platform-specific mappings found, using fallback mappings")
@@ -1093,11 +1093,11 @@ class ConfigDrivenFieldNormalizer:
                     if field in entry and entry[field]:
                         found_value = str(entry[field]).strip()
                         normalized[norm_field] = found_value
-                        print(f"      ✅ Found {norm_field} = '{found_value}' from field '{field}'")
+                        print(f"       Found {norm_field} = '{found_value}' from field '{field}'")
                         break
 
                 if not found_value:
-                    print(f"      ⚠️ No value found for {norm_field}")
+                    print(f"      No value found for {norm_field}")
 
         # Handle list fields (like SERIAL, HARDWARE in some templates)
         for field_name in ['serial', 'model']:
@@ -1318,7 +1318,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
 
         # Check if platform config exists
         if not self.platform_config:
-            print(f"❌ No platform_config available")
+            print(f" No platform_config available")
             return f"# No platform config available"
 
         # Check available platforms
@@ -1327,7 +1327,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
 
         # Check if current platform is in available platforms
         if self.platform not in available_platforms:
-            print(f"❌ Platform '{self.platform}' not in available platforms")
+            print(f" Platform '{self.platform}' not in available platforms")
             return f"# Platform '{self.platform}' not supported"
 
         # Try to get the command
@@ -1336,7 +1336,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
             print(f"Command lookup result: '{command}'")
 
             if command is None:
-                print(f"❌ format_command returned None")
+                print(f" format_command returned None")
 
                 # Debug: Check what's in the platform definition
                 platform_def = self.platform_config.get_platform(self.platform)
@@ -1349,17 +1349,17 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                         print(f"Command definition: {cmd_def.command}")
                         print(f"Template: {cmd_def.template}")
                     else:
-                        print(f"❌ Command type '{command_type}' not found in platform commands")
+                        print(f" Command type '{command_type}' not found in platform commands")
                 else:
-                    print(f"❌ Platform definition not found")
+                    print(f" Platform definition not found")
 
                 return f"# No command configured for {self.platform}.{command_type}"
 
-            print(f"✅ Command found: '{command}'")
+            print(f" Command found: '{command}'")
             return command
 
         except Exception as e:
-            print(f"❌ Exception in format_command: {e}")
+            print(f" Exception in format_command: {e}")
             print(f"Exception type: {type(e).__name__}")
             return f"# Error getting command: {str(e)}"
 
@@ -1374,7 +1374,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
         print(f"1. Current platform: '{self.platform}'")
 
         if not self.platform_config:
-            print(f"❌ No platform_config object")
+            print(f" No platform_config object")
             return
 
         # Check available platforms
@@ -1384,7 +1384,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
         # Check if current platform exists
         platform_def = self.platform_config.get_platform(self.platform)
         if not platform_def:
-            print(f"❌ Platform '{self.platform}' definition not found")
+            print(f" Platform '{self.platform}' definition not found")
             return
 
         print(f"3. Platform definition found: {platform_def.display_name}")
@@ -1400,14 +1400,14 @@ class EnhancedPlatformAwareTelemetryController(QObject):
             print(f"   Template: {route_cmd.template}")
             print(f"   Timeout: {route_cmd.timeout}")
         else:
-            print(f"❌ 'route_table' command not found in platform")
+            print(f" 'route_table' command not found in platform")
 
         # Test the format_command method directly
         try:
             formatted = self.platform_config.format_command(self.platform, 'route_table')
             print(f"6. format_command result: '{formatted}'")
         except Exception as e:
-            print(f"❌ format_command error: {e}")
+            print(f" format_command error: {e}")
 
         print(f"=" * 50)
 
@@ -1423,7 +1423,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
         print(f"Available platforms: {available_platforms}")
 
         if platform not in available_platforms:
-            print(f"❌ Unsupported platform: {platform}")
+            print(f" Unsupported platform: {platform}")
             print(f"Available platforms: {available_platforms}")
             return False
 
@@ -1436,15 +1436,15 @@ class EnhancedPlatformAwareTelemetryController(QObject):
 
         # THIS IS CRITICAL - make sure self.platform is set correctly
         self.platform = platform
-        print(f"✅ Set self.platform to: '{self.platform}'")
+        print(f" Set self.platform to: '{self.platform}'")
 
         # Verify platform configuration exists for this platform
         platform_def = self.platform_config.get_platform(platform)
         if platform_def:
-            print(f"✅ Platform configuration found for '{platform}'")
+            print(f" Platform configuration found for '{platform}'")
             print(f"Available commands: {list(platform_def.commands.keys())}")
         else:
-            print(f"❌ No platform configuration found for '{platform}'")
+            print(f" No platform configuration found for '{platform}'")
             return False
 
         self.credentials = credentials
@@ -1467,10 +1467,10 @@ class EnhancedPlatformAwareTelemetryController(QObject):
             self.data_collection_timer.start(30000)  # Every 10 seconds
 
             self.device_info_updated.emit(self.device_info)
-            print(f"✅ Successfully connected to {hostname}")
+            print(f" Successfully connected to {hostname}")
 
             # Debug: Verify platform is still set correctly after connection
-            print(f"✅ After connection, self.platform = '{self.platform}'")
+            print(f" After connection, self.platform = '{self.platform}'")
 
             return True
         else:
@@ -1478,24 +1478,24 @@ class EnhancedPlatformAwareTelemetryController(QObject):
             self.device_info.connection_status = "failed"
             self.connection_status_changed.emit(ip_address, "failed")
             self.device_info_updated.emit(self.device_info)
-            print(f"❌ Failed to connect to {hostname}")
+            print(f" Failed to connect to {hostname}")
             return False
 
     # Quick fix method to check and fix platform issues
     def fix_platform_issue(self):
         """Quick method to diagnose and potentially fix platform issues"""
-        print(f"\n🔧 PLATFORM ISSUE DIAGNOSTIC 🔧")
+        print(f"\n PLATFORM ISSUE DIAGNOSTIC ")
 
         # Check 1: Is platform set?
         print(f"1. Current platform: '{getattr(self, 'platform', 'NOT SET')}'")
 
         # Check 2: Is platform_config available?
         if hasattr(self, 'platform_config') and self.platform_config:
-            print(f"2. ✅ Platform config available")
+            print(f"2.  Platform config available")
             available = self.platform_config.get_available_platforms()
             print(f"   Available platforms: {available}")
         else:
-            print(f"2. ❌ No platform config")
+            print(f"2.  No platform config")
             return
 
         # Check 3: Does current platform have route_table command?
@@ -1505,23 +1505,23 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                 print(f"3. Route command: '{cmd}'")
 
                 if cmd.startswith('#'):
-                    print(f"   ❌ Command lookup failed")
+                    print(f"    Command lookup failed")
 
                     # Try to fix by checking available platforms
                     available = self.platform_config.get_available_platforms()
                     if 'cisco_ios' in available:
-                        print(f"   🔧 Trying to fix by setting platform to 'cisco_ios'")
+                        print(f"    Trying to fix by setting platform to 'cisco_ios'")
                         self.platform = 'cisco_ios'
                         cmd = self.get_platform_command('route_table')
                         print(f"   Fixed command: '{cmd}'")
 
                 else:
-                    print(f"   ✅ Command lookup successful")
+                    print(f"    Command lookup successful")
 
             except Exception as e:
-                print(f"3. ❌ Error getting route command: {e}")
+                print(f"3.  Error getting route command: {e}")
         else:
-            print(f"3. ❌ No platform set")
+            print(f"3.  No platform set")
 
 
     def _collect_system_info(self):
@@ -1589,20 +1589,20 @@ class EnhancedPlatformAwareTelemetryController(QObject):
             parsed_data = self.local_template_parser.parse(platform, command, output)
 
             if parsed_data:
-                print(f"✓ Local template parsing successful! Got {len(parsed_data)} entries")
+                print(f" Local template parsing successful! Got {len(parsed_data)} entries")
                 if len(parsed_data) > 0:
                     print(f"  First entry fields: {list(parsed_data[0].keys())}")
             else:
-                print(f"✗ Local template parsing returned empty result")
+                print(f" Local template parsing returned empty result")
 
             return parsed_data
 
         except FileNotFoundError as e:
-            print(f"✗ Template file not found: {e}")
+            print(f" Template file not found: {e}")
             return None
 
         except Exception as e:
-            print(f"✗ Local template parsing failed for {platform} {command}: {e}")
+            print(f" Local template parsing failed for {platform} {command}: {e}")
             sample_output = output[:200].replace('\n', '\\n')
             print(f"  Sample output: {sample_output}...")
             return None
@@ -1704,7 +1704,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
         # === NEW: CPU UTILIZATION DATA COLLECTION ===
         success, output, parsed_data = self.execute_command_and_parse('cpu_utilization')
         if success:
-            print(f"✅ CPU command executed successfully")
+            print(f" CPU command executed successfully")
 
             # Create a CPU-specific signal if it doesn't exist, or use existing one
             cpu_raw_output = RawCommandOutput(
@@ -1736,7 +1736,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
         # === NEW: MEMORY UTILIZATION DATA COLLECTION ===
         success, output, parsed_data = self.execute_command_and_parse('memory_utilization')
         if success:
-            print(f"✅ Memory command executed successfully")
+            print(f" Memory command executed successfully")
 
             memory_raw_output = RawCommandOutput(
                 command=self.get_platform_command('memory_utilization'),
@@ -1759,7 +1759,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
         # === NEW: LOGS DATA COLLECTION ===
         success, output, parsed_data = self.execute_command_and_parse('logs')
         if success:
-            print(f"✅ Logs command executed successfully")
+            print(f" Logs command executed successfully")
 
             self.raw_log_output.emit(RawCommandOutput(
                 command=self.get_platform_command('logs'),
@@ -1771,7 +1771,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
 
     def _collect_system_metrics(self):
         """Collect and normalize system metrics - LOWEST COMMON DENOMINATOR"""
-        print(f"🔄 Collecting basic system metrics for platform: {self.platform}")
+        print(f" Collecting basic system metrics for platform: {self.platform}")
 
         metrics = NormalizedSystemMetrics()
         metrics.platform = self.platform
@@ -1783,7 +1783,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
             cpu_percent = self._normalize_cpu_utilization(cpu_parsed)
             if cpu_percent is not None:
                 metrics.cpu_usage_percent = cpu_percent
-                print(f"📊 CPU: {cpu_percent}%")
+                print(f" CPU: {cpu_percent}%")
 
                 # Optional: Try to extract load averages if available
                 cpu_entry = cpu_parsed[0]
@@ -1802,7 +1802,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                 metrics.memory_free_mb = memory_metrics['free_mb']
                 metrics.memory_used_mb = memory_metrics['used_mb']
                 print(
-                    f"💾 Memory: {metrics.memory_used_percent}% ({metrics.memory_used_mb}/{metrics.memory_total_mb} MB)")
+                    f" Memory: {metrics.memory_used_percent}% ({metrics.memory_used_mb}/{metrics.memory_total_mb} MB)")
 
         # Temperature - OPTIONAL (skip if not supported)
         platform_def = self.platform_config.get_platform(self.platform)
@@ -1812,7 +1812,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                 temp_celsius = self._normalize_temperature(temp_parsed)
                 if temp_celsius is not None:
                     metrics.temperature_celsius = temp_celsius
-                    print(f"🌡️ Temperature: {temp_celsius}°C")
+                    print(f" Temperature: {temp_celsius}°C")
 
         # Process counts - OPTIONAL (from CPU command if available)
         if cpu_parsed and len(cpu_parsed) > 0:
@@ -1824,7 +1824,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
 
         # Emit SIMPLE normalized metrics
         self.normalized_system_metrics_ready.emit(metrics)
-        print(f"✅ Basic system metrics normalized and emitted")
+        print(f" Basic system metrics normalized and emitted")
         print(f"   CPU: {metrics.cpu_usage_percent}%, Memory: {metrics.memory_used_percent}%")
 
     def _normalize_cpu_utilization(self, parsed_data) -> Optional[float]:
@@ -1833,7 +1833,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
             return None
 
         cpu_entry = parsed_data[0]
-        print(f"📊 Normalizing CPU data: {list(cpu_entry.keys())}")
+        print(f" Normalizing CPU data: {list(cpu_entry.keys())}")
 
         # Platform-specific CPU field mapping - NORMALIZE DOWN to simple percentage
         if self.platform.startswith('cisco'):
@@ -1859,7 +1859,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                 if field in cpu_entry:
                     return float(cpu_entry[field])
 
-        print(f"❌ No CPU field found in: {list(cpu_entry.keys())}")
+        print(f" No CPU field found in: {list(cpu_entry.keys())}")
         return None
 
     def _normalize_memory_utilization(self, parsed_data) -> Optional[Dict]:
@@ -1867,7 +1867,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
         if not parsed_data or len(parsed_data) == 0:
             return None
 
-        print(f"💾 Normalizing memory data: {len(parsed_data)} entries")
+        print(f" Normalizing memory data: {len(parsed_data)} entries")
 
         if self.platform.startswith('cisco'):
             # Cisco: Simple memory pools
@@ -1890,7 +1890,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                             'free_mb': free_mb
                         }
                     except (ValueError, KeyError) as e:
-                        print(f"❌ Error parsing Cisco memory: {e}")
+                        print(f" Error parsing Cisco memory: {e}")
                         continue
 
         elif self.platform.startswith('arista'):
@@ -1937,7 +1937,7 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                         'free_mb': free_mb
                     }
             except (ValueError, KeyError) as e:
-                print(f"❌ Error parsing Arista memory: {e}")
+                print(f" Error parsing Arista memory: {e}")
 
         elif self.platform.startswith('linux'):
             # Linux: Reduce to basic memory info
@@ -1961,9 +1961,9 @@ class EnhancedPlatformAwareTelemetryController(QObject):
                             'free_mb': free_mb
                         }
             except (ValueError, KeyError) as e:
-                print(f"❌ Error parsing Linux memory: {e}")
+                print(f" Error parsing Linux memory: {e}")
 
-        print(f"❌ No memory fields found for platform: {self.platform}")
+        print(f" No memory fields found for platform: {self.platform}")
         return None
 
     def _normalize_temperature(self, parsed_data) -> Optional[float]:

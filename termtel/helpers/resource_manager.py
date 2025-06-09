@@ -22,9 +22,9 @@ class PackageResourceManager:
         self._is_dev_mode = self._detect_development_mode()
 
         if self._is_dev_mode:
-            print(f"🔧 Running in development mode")
+            print(f" Running in development mode")
         else:
-            print(f"📦 Running in package mode")
+            print(f" Running in package mode")
 
     def get_template_path(self, template_name: str) -> Optional[str]:
         """
@@ -224,7 +224,7 @@ class PackageResourceManager:
         except Exception as e:
             print(f"Relative path access failed for {cache_key}: {e}")
 
-        print(f"❌ Resource not found: {cache_key}")
+        print(f" Resource not found: {cache_key}")
         return None
 
     def _get_resource_content(self, resource_package: str, filename: str) -> Optional[str]:

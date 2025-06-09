@@ -83,10 +83,10 @@ class PlatformConfigManager:
             config_content = resource_manager.get_platforms_config()
             if config_content:
                 config_source = "package_resources"
-                print(f"✅ Loaded platforms config from package resources")
+                print(f" Loaded platforms config from package resources")
 
         except Exception as e:
-            print(f"⚠️ Could not load from package resources: {e}")
+            print(f" Could not load from package resources: {e}")
 
         # Method 2: Fallback to file system (for development)
         if not config_content:
@@ -111,10 +111,10 @@ class PlatformConfigManager:
                         with open(config_file, 'r', encoding='utf-8') as f:
                             config_content = f.read()
                         config_source = f"file_system: {config_file}"
-                        print(f"✅ Loaded platforms config from {config_file}")
+                        print(f" Loaded platforms config from {config_file}")
                         break
                 except Exception as e:
-                    print(f"⚠️ Could not load from {config_file}: {e}")
+                    print(f" Could not load from {config_file}: {e}")
                     continue
 
         # Parse the configuration
@@ -122,13 +122,13 @@ class PlatformConfigManager:
             try:
                 config_data = json.loads(config_content)
                 self._parse_config(config_data)
-                print(f"✅ Successfully parsed {len(self.platforms)} platform configurations")
-                print(f"📂 Config source: {config_source}")
+                print(f" Successfully parsed {len(self.platforms)} platform configurations")
+                print(f" Config source: {config_source}")
             except json.JSONDecodeError as e:
-                print(f"❌ Error parsing platforms config JSON: {e}")
+                print(f" Error parsing platforms config JSON: {e}")
                 self._load_fallback_config()
         else:
-            print(f"❌ Could not find platforms.json config file")
+            print(f" Could not find platforms.json config file")
             self._load_fallback_config()
 
     def _parse_config(self, config_data: Dict[str, Any]):
@@ -191,12 +191,12 @@ class PlatformConfigManager:
                 self.platforms[platform_name] = platform_def
 
             except Exception as e:
-                print(f"❌ Error parsing platform {platform_name}: {e}")
+                print(f" Error parsing platform {platform_name}: {e}")
                 continue
 
     def _load_fallback_config(self):
         """Load minimal fallback configuration if main config fails"""
-        print("🔄 Loading fallback platform configuration...")
+        print(" Loading fallback platform configuration...")
 
         # Minimal Cisco IOS config
         cisco_ios_commands = {
@@ -257,7 +257,7 @@ class PlatformConfigManager:
         )
 
         self.platforms['cisco_ios'] = cisco_ios_platform
-        print("✅ Fallback configuration loaded")
+        print(" Fallback configuration loaded")
 
     def get_available_platforms(self) -> List[str]:
         """Get list of available platform names"""
@@ -306,7 +306,7 @@ class PlatformConfigManager:
         if resource_manager.get_template_path(template_file):
             return (template_platform, template_file)
         else:
-            print(f"⚠️ Template not found: {template_file}")
+            print(f" Template not found: {template_file}")
             return None
 
     def get_netmiko_config(self, platform: str) -> Optional[NetmikoConfig]:

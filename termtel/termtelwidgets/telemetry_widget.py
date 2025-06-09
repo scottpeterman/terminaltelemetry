@@ -94,18 +94,18 @@ class TelemetryWidget(QWidget):
         #     for attr_name in ['credential_manager', 'cred_manager', 'credentials']:
         #         if hasattr(shared_services, attr_name):
         #             self.credential_manager = getattr(shared_services, attr_name)
-        #             print(f"✅ Found credential manager at shared_services.{attr_name}")
+        #             print(f" Found credential manager at shared_services.{attr_name}")
         #             break
 
     def cleanup(self):
         """Enhanced cleanup"""
-        print("🧹 TelemetryWidget cleanup called")
+        print(" TelemetryWidget cleanup called")
 
         # Cleanup controller
         if hasattr(self.controller, 'cleanup'):
             self.controller.cleanup()
 
-        print("✅ TelemetryWidget cleanup completed")
+        print(" TelemetryWidget cleanup completed")
 
     def _init_theme_system(self):
         """Initialize theme system - use shared or create own"""
@@ -113,13 +113,13 @@ class TelemetryWidget(QWidget):
             if self.shared_services and hasattr(self.shared_services, 'theme_manager'):
                 self.theme_library = self.shared_services.theme_manager
                 self.available_themes = self.theme_library.get_theme_names()
-                print("✅ Using shared theme manager")
+                print(" Using shared theme manager")
             else:
                 # Use main theme system instead of termtelwidgets themes
                 from termtel.themes3 import ThemeLibrary
                 self.theme_library = ThemeLibrary()
                 self.available_themes = self.theme_library.get_theme_names()
-                print("✅ Created main theme library")
+                print(" Created main theme library")
         except ImportError:
             print("Warning: Main theme library not available, using fallback")
             self.theme_library = None
@@ -129,7 +129,7 @@ class TelemetryWidget(QWidget):
         """Connect to parent application's theme change signals"""
         # Skip signal connection for now - we'll handle theme changes directly
         # from the setup.py safe_switch_theme function
-        print("ℹ️ Theme changes will be handled directly by parent application")
+        print("Theme changes will be handled directly by parent application")
 
     @pyqtSlot(str)
     def _on_parent_theme_changed(self, theme_name):
@@ -137,11 +137,11 @@ class TelemetryWidget(QWidget):
         Handle theme change signal from parent application
         This is the key method that prevents crashes
         """
-        print(f"🎨 Received theme change from parent: {theme_name}")
+        print(f" Received theme change from parent: {theme_name}")
 
         # Prevent recursive theme changes
         if self.theme_change_in_progress:
-            print("🔄 Theme change already in progress, skipping")
+            print(" Theme change already in progress, skipping")
             return
 
         self.theme_change_in_progress = True
@@ -158,7 +158,7 @@ class TelemetryWidget(QWidget):
                 self.theme_combo.currentTextChanged.connect(self._on_theme_changed)
 
         except Exception as e:
-            print(f"❌ Error applying parent theme: {e}")
+            print(f" Error applying parent theme: {e}")
         finally:
             self.theme_change_in_progress = False
 
@@ -166,7 +166,7 @@ class TelemetryWidget(QWidget):
         """
         Safely apply theme to all components including threaded ones
         """
-        print(f"🎨 Applying theme safely: {theme_name}")
+        print(f" Applying theme safely: {theme_name}")
 
         # Store current theme
         self.current_theme = theme_name
@@ -176,7 +176,7 @@ class TelemetryWidget(QWidget):
             try:
                 self.theme_library.apply_theme(self, theme_name)
             except Exception as e:
-                print(f"❌ Error applying theme to main widget: {e}")
+                print(f" Error applying theme to main widget: {e}")
 
         # Apply to controller (threaded components)
         try:
@@ -185,7 +185,7 @@ class TelemetryWidget(QWidget):
             elif hasattr(self.controller, 'change_theme'):
                 self.controller.change_theme(theme_name)
         except Exception as e:
-            print(f"❌ Error applying theme to controller: {e}")
+            print(f" Error applying theme to controller: {e}")
 
         # Apply to individual widgets that might have their own theme handling
         self._apply_theme_to_child_widgets(theme_name)
@@ -217,7 +217,7 @@ class TelemetryWidget(QWidget):
                         # Fallback: apply theme directly
                         self.theme_library.apply_theme(widget, theme_name)
                 except Exception as e:
-                    print(f"⚠️ Could not apply theme to {widget_name}: {e}")
+                    print(f" Could not apply theme to {widget_name}: {e}")
 
     # Public API for parent applications to safely change themes
     def set_theme_from_parent(self, theme_name: str):
@@ -225,7 +225,7 @@ class TelemetryWidget(QWidget):
         Public API for parent applications to change widget theme
         Use this instead of direct theme library calls
         """
-        print(f"🎨 Theme change requested from parent API: {theme_name}")
+        print(f" Theme change requested from parent API: {theme_name}")
         self._on_parent_theme_changed(theme_name)
 
     def get_current_theme(self):
@@ -237,7 +237,7 @@ class TelemetryWidget(QWidget):
         try:
             original_controller = EnhancedPlatformAwareTelemetryController(self.theme_library)
             self.controller = ThreadedTelemetryController(original_controller)
-            print("✅ Telemetry controller initialized")
+            print(" Telemetry controller initialized")
         except ImportError:
             print("Error: Enhanced controller not available")
             raise ImportError("Required telemetry controller not available")
@@ -480,15 +480,15 @@ class TelemetryWidget(QWidget):
         try:
             # from enhanced_cpu_widget import PlatformAgnosticCPUWidget
             self.cpu_widget = PlatformAgnosticCPUWidget(self.controller, self.theme_library)
-            print("✅ Using PlatformAgnosticCPUWidget")
+            print(" Using PlatformAgnosticCPUWidget")
         except ImportError:
             try:
                 from enhanced_cpu_widget import SimplifiedCPUWidget
                 self.cpu_widget = SimplifiedCPUWidget(self.controller, self.theme_library)
-                print("✅ Using SimplifiedCPUWidget")
+                print(" Using SimplifiedCPUWidget")
             except ImportError:
                 self.cpu_widget = self._create_simple_cpu_widget()
-                print("❌ Using fallback CPU widget")
+                print(" Using fallback CPU widget")
 
         parent_splitter.addWidget(self.cpu_widget)
 
@@ -497,16 +497,16 @@ class TelemetryWidget(QWidget):
         try:
             # from normalized_widgets import FixedRouteWidget
             self.route_widget = FixedRouteWidget(self.controller, self.theme_library)
-            print("✅ Using FixedRouteWidget")
+            print(" Using FixedRouteWidget")
         except ImportError:
             try:
                 from normalized_widgets import EnhancedRouteWidget
                 self.route_widget = EnhancedRouteWidget(self.controller, self.theme_library)
-                print("✅ Using EnhancedRouteWidget")
+                print(" Using EnhancedRouteWidget")
             except ImportError:
                 self.route_widget = QTextEdit()
                 self.route_widget.setPlainText("Route Widget (Enhanced version not available)")
-                print("❌ Using fallback route widget")
+                print(" Using fallback route widget")
 
         parent_splitter.addWidget(self.route_widget)
 
@@ -515,12 +515,12 @@ class TelemetryWidget(QWidget):
         try:
             # from enhanced_log_widget import SimplifiedLogWidget
             self.log_widget = SimplifiedLogWidget(self.controller, self.theme_library)
-            print("✅ Using SimplifiedLogWidget")
+            print(" Using SimplifiedLogWidget")
         except ImportError:
             self.log_widget = QTextEdit()
             self.log_widget.setMaximumHeight(120)  # Compact for embedding
             self.log_widget.setPlainText("System logs will appear here...")
-            print("❌ Using fallback log widget")
+            print(" Using fallback log widget")
 
         parent_splitter.addWidget(self.log_widget)
 
@@ -555,9 +555,9 @@ class TelemetryWidget(QWidget):
         self.controller.raw_log_output.connect(self._on_log_output)
         if hasattr(self.controller, 'connection_error_occurred'):
             self.controller.connection_error_occurred.connect(self._on_connection_error_occurred)
-            print("✅ Connected to enhanced error signal")
+            print(" Connected to enhanced error signal")
         else:
-            print("⚠️ Enhanced error signal not available")
+            print(" Enhanced error signal not available")
 
     def _apply_initial_theme(self):
         """Apply initial theme"""
@@ -570,7 +570,7 @@ class TelemetryWidget(QWidget):
     def _auto_connect(self):
         """Auto-connect using provided device config"""
         if self.device_config:
-            print(f"🚀 Auto-connecting to {self.device_config.get('hostname', 'Unknown')}")
+            print(f" Auto-connecting to {self.device_config.get('hostname', 'Unknown')}")
             # TODO: Implement auto-connection logic
             pass
 
@@ -578,19 +578,19 @@ class TelemetryWidget(QWidget):
         """Show connection dialog - FIXED to store dialog reference properly"""
         try:
             from termtel.termtelwidgets.connection_dialog import DeviceConnectionDialog
-            print("🎯 Creating connection dialog...")
+            print(" Creating connection dialog...")
 
             # Store dialog reference BEFORE connecting signals
             self.active_connection_dialog = DeviceConnectionDialog(self.theme_library, parent=self.parent_app)
 
-            print(f"🎯 Dialog created: {self.active_connection_dialog}")
+            print(f" Dialog created: {self.active_connection_dialog}")
 
             # Connect the signal
             self.active_connection_dialog.connection_requested.connect(self._handle_connection_request)
 
-            print(f"🎯 Signal connected, showing modal dialog...")
+            print(f" Signal connected, showing modal dialog...")
             result = self.active_connection_dialog.exec()
-            print(f"🎯 Dialog closed with result: {result}")
+            print(f" Dialog closed with result: {result}")
 
             # Clear reference when dialog is closed
             self.active_connection_dialog = None
@@ -602,20 +602,20 @@ class TelemetryWidget(QWidget):
     @pyqtSlot(str, str, str, object)
     def _handle_connection_request(self, hostname, ip_address, platform, credentials):
         """Handle connection request from dialog - FIXED with proper dialog storage"""
-        print(f"🚀 Connection requested: {hostname} ({ip_address}) - {platform}")
+        print(f" Connection requested: {hostname} ({ip_address}) - {platform}")
 
         # CRITICAL: Get dialog reference from the sender (the dialog that emitted the signal)
         dialog = self.sender()  # This is the actual dialog object
 
-        print(f"🎯 Dialog from sender: {dialog}")
-        print(f"🎯 Active dialog reference: {getattr(self, 'active_connection_dialog', None)}")
+        print(f" Dialog from sender: {dialog}")
+        print(f" Active dialog reference: {getattr(self, 'active_connection_dialog', None)}")
 
         # Also store in backup attributes for threaded access
         self._connection_dialog = dialog
         self._connection_hostname = hostname
         self._connection_ip = ip_address
 
-        print(f"🎯 Stored dialog reference: {self._connection_dialog is not None}")
+        print(f" Stored dialog reference: {self._connection_dialog is not None}")
 
         try:
             # Update UI immediately
@@ -627,7 +627,7 @@ class TelemetryWidget(QWidget):
             success = self.controller.connect_to_device(hostname, ip_address, platform, credentials)
 
             if success:
-                print(f"✅ Worker thread started for {hostname}")
+                print(f" Worker thread started for {hostname}")
                 self.widget_status_changed.emit(f"Connecting to {hostname}")
 
                 # Set up connection timeout
@@ -643,25 +643,25 @@ class TelemetryWidget(QWidget):
                 return False
 
         except Exception as e:
-            print(f"❌ Connection error: {e}")
+            print(f" Connection error: {e}")
             self._handle_immediate_connection_failure(f"Connection error: {str(e)}")
             return False
 
     def _handle_immediate_connection_failure(self, error_msg):
         """Handle immediate connection failures"""
-        print(f"💥 Immediate connection failure: {error_msg}")
+        print(f" Immediate connection failure: {error_msg}")
 
         dialog = getattr(self, '_connection_dialog', None)
         hostname = getattr(self, '_connection_hostname', 'Unknown')
         ip_address = getattr(self, '_connection_ip', '')
 
-        print(f"🎯 Immediate failure - Dialog available: {dialog is not None}")
+        print(f" Immediate failure - Dialog available: {dialog is not None}")
 
         if dialog and hasattr(dialog, 'handle_connection_failure'):
-            print(f"📞 Calling dialog.handle_connection_failure for immediate failure")
+            print(f" Calling dialog.handle_connection_failure for immediate failure")
             dialog.handle_connection_failure(hostname, ip_address, error_msg)
         else:
-            print(f"⚠️ No dialog reference, showing fallback error message")
+            print(f" No dialog reference, showing fallback error message")
             QMessageBox.critical(self, "Connection Error", error_msg)
 
         self._reset_connection_ui()
@@ -675,13 +675,13 @@ class TelemetryWidget(QWidget):
         hostname = getattr(self, '_connection_hostname', 'Unknown')
         ip_address = getattr(self, '_connection_ip', '')
 
-        print(f"🎯 Timeout - Dialog available: {dialog is not None}")
+        print(f" Timeout - Dialog available: {dialog is not None}")
 
         if dialog and hasattr(dialog, 'handle_connection_failure'):
-            print(f"📞 Calling dialog.handle_connection_failure for timeout")
+            print(f" Calling dialog.handle_connection_failure for timeout")
             dialog.handle_connection_failure(hostname, ip_address, "Connection timeout after 30 seconds")
         else:
-            print(f"⚠️ No dialog reference for timeout")
+            print(f" No dialog reference for timeout")
             QMessageBox.critical(self, "Connection Timeout", "Connection attempt timed out after 30 seconds")
 
         self._reset_connection_ui()
@@ -690,7 +690,7 @@ class TelemetryWidget(QWidget):
     @pyqtSlot(str, str, str)  # NEW SLOT
     def _on_connection_error_occurred(self, device_ip, hostname, error_message):
         """Handle detailed connection error - NEW METHOD"""
-        print(f"💥 DETAILED ERROR: {hostname} ({device_ip}) -> {error_message}")
+        print(f" DETAILED ERROR: {hostname} ({device_ip}) -> {error_message}")
 
         # Stop timeout timer
         if hasattr(self, 'connection_timeout_timer'):
@@ -702,13 +702,13 @@ class TelemetryWidget(QWidget):
         # Get stored dialog
         dialog = getattr(self, '_connection_dialog', None)
 
-        print(f"🎯 Error handler - Dialog available: {dialog is not None}")
+        print(f" Error handler - Dialog available: {dialog is not None}")
 
         if dialog and hasattr(dialog, 'handle_connection_failure'):
-            print(f"📞 Calling dialog.handle_connection_failure with detailed error")
+            print(f" Calling dialog.handle_connection_failure with detailed error")
             dialog.handle_connection_failure(hostname, device_ip, error_message)
         else:
-            print(f"⚠️ No dialog reference, showing fallback error message")
+            print(f" No dialog reference, showing fallback error message")
             QMessageBox.critical(self, "Connection Failed", f"Failed to connect to {hostname}:\n\n{error_message}")
 
         # Emit error signal
@@ -719,7 +719,7 @@ class TelemetryWidget(QWidget):
 
     def _disconnect_device(self):
         """Disconnect from current device"""
-        print(f"🔌 Disconnect requested")
+        print(f" Disconnect requested")
 
         if hasattr(self.controller, 'disconnect_from_device'):
             self.controller.disconnect_from_device()
@@ -729,7 +729,7 @@ class TelemetryWidget(QWidget):
 
         # Emit widget-level signal
         self.widget_status_changed.emit("Disconnected")
-        print(f"✅ Disconnection completed")
+        print(f" Disconnection completed")
 
     def _reset_connection_ui(self):
         """Reset UI to disconnected state"""
@@ -743,7 +743,7 @@ class TelemetryWidget(QWidget):
 
     def _refresh_all_data(self):
         """Refresh all telemetry data"""
-        print(f"📡 Manual refresh requested")
+        print(f" Manual refresh requested")
 
         if hasattr(self.controller, 'collect_telemetry_data'):
             self.controller.collect_telemetry_data()
@@ -756,7 +756,7 @@ class TelemetryWidget(QWidget):
 
     def _toggle_auto_refresh(self):
         """Toggle automatic data refresh"""
-        print(f"🔄 Auto-refresh toggle clicked")
+        print(f" Auto-refresh toggle clicked")
 
         if hasattr(self.controller, 'worker_thread') and self.controller.worker_thread:
             worker = self.controller.worker_thread
@@ -765,24 +765,24 @@ class TelemetryWidget(QWidget):
                 self.controller.stop_auto_refresh()
                 self.auto_refresh_button.setText("Start Auto")
                 self.data_status_label.setText("Auto-refresh: Stopped")
-                print(f"🛑 Auto-refresh stopped")
+                print(f" Auto-refresh stopped")
             else:
                 self.controller.start_auto_refresh(30)
                 self.auto_refresh_button.setText("Stop Auto")
                 self.data_status_label.setText("Auto-refresh: 30s")
-                print(f"🔄 Auto-refresh started")
+                print(f" Auto-refresh started")
 
     # ===== SIGNAL HANDLERS =====
 
     @pyqtSlot(str, str)
     def _on_connection_status_changed(self, device_ip, status):
         """Handle connection status changes - FIXED success handling"""
-        print(f"📡 Connection status: '{device_ip}' -> '{status}'")
+        print(f" Connection status: '{device_ip}' -> '{status}'")
 
         self.connection_status = status
 
         if status == "connected":
-            print(f"✅ Connection successful to {device_ip}")
+            print(f" Connection successful to {device_ip}")
 
             # Stop timeout timer
             if hasattr(self, 'connection_timeout_timer'):
@@ -797,18 +797,18 @@ class TelemetryWidget(QWidget):
             dialog = getattr(self, '_connection_dialog', None)
             hostname = getattr(self, '_connection_hostname', 'Unknown')
             dialog.accept()
-            print(f"🎯 Success handler - Dialog available: {dialog is not None}")
-            print(f"🎯 Success handler - Dialog type: {type(dialog) if dialog else 'None'}")
+            print(f" Success handler - Dialog available: {dialog is not None}")
+            print(f" Success handler - Dialog type: {type(dialog) if dialog else 'None'}")
 
             if dialog and hasattr(dialog, 'handle_connection_success'):
-                print(f"📞 Calling dialog.handle_connection_success('{hostname}', '{device_ip}')")
+                print(f" Calling dialog.handle_connection_success('{hostname}', '{device_ip}')")
                 try:
                     dialog.handle_connection_success(hostname, device_ip)
-                    print(f"✅ Success handler called successfully")
+                    print(f" Success handler called successfully")
                 except Exception as e:
-                    print(f"❌ Error calling success handler: {e}")
+                    print(f" Error calling success handler: {e}")
             else:
-                print(f"⚠️ No dialog reference or method for success feedback")
+                print(f" No dialog reference or method for success feedback")
                 print(f"    Dialog: {dialog}")
                 print(f"    Has method: {hasattr(dialog, 'handle_connection_success') if dialog else False}")
 
@@ -821,7 +821,7 @@ class TelemetryWidget(QWidget):
             self._clear_connection_monitoring()
 
         elif "failed" in status:
-            print(f"❌ Connection failed to {device_ip}")
+            print(f" Connection failed to {device_ip}")
 
             # Stop timeout timer
             if hasattr(self, 'connection_timeout_timer'):
@@ -834,14 +834,14 @@ class TelemetryWidget(QWidget):
             dialog = getattr(self, '_connection_dialog', None)
             hostname = getattr(self, '_connection_hostname', 'Unknown')
 
-            print(f"🎯 Failure handler - Dialog available: {dialog is not None}")
+            print(f" Failure handler - Dialog available: {dialog is not None}")
 
             if dialog and hasattr(dialog, 'handle_connection_failure'):
-                print(f"📞 Calling dialog.handle_connection_failure")
+                print(f" Calling dialog.handle_connection_failure")
                 dialog.handle_connection_failure(hostname, device_ip,
                                                  "Connection failed - check credentials and network connectivity")
             else:
-                print(f"⚠️ No dialog reference for failure feedback")
+                print(f" No dialog reference for failure feedback")
                 print(f"status: {status}")
                 QMessageBox.critical(self, f"Connection Failed", f"{status}")
 
@@ -858,7 +858,7 @@ class TelemetryWidget(QWidget):
 
     def _clear_connection_monitoring(self):
         """Clear connection monitoring state - ENHANCED"""
-        print(f"🧹 Clearing connection monitoring state")
+        print(f" Clearing connection monitoring state")
 
         if hasattr(self, 'connection_timeout_timer'):
             self.connection_timeout_timer.stop()
@@ -871,7 +871,7 @@ class TelemetryWidget(QWidget):
     @pyqtSlot(object)
     def _on_device_info_updated(self, device_info):
         """Handle device info updates"""
-        print(f"📋 Device info updated: {device_info.hostname}")
+        print(f" Device info updated: {device_info.hostname}")
 
         # Update device info display
         info_text = f"{device_info.hostname}\n{device_info.platform}\n{device_info.version}"
@@ -941,7 +941,7 @@ class TelemetryWidget(QWidget):
         if self.theme_change_in_progress:
             return
 
-        print(f"🎨 Internal theme change requested: {theme_name}")
+        print(f" Internal theme change requested: {theme_name}")
 
         # Apply theme to this widget
         self._apply_theme_safe(theme_name)

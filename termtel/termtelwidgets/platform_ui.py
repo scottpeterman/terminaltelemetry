@@ -874,13 +874,13 @@ class PlatformConfigToolMainWindow(QMainWindow):
         header_group = QGroupBox()
         header_layout = QVBoxLayout(header_group)
 
-        title_label = QLabel("⚙️ Platform Configuration Tool")
+        title_label = QLabel(" Platform Configuration Tool")
         title_label.setProperty("titleLabel", True)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         header_layout.addWidget(title_label)
 
         warning_label = QLabel(
-            "⚠️ WARNING: This is an advanced configuration tool. "
+            " WARNING: This is an advanced configuration tool. "
             "Incorrect settings can break telemetry functionality. "
             "Always backup your configuration before making changes."
         )
@@ -896,22 +896,22 @@ class PlatformConfigToolMainWindow(QMainWindow):
         # Platform Manager Tab
         self.platform_manager_tab = QWidget()
         self._setup_platform_manager_tab()
-        self.tab_widget.addTab(self.platform_manager_tab, "🖥️ Platform Manager")
+        self.tab_widget.addTab(self.platform_manager_tab, " Platform Manager")
 
         # Configuration Editor Tab
         self.config_editor_tab = QWidget()
         self._setup_config_editor_tab()
-        self.tab_widget.addTab(self.config_editor_tab, "📝 Raw Configuration")
+        self.tab_widget.addTab(self.config_editor_tab, " Raw Configuration")
 
         # Validation Tab
         self.validation_tab = QWidget()
         self._setup_validation_tab()
-        self.tab_widget.addTab(self.validation_tab, "✅ Validation & Testing")
+        self.tab_widget.addTab(self.validation_tab, " Validation & Testing")
 
         # Help Tab
         self.help_tab = QWidget()
         self._setup_help_tab()
-        self.tab_widget.addTab(self.help_tab, "❓ Help & Documentation")
+        self.tab_widget.addTab(self.help_tab, " Help & Documentation")
 
         layout.addWidget(self.tab_widget)
 
@@ -922,7 +922,7 @@ class PlatformConfigToolMainWindow(QMainWindow):
         # Quick actions
         actions_layout = QHBoxLayout()
 
-        add_platform_btn = QPushButton("➕ Add New Platform")
+        add_platform_btn = QPushButton(" Add New Platform")
         add_platform_btn.setStyleSheet("""
             QPushButton {
                 background-color: #4CAF50;
@@ -940,17 +940,17 @@ class PlatformConfigToolMainWindow(QMainWindow):
         add_platform_btn.clicked.connect(self._add_new_platform)
         actions_layout.addWidget(add_platform_btn)
 
-        backup_btn = QPushButton("💾 Create Backup")
+        backup_btn = QPushButton(" Create Backup")
         backup_btn.clicked.connect(self._create_backup)
         actions_layout.addWidget(backup_btn)
 
-        restore_btn = QPushButton("📂 Restore Backup")
+        restore_btn = QPushButton(" Restore Backup")
         restore_btn.clicked.connect(self._restore_backup)
         actions_layout.addWidget(restore_btn)
 
         actions_layout.addStretch()
 
-        reload_btn = QPushButton("🔄 Reload Config")
+        reload_btn = QPushButton(" Reload Config")
         reload_btn.clicked.connect(self._reload_configuration)
         actions_layout.addWidget(reload_btn)
 
@@ -978,21 +978,21 @@ class PlatformConfigToolMainWindow(QMainWindow):
         # Editor controls
         editor_controls = QHBoxLayout()
 
-        load_btn = QPushButton("📁 Load from File")
+        load_btn = QPushButton(" Load from File")
         load_btn.clicked.connect(self._load_config_file)
         editor_controls.addWidget(load_btn)
 
-        save_btn = QPushButton("💾 Save to File")
+        save_btn = QPushButton(" Save to File")
         save_btn.clicked.connect(self._save_config_file)
         editor_controls.addWidget(save_btn)
 
-        validate_btn = QPushButton("✅ Validate JSON")
+        validate_btn = QPushButton(" Validate JSON")
         validate_btn.clicked.connect(self._validate_json)
         editor_controls.addWidget(validate_btn)
 
         editor_controls.addStretch()
 
-        format_btn = QPushButton("🎨 Format JSON")
+        format_btn = QPushButton(" Format JSON")
         format_btn.clicked.connect(self._format_json)
         editor_controls.addWidget(format_btn)
 
@@ -1018,15 +1018,15 @@ class PlatformConfigToolMainWindow(QMainWindow):
         # Validation controls
         validation_controls = QHBoxLayout()
 
-        validate_all_btn = QPushButton("🔍 Validate All Platforms")
+        validate_all_btn = QPushButton(" Validate All Platforms")
         validate_all_btn.clicked.connect(self._validate_all_platforms)
         validation_controls.addWidget(validate_all_btn)
 
-        test_templates_btn = QPushButton("📋 Check Templates")
+        test_templates_btn = QPushButton(" Check Templates")
         test_templates_btn.clicked.connect(self._check_templates)
         validation_controls.addWidget(test_templates_btn)
 
-        export_report_btn = QPushButton("📊 Export Report")
+        export_report_btn = QPushButton(" Export Report")
         export_report_btn.clicked.connect(self._export_validation_report)
         validation_controls.addWidget(export_report_btn)
 
@@ -1279,7 +1279,7 @@ class PlatformConfigToolMainWindow(QMainWindow):
         warning_msg = QMessageBox(self)
         warning_msg.setIcon(QMessageBox.Icon.Warning)
         warning_msg.setWindowTitle("Platform Configuration Tool")
-        warning_msg.setText("⚠️ Advanced Configuration Tool")
+        warning_msg.setText(" Advanced Configuration Tool")
         warning_msg.setInformativeText(
             "This tool allows direct modification of platform configurations.\n\n"
             "Incorrect configurations can break telemetry functionality.\n"
@@ -1399,18 +1399,18 @@ class PlatformConfigToolMainWindow(QMainWindow):
                 validation = self.config_manager.validate_platform_config(platform_name)
 
                 if validation['valid']:
-                    results.append(f"  ✅ {platform_name}: Valid")
+                    results.append(f"   {platform_name}: Valid")
                     results.append(f"     Commands: {len(validation['available_commands'])}")
                     if validation['missing_templates']:
-                        results.append(f"     ⚠️ Missing templates: {len(validation['missing_templates'])}")
+                        results.append(f"     Missing templates: {len(validation['missing_templates'])}")
                 else:
-                    results.append(f"  ❌ {platform_name}: Invalid")
+                    results.append(f"   {platform_name}: Invalid")
                     for error in validation['errors']:
                         results.append(f"     • {error}")
                     errors_found += 1
 
             except Exception as e:
-                results.append(f"  💥 {platform_name}: Exception - {str(e)}")
+                results.append(f"   {platform_name}: Exception - {str(e)}")
                 errors_found += 1
 
             results.append("")
@@ -1421,9 +1421,9 @@ class PlatformConfigToolMainWindow(QMainWindow):
         results.append(f"Invalid platforms: {errors_found}")
 
         if errors_found == 0:
-            results.append("\n🎉 All platforms are valid!")
+            results.append("\n All platforms are valid!")
         else:
-            results.append(f"\n⚠️ Found {errors_found} platforms with issues.")
+            results.append(f"\n Found {errors_found} platforms with issues.")
 
         self.validation_results.setPlainText("\n".join(results))
         self.tab_widget.setCurrentWidget(self.validation_tab)
@@ -1550,7 +1550,7 @@ class PlatformConfigToolMainWindow(QMainWindow):
                           "TerminalTelemetry Platform Configuration Tool v1.0\n\n"
                           "Advanced configuration tool for adding and managing "
                           "network device platforms in TerminalTelemetry.\n\n"
-                          "⚠️ Use with caution - incorrect configurations can "
+                          " Use with caution - incorrect configurations can "
                           "break telemetry functionality.")
 
     def closeEvent(self, event):
@@ -1756,7 +1756,7 @@ def main():
         }
 
         QCheckBox::indicator:checked::after {
-            content: "✓";
+            content: "";
             color: white;
             font-weight: bold;
         }
