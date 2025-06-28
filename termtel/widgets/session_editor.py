@@ -2,7 +2,7 @@ import sys
 import json
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QPushButton,
                              QTreeWidget, QTreeWidgetItem, QMenu, QLineEdit, QFormLayout, QComboBox,
-                             QWidget, QLabel, QMessageBox, QSpinBox, QFileDialog, QApplication)
+                             QWidget, QLabel, QMessageBox, QSpinBox, QFileDialog, QApplication, QInputDialog)
 from PyQt6.QtCore import Qt
 import yaml
 from pathlib import Path
@@ -354,7 +354,7 @@ class SessionEditorDialog(QDialog):
 
         if item_data['type'] == 'folder':
             # Simple folder name edit
-            name, ok = QLineEdit.getText(
+            name, ok = QInputDialog.getText(
                 self, "Edit Folder", "Folder name:",
                 QLineEdit.EchoMode.Normal, item.text(0)
             )
@@ -436,7 +436,7 @@ class SessionEditorDialog(QDialog):
         menu.exec(self.tree.viewport().mapToGlobal(position))
 
     def add_folder(self):
-        name, ok = QLineEdit.getText(self, "New Folder", "Folder name:")
+        name, ok = QInputDialog.getText(self, "New Folder", "Folder name:")
         if ok and name:
             folder_item = QTreeWidgetItem(self.tree)
             folder_item.setText(0, name)
