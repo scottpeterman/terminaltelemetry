@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QTableWidget, QTableWidgetItem,
                              QMessageBox, QMenu, QAbstractItemView, QWidget,
-                             QInputDialog, QFileDialog)
+                             QInputDialog, QFileDialog, QCheckBox, QFormLayout)
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QAction
 import logging
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class CredentialEditDialog(QDialog):
-    """Dialog for adding/editing individual credentials."""
+    """Dialog for adding/editing individual credentials with SSH key support."""
 
     def __init__(self, cred_data: Dict = None, parent=None):
         super().__init__(parent)
@@ -26,7 +26,8 @@ class CredentialEditDialog(QDialog):
             'uuid': str(uuid.uuid4()),
             'username': '',
             'password': '',
-            'display_name': ''
+            'display_name': '',
+            'key_path': ''
         }
         self.setup_ui()
 
@@ -34,34 +35,58 @@ class CredentialEditDialog(QDialog):
         """Initialize the UI components."""
         self.setWindowTitle("Edit Credential")
         self.setModal(True)
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(500)
 
         layout = QVBoxLayout(self)
 
+        # Create form layout
+        form_layout = QFormLayout()
+
         # Display Name field
-        display_name_layout = QHBoxLayout()
-        display_name_label = QLabel("Display Name:")
         self.display_name_input = QLineEdit(self.cred_data.get('display_name', ''))
-        display_name_layout.addWidget(display_name_label)
-        display_name_layout.addWidget(self.display_name_input)
-        layout.addLayout(display_name_layout)
+        form_layout.addRow("Display Name:", self.display_name_input)
 
         # Username field
-        username_layout = QHBoxLayout()
-        username_label = QLabel("Username:")
         self.username_input = QLineEdit(self.cred_data.get('username', ''))
-        username_layout.addWidget(username_label)
-        username_layout.addWidget(self.username_input)
-        layout.addLayout(username_layout)
+        form_layout.addRow("Username:", self.username_input)
 
         # Password field
-        password_layout = QHBoxLayout()
-        password_label = QLabel("Password:")
         self.password_input = QLineEdit(self.cred_data.get('password', ''))
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
-        password_layout.addWidget(password_label)
-        password_layout.addWidget(self.password_input)
-        layout.addLayout(password_layout)
+        form_layout.addRow("Password:", self.password_input)
+
+        layout.addLayout(form_layout)
+
+        # SSH Key section
+        key_group = QWidget()
+        key_layout = QVBoxLayout(key_group)
+        key_layout.setContentsMargins(0, 10, 0, 0)
+
+        # Separator
+        separator_label = QLabel("SSH Key Authentication (Optional)")
+        separator_label.setStyleSheet("font-weight: bold; padding: 5px 0;")
+        key_layout.addWidget(separator_label)
+
+        # SSH Key file selector
+        key_file_layout = QHBoxLayout()
+        self.key_path_input = QLineEdit(self.cred_data.get('key_path', ''))
+        self.key_path_input.setPlaceholderText("Path to SSH private key (e.g., ~/.ssh/id_rsa)")
+        self.key_browse_btn = QPushButton("Browse...")
+        self.key_browse_btn.clicked.connect(self.browse_key_file)
+
+        key_file_layout.addWidget(QLabel("SSH Key:"))
+        key_file_layout.addWidget(self.key_path_input)
+        key_file_layout.addWidget(self.key_browse_btn)
+        key_layout.addLayout(key_file_layout)
+
+        # Info label
+        info_label = QLabel(
+            "Leave SSH Key blank to use password authentication or default keys from ~/.ssh_manager/keys.json")
+        info_label.setWordWrap(True)
+        info_label.setStyleSheet("font-size: 10px; font-style: italic; padding: 5px;")
+        key_layout.addWidget(info_label)
+
+        layout.addWidget(key_group)
 
         # Buttons
         button_layout = QHBoxLayout()
@@ -73,18 +98,33 @@ class CredentialEditDialog(QDialog):
         button_layout.addWidget(cancel_button)
         layout.addLayout(button_layout)
 
+    def browse_key_file(self):
+        """Open file dialog to select SSH key"""
+        default_dir = str(Path.home() / ".ssh")
+
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select SSH Private Key",
+            default_dir,
+            "SSH Keys (id_rsa id_ed25519 id_ecdsa id_dsa);;All Files (*)"
+        )
+
+        if file_path:
+            self.key_path_input.setText(file_path)
+
     def get_credentials(self) -> Dict:
         """Return the current credential data."""
         self.cred_data.update({
             'display_name': self.display_name_input.text(),
             'username': self.username_input.text(),
-            'password': self.password_input.text()
+            'password': self.password_input.text(),
+            'key_path': self.key_path_input.text().strip()
         })
         return self.cred_data
 
 
 class CredentialManagerDialog(QDialog):
-    """Main dialog for managing credentials."""
+    """Main dialog for managing credentials with SSH key support."""
 
     credentials_updated = pyqtSignal()  # Signal when credentials are modified
 
@@ -98,7 +138,7 @@ class CredentialManagerDialog(QDialog):
         """Initialize the UI components."""
         self.setWindowTitle("Credential Manager")
         self.setModal(True)
-        self.resize(800, 400)
+        self.resize(900, 400)
 
         layout = QVBoxLayout(self)
 
@@ -129,8 +169,8 @@ class CredentialManagerDialog(QDialog):
 
         # Credentials table
         self.creds_table = QTableWidget()
-        self.creds_table.setColumnCount(3)
-        self.creds_table.setHorizontalHeaderLabels(["Display Name", "Username", "Password"])
+        self.creds_table.setColumnCount(4)  # Added SSH Key column
+        self.creds_table.setHorizontalHeaderLabels(["Display Name", "Username", "Password", "SSH Key"])
         self.creds_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.creds_table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.creds_table.customContextMenuRequested.connect(self.show_context_menu)
@@ -187,12 +227,10 @@ class CredentialManagerDialog(QDialog):
 
                 if reply == QMessageBox.StandardButton.Yes:
                     try:
-                        # Delete the corrupt file
                         creds_path = self.cred_manager.config_dir / "credentials.yaml"
                         if creds_path.exists():
                             creds_path.unlink()
 
-                        # Create new empty credentials file
                         self.cred_manager.save_credentials([], creds_path)
                         self.load_credentials()
 
@@ -223,7 +261,6 @@ class CredentialManagerDialog(QDialog):
             creds_path = self.cred_manager.config_dir / "credentials.yaml"
 
             if not creds_path.exists():
-                # Create new empty credentials file if it doesn't exist
                 self.cred_manager.save_credentials([], creds_path)
                 self.creds_table.setRowCount(0)
                 return
@@ -236,18 +273,29 @@ class CredentialManagerDialog(QDialog):
                 username_item = QTableWidgetItem(cred['username'])
                 password_item = QTableWidgetItem('********')
 
+                # Show key path or empty
+                key_path = cred.get('key_path', '')
+                if key_path:
+                    # Show just the filename or last part of path
+                    key_display = Path(key_path).name
+                    key_item = QTableWidgetItem(f"🔑 {key_display}")
+                else:
+                    key_item = QTableWidgetItem("")
+
                 # Store the full credential data in the first column
                 display_name_item.setData(Qt.ItemDataRole.UserRole, cred)
 
                 self.creds_table.setItem(row, 0, display_name_item)
                 self.creds_table.setItem(row, 1, username_item)
                 self.creds_table.setItem(row, 2, password_item)
+                self.creds_table.setItem(row, 3, key_item)
 
             self.creds_table.resizeColumnsToContents()
 
         except Exception as e:
             logger.error(f"Failed to load credentials: {e}")
-            raise  # Re-raise to be handled by initialize_and_load
+            raise
+
     def initialize_credentials(self) -> bool:
         """Initialize the credential system with a new master password."""
         reply = QMessageBox.question(
@@ -291,14 +339,11 @@ class CredentialManagerDialog(QDialog):
             try:
                 cred_data = dialog.get_credentials()
 
-                # Load existing credentials
                 creds_path = self.cred_manager.config_dir / "credentials.yaml"
                 creds_list = self.cred_manager.load_credentials(creds_path)
 
-                # Add new credential
                 creds_list.append(cred_data)
 
-                # Save and reload
                 self.cred_manager.save_credentials(creds_list, creds_path)
                 self.load_credentials()
                 self.credentials_updated.emit()
@@ -318,17 +363,14 @@ class CredentialManagerDialog(QDialog):
                 try:
                     updated_cred = dialog.get_credentials()
 
-                    # Update in credential store
                     creds_path = self.cred_manager.config_dir / "credentials.yaml"
                     creds_list = self.cred_manager.load_credentials(creds_path)
 
-                    # Find and update the credential
                     for i, cred in enumerate(creds_list):
                         if cred['uuid'] == updated_cred['uuid']:
                             creds_list[i] = updated_cred
                             break
 
-                    # Save and reload
                     self.cred_manager.save_credentials(creds_list, creds_path)
                     self.load_credentials()
                     self.credentials_updated.emit()
@@ -352,12 +394,10 @@ class CredentialManagerDialog(QDialog):
 
             if reply == QMessageBox.StandardButton.Yes:
                 try:
-                    # Load and update credentials
                     creds_path = self.cred_manager.config_dir / "credentials.yaml"
                     creds_list = self.cred_manager.load_credentials(creds_path)
                     creds_list = [c for c in creds_list if c['uuid'] != cred_data['uuid']]
 
-                    # Save and reload
                     self.cred_manager.save_credentials(creds_list, creds_path)
                     self.load_credentials()
                     self.credentials_updated.emit()
@@ -369,12 +409,10 @@ class CredentialManagerDialog(QDialog):
     def export_credentials(self):
         """Export credentials to an encrypted file."""
         try:
-            # Ensure we're unlocked
             if not self.cred_manager.is_unlocked():
                 if not self.unlock_credentials():
                     return
 
-            # Get export password
             password, ok = QInputDialog.getText(
                 self,
                 "Export Password",
@@ -385,12 +423,10 @@ class CredentialManagerDialog(QDialog):
             if not ok or not password:
                 return
 
-            # Create temporary credential manager for export
             export_manager = SecureCredentials("TermtelExport")
             if not export_manager.setup_new_credentials(password):
                 raise Exception("Failed to initialize export encryption")
 
-            # Get save location
             file_path, _ = QFileDialog.getSaveFileName(
                 self,
                 "Export Credentials",
@@ -401,11 +437,9 @@ class CredentialManagerDialog(QDialog):
             if not file_path:
                 return
 
-            # Load current credentials
             creds_path = self.cred_manager.config_dir / "credentials.yaml"
             creds_list = self.cred_manager.load_credentials(creds_path)
 
-            # Save with export manager
             export_path = Path(file_path)
             export_manager.save_credentials(creds_list, export_path)
 
@@ -423,12 +457,10 @@ class CredentialManagerDialog(QDialog):
     def import_credentials(self):
         """Import credentials from an encrypted file."""
         try:
-            # Ensure we're unlocked
             if not self.cred_manager.is_unlocked():
                 if not self.unlock_credentials():
                     return
 
-            # Get import file
             file_path, _ = QFileDialog.getOpenFileName(
                 self,
                 "Import Credentials",
@@ -439,7 +471,6 @@ class CredentialManagerDialog(QDialog):
             if not file_path:
                 return
 
-            # Get import password
             password, ok = QInputDialog.getText(
                 self,
                 "Import Password",
@@ -450,13 +481,11 @@ class CredentialManagerDialog(QDialog):
             if not ok or not password:
                 return
 
-            # Create temporary credential manager for import
             import_manager = SecureCredentials("TermtelExport")
             if not import_manager.unlock(password):
                 QMessageBox.critical(self, "Import Error", "Invalid import password")
                 return
 
-            # Load imported credentials
             import_path = Path(file_path)
             imported_creds = import_manager.load_credentials(import_path)
 
@@ -464,7 +493,6 @@ class CredentialManagerDialog(QDialog):
                 QMessageBox.warning(self, "Import Warning", "No credentials found in import file")
                 return
 
-            # Confirm import
             reply = QMessageBox.question(
                 self,
                 "Confirm Import",
@@ -478,26 +506,21 @@ class CredentialManagerDialog(QDialog):
             if reply == QMessageBox.StandardButton.Cancel:
                 return
 
-            # Load current credentials if adding
             current_creds = []
             if reply == QMessageBox.StandardButton.Yes:
                 creds_path = self.cred_manager.config_dir / "credentials.yaml"
                 current_creds = self.cred_manager.load_credentials(creds_path)
 
-                # Generate new UUIDs for imported credentials to avoid conflicts
                 for cred in imported_creds:
                     cred['uuid'] = str(uuid.uuid4())
 
-                # Combine credentials
                 final_creds = current_creds + imported_creds
             else:
                 final_creds = imported_creds
 
-            # Save combined credentials
             creds_path = self.cred_manager.config_dir / "credentials.yaml"
             self.cred_manager.save_credentials(final_creds, creds_path)
 
-            # Reload table
             self.load_credentials()
             self.credentials_updated.emit()
 

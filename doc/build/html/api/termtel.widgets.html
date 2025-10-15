@@ -1,0 +1,667 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets package &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="termtel.widgets.serialcon_widget package" href="termtel.widgets.serialcon_widget.html" />
+    <link rel="prev" title="termtel.utils.security module" href="termtel.utils.security.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">termtel.widgets package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.serialcon_widget.html">termtel.widgets.serialcon_widget package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html">termtel.widgets.TelemetryWidget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html">termtel.widgets.credential_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.dialogs.html">termtel.widgets.dialogs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html">termtel.widgets.diff_tool_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html">termtel.widgets.game_integration_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html">termtel.widgets.lmtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html">termtel.widgets.map_preview module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html">termtel.widgets.nbtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html">termtel.widgets.new_session_dialog module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html">termtel.widgets.notepad_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html">termtel.widgets.qtssh_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.sclite_widget.html">termtel.widgets.sclite_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html">termtel.widgets.session_editor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html">termtel.widgets.session_navigator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.setup.html">termtel.widgets.setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html">termtel.widgets.space_debris module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html">termtel.widgets.terminal_app_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html">termtel.widgets.terminal_tabs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html">termtel.widgets.theme_editor module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="termtel.html">termtel package</a></li>
+      <li class="breadcrumb-item active">termtel.widgets package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/termtel.widgets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-termtel.widgets">
+<span id="termtel-widgets-package"></span><h1>termtel.widgets package<a class="headerlink" href="#module-termtel.widgets" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.serialcon_widget.html">termtel.widgets.serialcon_widget package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.serialcon_widget.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.serialcon_widget.Library.html">termtel.widgets.serialcon_widget.Library package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="termtel.widgets.serialcon_widget.Library.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.serialcon_widget.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.serialcon_widget.serial_tab_widget.html">termtel.widgets.serialcon_widget.serial_tab_widget module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="termtel.widgets.serialcon_widget.serial_tab_widget.html#termtel.widgets.serialcon_widget.serial_tab_widget.SerialTerminalWidget"><code class="docutils literal notranslate"><span class="pre">SerialTerminalWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.serialcon_widget.serial_terminal_wrapper.html">termtel.widgets.serialcon_widget.serial_terminal_wrapper module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="termtel.widgets.serialcon_widget.serial_terminal_wrapper.html#termtel.widgets.serialcon_widget.serial_terminal_wrapper.SerialTerminalWrapper"><code class="docutils literal notranslate"><span class="pre">SerialTerminalWrapper</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.serialcon_widget.serialcon_widget.html">termtel.widgets.serialcon_widget.serialcon_widget module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.SerialWidgetWrapper"><code class="docutils literal notranslate"><span class="pre">SerialWidgetWrapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget"><code class="docutils literal notranslate"><span class="pre">Ui_SerialWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.serialcon_widget.serialui.html">termtel.widgets.serialcon_widget.serialui module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="termtel.widgets.serialcon_widget.serialui.html#termtel.widgets.serialcon_widget.serialui.Ui_SerialWidget"><code class="docutils literal notranslate"><span class="pre">Ui_SerialWidget</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html">termtel.widgets.TelemetryWidget module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.apply_parent_theme"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.apply_parent_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.cleanup"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.cleanup_requested"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.cleanup_requested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.cleanup_sync"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.cleanup_sync()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.closeEvent"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.closeEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.convert_theme_to_telemetry"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.convert_theme_to_telemetry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.get_corner_style_for_theme"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.get_corner_style_for_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.inject_theme"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.inject_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.on_page_load_finished"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.on_page_load_finished()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.resolve_base_path"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.resolve_base_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.setup_ui"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.show_error_page"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.show_error_page()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.TelemetryWidget.update_theme"><code class="docutils literal notranslate"><span class="pre">TelemetryWidget.update_theme()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html#termtel.widgets.TelemetryWidget.update_theme"><code class="docutils literal notranslate"><span class="pre">update_theme()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.credential_manager.html">termtel.widgets.credential_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialEditDialog"><code class="docutils literal notranslate"><span class="pre">CredentialEditDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialEditDialog.browse_key_file"><code class="docutils literal notranslate"><span class="pre">CredentialEditDialog.browse_key_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialEditDialog.get_credentials"><code class="docutils literal notranslate"><span class="pre">CredentialEditDialog.get_credentials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialEditDialog.setup_ui"><code class="docutils literal notranslate"><span class="pre">CredentialEditDialog.setup_ui()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.add_credential"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.add_credential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.credentials_updated"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.credentials_updated</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.delete_credential"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.delete_credential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.edit_credential"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.edit_credential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.export_credentials"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.export_credentials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.import_credentials"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.import_credentials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.initialize_and_load"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.initialize_and_load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.initialize_credentials"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.initialize_credentials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.load_credentials"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.load_credentials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.setup_ui"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.show_context_menu"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.show_context_menu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html#termtel.widgets.credential_manager.CredentialManagerDialog.unlock_credentials"><code class="docutils literal notranslate"><span class="pre">CredentialManagerDialog.unlock_credentials()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.dialogs.html">termtel.widgets.dialogs module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.dialogs.html#termtel.widgets.dialogs.SSHCredentialsDialog"><code class="docutils literal notranslate"><span class="pre">SSHCredentialsDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.dialogs.html#termtel.widgets.dialogs.SSHCredentialsDialog.get_credentials"><code class="docutils literal notranslate"><span class="pre">SSHCredentialsDialog.get_credentials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.dialogs.html#termtel.widgets.dialogs.SSHCredentialsDialog.setup_ui"><code class="docutils literal notranslate"><span class="pre">SSHCredentialsDialog.setup_ui()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html">termtel.widgets.diff_tool_widget module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor"><code class="docutils literal notranslate"><span class="pre">DiffEditor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.apply_theme"><code class="docutils literal notranslate"><span class="pre">DiffEditor.apply_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.highlightCurrentLine"><code class="docutils literal notranslate"><span class="pre">DiffEditor.highlightCurrentLine()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.lineNumberAreaPaintEvent"><code class="docutils literal notranslate"><span class="pre">DiffEditor.lineNumberAreaPaintEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.lineNumberAreaWidth"><code class="docutils literal notranslate"><span class="pre">DiffEditor.lineNumberAreaWidth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.resizeEvent"><code class="docutils literal notranslate"><span class="pre">DiffEditor.resizeEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.updateLineNumberArea"><code class="docutils literal notranslate"><span class="pre">DiffEditor.updateLineNumberArea()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.updateLineNumberAreaWidth"><code class="docutils literal notranslate"><span class="pre">DiffEditor.updateLineNumberAreaWidth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.updateRequest"><code class="docutils literal notranslate"><span class="pre">DiffEditor.updateRequest</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffEditor.update_styling"><code class="docutils literal notranslate"><span class="pre">DiffEditor.update_styling()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffNavigationBar"><code class="docutils literal notranslate"><span class="pre">DiffNavigationBar</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffNavigationBar.apply_theme"><code class="docutils literal notranslate"><span class="pre">DiffNavigationBar.apply_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffNavigationBar.paintEvent"><code class="docutils literal notranslate"><span class="pre">DiffNavigationBar.paintEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffNavigationBar.setDiffLocations"><code class="docutils literal notranslate"><span class="pre">DiffNavigationBar.setDiffLocations()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.add_legend_item"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.add_legend_item()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.apply_theme"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.apply_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.brighten_color"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.brighten_color()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.cleanup"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.compare"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.compare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.compareTexts"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.compareTexts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.darken_color"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.darken_color()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.lineNumberAreaWidth"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.lineNumberAreaWidth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.navigate_to_next_diff"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.navigate_to_next_diff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.navigate_to_prev_diff"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.navigate_to_prev_diff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.open_left_file"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.open_left_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.open_right_file"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.open_right_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.paste_to_left"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.paste_to_left()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.paste_to_right"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.paste_to_right()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.setup_ui"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.updateLineNumberArea"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.updateLineNumberArea()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWidget.update_diff_formats"><code class="docutils literal notranslate"><span class="pre">DiffToolWidget.update_diff_formats()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWrapper"><code class="docutils literal notranslate"><span class="pre">DiffToolWrapper</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWrapper.cleanup"><code class="docutils literal notranslate"><span class="pre">DiffToolWrapper.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffToolWrapper.update_theme"><code class="docutils literal notranslate"><span class="pre">DiffToolWrapper.update_theme()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget"><code class="docutils literal notranslate"><span class="pre">DiffWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.apply_theme"><code class="docutils literal notranslate"><span class="pre">DiffWidget.apply_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.compareTexts"><code class="docutils literal notranslate"><span class="pre">DiffWidget.compareTexts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.computeLineMapping"><code class="docutils literal notranslate"><span class="pre">DiffWidget.computeLineMapping()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.highlightLine"><code class="docutils literal notranslate"><span class="pre">DiffWidget.highlightLine()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.highlightSection"><code class="docutils literal notranslate"><span class="pre">DiffWidget.highlightSection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.setTexts"><code class="docutils literal notranslate"><span class="pre">DiffWidget.setTexts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.syncScroll"><code class="docutils literal notranslate"><span class="pre">DiffWidget.syncScroll()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.DiffWidget.update_splitter_style"><code class="docutils literal notranslate"><span class="pre">DiffWidget.update_splitter_style()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.LineNumberArea"><code class="docutils literal notranslate"><span class="pre">LineNumberArea</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.LineNumberArea.paintEvent"><code class="docutils literal notranslate"><span class="pre">LineNumberArea.paintEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html#termtel.widgets.diff_tool_widget.LineNumberArea.sizeHint"><code class="docutils literal notranslate"><span class="pre">LineNumberArea.sizeHint()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html">termtel.widgets.game_integration_wrapper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html#termtel.widgets.game_integration_wrapper.GameWrapper"><code class="docutils literal notranslate"><span class="pre">GameWrapper</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html#termtel.widgets.game_integration_wrapper.GameWrapper.cleanup"><code class="docutils literal notranslate"><span class="pre">GameWrapper.cleanup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html#termtel.widgets.game_integration_wrapper.create_game_tab"><code class="docutils literal notranslate"><span class="pre">create_game_tab()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.lmtosession.html">termtel.widgets.lmtosession module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread"><code class="docutils literal notranslate"><span class="pre">DownloadThread</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread.add_zscaler_cert"><code class="docutils literal notranslate"><span class="pre">DownloadThread.add_zscaler_cert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread.extract_geo_site"><code class="docutils literal notranslate"><span class="pre">DownloadThread.extract_geo_site()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread.is_valid_IP_Address"><code class="docutils literal notranslate"><span class="pre">DownloadThread.is_valid_IP_Address()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread.progress_signal"><code class="docutils literal notranslate"><span class="pre">DownloadThread.progress_signal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread.run"><code class="docutils literal notranslate"><span class="pre">DownloadThread.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread.save_file_signal"><code class="docutils literal notranslate"><span class="pre">DownloadThread.save_file_signal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.DownloadThread.status_signal"><code class="docutils literal notranslate"><span class="pre">DownloadThread.status_signal</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader"><code class="docutils literal notranslate"><span class="pre">LMDownloader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.closeEvent"><code class="docutils literal notranslate"><span class="pre">LMDownloader.closeEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.initUI"><code class="docutils literal notranslate"><span class="pre">LMDownloader.initUI()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.load_settings"><code class="docutils literal notranslate"><span class="pre">LMDownloader.load_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.save_settings"><code class="docutils literal notranslate"><span class="pre">LMDownloader.save_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.showSaveFileDialog"><code class="docutils literal notranslate"><span class="pre">LMDownloader.showSaveFileDialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.startDownloadThread"><code class="docutils literal notranslate"><span class="pre">LMDownloader.startDownloadThread()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.updateProgressBar"><code class="docutils literal notranslate"><span class="pre">LMDownloader.updateProgressBar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.updateStatusLabel"><code class="docutils literal notranslate"><span class="pre">LMDownloader.updateStatusLabel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.LMDownloader.update_theme"><code class="docutils literal notranslate"><span class="pre">LMDownloader.update_theme()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.ParentWindow"><code class="docutils literal notranslate"><span class="pre">ParentWindow</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.ParentWindow.mouseMoveEvent"><code class="docutils literal notranslate"><span class="pre">ParentWindow.mouseMoveEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.ParentWindow.mousePressEvent"><code class="docutils literal notranslate"><span class="pre">ParentWindow.mousePressEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.ParentWindow.mouseReleaseEvent"><code class="docutils literal notranslate"><span class="pre">ParentWindow.mouseReleaseEvent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.create_default_settings"><code class="docutils literal notranslate"><span class="pre">create_default_settings()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.lmtosession.html#termtel.widgets.lmtosession.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.map_preview.html">termtel.widgets.map_preview module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapPreview"><code class="docutils literal notranslate"><span class="pre">MapPreview</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapPreview.on_click"><code class="docutils literal notranslate"><span class="pre">MapPreview.on_click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapPreview.update_map"><code class="docutils literal notranslate"><span class="pre">MapPreview.update_map()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapViewer"><code class="docutils literal notranslate"><span class="pre">MapViewer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapViewer.load_image"><code class="docutils literal notranslate"><span class="pre">MapViewer.load_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapViewer.reset_zoom"><code class="docutils literal notranslate"><span class="pre">MapViewer.reset_zoom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapViewer.wheel_zoom"><code class="docutils literal notranslate"><span class="pre">MapViewer.wheel_zoom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html#termtel.widgets.map_preview.MapViewer.zoom"><code class="docutils literal notranslate"><span class="pre">MapViewer.zoom()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.nbtosession.html">termtel.widgets.nbtosession module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.App"><code class="docutils literal notranslate"><span class="pre">App</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.App.initUI"><code class="docutils literal notranslate"><span class="pre">App.initUI()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.App.showSaveFileDialog"><code class="docutils literal notranslate"><span class="pre">App.showSaveFileDialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.App.startDownloadThread"><code class="docutils literal notranslate"><span class="pre">App.startDownloadThread()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.App.updateProgressBar"><code class="docutils literal notranslate"><span class="pre">App.updateProgressBar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.App.updateStatusLabel"><code class="docutils literal notranslate"><span class="pre">App.updateStatusLabel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.App.update_theme"><code class="docutils literal notranslate"><span class="pre">App.update_theme()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.DownloadThread"><code class="docutils literal notranslate"><span class="pre">DownloadThread</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.DownloadThread.progress_signal"><code class="docutils literal notranslate"><span class="pre">DownloadThread.progress_signal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.DownloadThread.run"><code class="docutils literal notranslate"><span class="pre">DownloadThread.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.DownloadThread.save_file_signal"><code class="docutils literal notranslate"><span class="pre">DownloadThread.save_file_signal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.DownloadThread.status_signal"><code class="docutils literal notranslate"><span class="pre">DownloadThread.status_signal</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.nbtosession.html#termtel.widgets.nbtosession.create_default_settings"><code class="docutils literal notranslate"><span class="pre">create_default_settings()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.new_session_dialog.html">termtel.widgets.new_session_dialog module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.accept"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.accept()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.apply_theme"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.apply_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.browse_key_file"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.browse_key_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.get_connection"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.get_connection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.get_connection_data"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.get_connection_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.load_credentials"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.load_credentials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.load_last_used_settings"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.load_last_used_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.on_credential_selected"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.on_credential_selected()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.save_last_used_settings"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.save_last_used_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.setup_ui"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html#termtel.widgets.new_session_dialog.NewSessionDialog.toggle_key_auth"><code class="docutils literal notranslate"><span class="pre">NewSessionDialog.toggle_key_auth()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.notepad_widget.html">termtel.widgets.notepad_widget module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget"><code class="docutils literal notranslate"><span class="pre">NotepadWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.content_changed"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.content_changed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.get_content"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.get_content()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.handle_content_change"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.handle_content_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.load_content"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.load_content()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.save_content"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.save_content()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.save_content_as"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.save_content_as()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.set_content"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.set_content()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.setup_ui"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html#termtel.widgets.notepad_widget.NotepadWidget.update_title"><code class="docutils literal notranslate"><span class="pre">NotepadWidget.update_title()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.qtssh_widget.html">termtel.widgets.qtssh_widget module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.check_terminal_ready"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.check_terminal_ready()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.cleanup"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.clipboard_copy"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.clipboard_copy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.clipboard_paste"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.clipboard_paste()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.delayed_method"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.delayed_method()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.handle_load_finished"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.handle_load_finished()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.handle_resize_event"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.handle_resize_event()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.handle_terminal_check"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.handle_terminal_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.notify"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.notify()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.retranslateUi"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.retranslateUi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.setupUi"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.setupUi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.update_div_height"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.update_div_height()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html#termtel.widgets.qtssh_widget.Ui_Terminal.write_initial_buffer"><code class="docutils literal notranslate"><span class="pre">Ui_Terminal.write_initial_buffer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.sclite_widget.html">termtel.widgets.sclite_widget module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.session_editor.html">termtel.widgets.session_editor module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.RestrictedTreeWidget"><code class="docutils literal notranslate"><span class="pre">RestrictedTreeWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.RestrictedTreeWidget.dragMoveEvent"><code class="docutils literal notranslate"><span class="pre">RestrictedTreeWidget.dragMoveEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.RestrictedTreeWidget.dropEvent"><code class="docutils literal notranslate"><span class="pre">RestrictedTreeWidget.dropEvent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.add_folder"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.add_folder()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.add_session"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.add_session()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.delete_item"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.delete_item()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.edit_item"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.edit_item()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.load_sessions"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.load_sessions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.save_and_close"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.save_and_close()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.save_sessions"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.save_sessions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.setup_ui"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionEditorDialog.show_context_menu"><code class="docutils literal notranslate"><span class="pre">SessionEditorDialog.show_context_menu()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionPropertyDialog"><code class="docutils literal notranslate"><span class="pre">SessionPropertyDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionPropertyDialog.accept"><code class="docutils literal notranslate"><span class="pre">SessionPropertyDialog.accept()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionPropertyDialog.get_data"><code class="docutils literal notranslate"><span class="pre">SessionPropertyDialog.get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionPropertyDialog.load_data"><code class="docutils literal notranslate"><span class="pre">SessionPropertyDialog.load_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionPropertyDialog.setup_ui"><code class="docutils literal notranslate"><span class="pre">SessionPropertyDialog.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.SessionPropertyDialog.validate_data"><code class="docutils literal notranslate"><span class="pre">SessionPropertyDialog.validate_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.session_editor.html#termtel.widgets.session_editor.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.session_navigator.html">termtel.widgets.session_navigator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.QuickConnectWidget"><code class="docutils literal notranslate"><span class="pre">QuickConnectWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.QuickConnectWidget.connect_requested"><code class="docutils literal notranslate"><span class="pre">QuickConnectWidget.connect_requested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.QuickConnectWidget.handle_new_connection"><code class="docutils literal notranslate"><span class="pre">QuickConnectWidget.handle_new_connection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.QuickConnectWidget.set_theme"><code class="docutils literal notranslate"><span class="pre">QuickConnectWidget.set_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.QuickConnectWidget.setup_quick_connect"><code class="docutils literal notranslate"><span class="pre">QuickConnectWidget.setup_quick_connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.QuickConnectWidget.update_svg_icon"><code class="docutils literal notranslate"><span class="pre">QuickConnectWidget.update_svg_icon()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator"><code class="docutils literal notranslate"><span class="pre">SessionNavigator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.connect_requested"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.connect_requested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.handle_quick_connect"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.handle_quick_connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.handle_search"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.handle_search()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.handle_session_activation"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.handle_session_activation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.load_sessions"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.load_sessions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.setup_ui"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.show_context_menu"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.show_context_menu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html#termtel.widgets.session_navigator.SessionNavigator.update_theme"><code class="docutils literal notranslate"><span class="pre">SessionNavigator.update_theme()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.setup.html">termtel.widgets.setup module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.AboutDialog"><code class="docutils literal notranslate"><span class="pre">AboutDialog</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.handle_open_sessions"><code class="docutils literal notranslate"><span class="pre">handle_open_sessions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.reload_theme_menu"><code class="docutils literal notranslate"><span class="pre">reload_theme_menu()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.safe_close_telemetry_tab"><code class="docutils literal notranslate"><span class="pre">safe_close_telemetry_tab()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.safe_create_telemetry_tab"><code class="docutils literal notranslate"><span class="pre">safe_create_telemetry_tab()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.safe_switch_theme"><code class="docutils literal notranslate"><span class="pre">safe_switch_theme()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.setup_menus"><code class="docutils literal notranslate"><span class="pre">setup_menus()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.show_about_dialog"><code class="docutils literal notranslate"><span class="pre">show_about_dialog()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.show_credentials_dialog"><code class="docutils literal notranslate"><span class="pre">show_credentials_dialog()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.show_logicmonitor_importer"><code class="docutils literal notranslate"><span class="pre">show_logicmonitor_importer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.show_netbox_importer"><code class="docutils literal notranslate"><span class="pre">show_netbox_importer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.setup.html#termtel.widgets.setup.show_session_manager"><code class="docutils literal notranslate"><span class="pre">show_session_manager()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.space_debris.html">termtel.widgets.space_debris module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Asteroid"><code class="docutils literal notranslate"><span class="pre">Asteroid</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Asteroid.advance"><code class="docutils literal notranslate"><span class="pre">Asteroid.advance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Asteroid.boundingRect"><code class="docutils literal notranslate"><span class="pre">Asteroid.boundingRect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Asteroid.paint"><code class="docutils literal notranslate"><span class="pre">Asteroid.paint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Asteroid.setColor"><code class="docutils literal notranslate"><span class="pre">Asteroid.setColor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.ensure_visible_on_black"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.ensure_visible_on_black()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.gameStateChanged"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.gameStateChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.getGameState"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.getGameState()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.getLevel"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.getLevel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.getLives"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.getLives()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.getScore"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.getScore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.initUI"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.initUI()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.keyPressEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.keyReleaseEvent"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.keyReleaseEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.levelChanged"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.levelChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.livesChanged"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.livesChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.pauseGame"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.pauseGame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.resetGame"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.resetGame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.resumeGame"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.resumeGame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.scoreChanged"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.scoreChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.setColor"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.setColor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.AsteroidsWidget.startGame"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget.startGame()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Bullet"><code class="docutils literal notranslate"><span class="pre">Bullet</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Bullet.advance"><code class="docutils literal notranslate"><span class="pre">Bullet.advance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Bullet.boundingRect"><code class="docutils literal notranslate"><span class="pre">Bullet.boundingRect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Bullet.paint"><code class="docutils literal notranslate"><span class="pre">Bullet.paint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Bullet.setColor"><code class="docutils literal notranslate"><span class="pre">Bullet.setColor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameState"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameState.GAME_OVER"><code class="docutils literal notranslate"><span class="pre">GameState.GAME_OVER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameState.PAUSED"><code class="docutils literal notranslate"><span class="pre">GameState.PAUSED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameState.RUNNING"><code class="docutils literal notranslate"><span class="pre">GameState.RUNNING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameState.WAITING"><code class="docutils literal notranslate"><span class="pre">GameState.WAITING</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView"><code class="docutils literal notranslate"><span class="pre">GameView</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.advance"><code class="docutils literal notranslate"><span class="pre">GameView.advance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.createUIElements"><code class="docutils literal notranslate"><span class="pre">GameView.createUIElements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.create_glow_pen"><code class="docutils literal notranslate"><span class="pre">GameView.create_glow_pen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.gameStateChanged"><code class="docutils literal notranslate"><span class="pre">GameView.gameStateChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.game_over"><code class="docutils literal notranslate"><span class="pre">GameView.game_over()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.handle_asteroid_destruction"><code class="docutils literal notranslate"><span class="pre">GameView.handle_asteroid_destruction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.handle_ship_collision"><code class="docutils literal notranslate"><span class="pre">GameView.handle_ship_collision()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.initializeGame"><code class="docutils literal notranslate"><span class="pre">GameView.initializeGame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">GameView.keyPressEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.keyReleaseEvent"><code class="docutils literal notranslate"><span class="pre">GameView.keyReleaseEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.levelChanged"><code class="docutils literal notranslate"><span class="pre">GameView.levelChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.livesChanged"><code class="docutils literal notranslate"><span class="pre">GameView.livesChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.respawn_ship"><code class="docutils literal notranslate"><span class="pre">GameView.respawn_ship()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.scoreChanged"><code class="docutils literal notranslate"><span class="pre">GameView.scoreChanged</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.setColor"><code class="docutils literal notranslate"><span class="pre">GameView.setColor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.start_game"><code class="docutils literal notranslate"><span class="pre">GameView.start_game()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.start_new_level"><code class="docutils literal notranslate"><span class="pre">GameView.start_new_level()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.GameView.update_game"><code class="docutils literal notranslate"><span class="pre">GameView.update_game()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Ship"><code class="docutils literal notranslate"><span class="pre">Ship</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Ship.advance"><code class="docutils literal notranslate"><span class="pre">Ship.advance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Ship.boundingRect"><code class="docutils literal notranslate"><span class="pre">Ship.boundingRect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Ship.paint"><code class="docutils literal notranslate"><span class="pre">Ship.paint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Ship.setColor"><code class="docutils literal notranslate"><span class="pre">Ship.setColor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.space_debris.html#termtel.widgets.space_debris.Ship.shoot"><code class="docutils literal notranslate"><span class="pre">Ship.shoot()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html">termtel.widgets.terminal_app_wrapper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html#termtel.widgets.terminal_app_wrapper.GenericTabContainer"><code class="docutils literal notranslate"><span class="pre">GenericTabContainer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html#termtel.widgets.terminal_app_wrapper.GenericTabContainer.cleanup"><code class="docutils literal notranslate"><span class="pre">GenericTabContainer.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html#termtel.widgets.terminal_app_wrapper.GenericTabContainer.setup_ui"><code class="docutils literal notranslate"><span class="pre">GenericTabContainer.setup_ui()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html#termtel.widgets.terminal_app_wrapper.TextEditorWrapper"><code class="docutils literal notranslate"><span class="pre">TextEditorWrapper</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html#termtel.widgets.terminal_app_wrapper.TextEditorWrapper.cleanup"><code class="docutils literal notranslate"><span class="pre">TextEditorWrapper.cleanup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.terminal_tabs.html">termtel.widgets.terminal_tabs module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.DoomWrapper"><code class="docutils literal notranslate"><span class="pre">DoomWrapper</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.DoomWrapper.cleanup"><code class="docutils literal notranslate"><span class="pre">DoomWrapper.cleanup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.GameWrapper"><code class="docutils literal notranslate"><span class="pre">GameWrapper</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.GameWrapper.cleanup"><code class="docutils literal notranslate"><span class="pre">GameWrapper.cleanup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.SerialTerminalWrapper"><code class="docutils literal notranslate"><span class="pre">SerialTerminalWrapper</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.SerialTerminalWrapper.cleanup"><code class="docutils literal notranslate"><span class="pre">SerialTerminalWrapper.cleanup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.all_terminals_closed"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.all_terminals_closed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.apply_theme_to_terminal"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.apply_theme_to_terminal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.change_single_terminal_theme"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.change_single_terminal_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.change_terminal_theme"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.change_terminal_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.cleanup"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.cleanup_all"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.cleanup_all()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.close_all_tabs"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.close_all_tabs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.close_other_tabs"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.close_other_tabs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.close_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.close_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_diff_tool_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_diff_tool_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_doom_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_doom_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_game_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_game_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_serial_terminal_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_serial_terminal_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_telemetry_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_telemetry_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_terminal"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_terminal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_terminal_clean"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_terminal_clean()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.create_text_editor_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.create_text_editor_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.get_mapped_terminal_theme"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.get_mapped_terminal_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.handle_single_theme_check"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.handle_single_theme_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.handle_theme_check"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.handle_theme_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.remove_session"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.remove_session()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.rename_tab"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.rename_tab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.setup_ui"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.show_context_menu"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.show_context_menu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.terminal_closed"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.terminal_closed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.test_socket_connection"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.test_socket_connection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.update_all_theme_aware_widgets"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.update_all_theme_aware_widgets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html#termtel.widgets.terminal_tabs.TerminalTabWidget.update_theme"><code class="docutils literal notranslate"><span class="pre">TerminalTabWidget.update_theme()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.widgets.theme_editor.html">termtel.widgets.theme_editor module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ColorButton"><code class="docutils literal notranslate"><span class="pre">ColorButton</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ColorButton.choose_color"><code class="docutils literal notranslate"><span class="pre">ColorButton.choose_color()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ColorButton.update_color"><code class="docutils literal notranslate"><span class="pre">ColorButton.update_color()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ColorConfigItem"><code class="docutils literal notranslate"><span class="pre">ColorConfigItem</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ColorConfigItem.color_changed"><code class="docutils literal notranslate"><span class="pre">ColorConfigItem.color_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ColorConfigItem.color_changed_signal"><code class="docutils literal notranslate"><span class="pre">ColorConfigItem.color_changed_signal</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.apply_theme"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.apply_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.auto_apply_theme"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.auto_apply_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.color_changed"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.color_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.load_theme"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.load_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.load_theme_dialog"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.load_theme_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.load_theme_file"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.load_theme_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.new_theme"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.new_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.on_theme_selected_from_dropdown"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.on_theme_selected_from_dropdown()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.refresh_theme_list"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.refresh_theme_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.save_theme"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.save_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.save_theme_as"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.save_theme_as()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.setup_preview_widgets"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.setup_preview_widgets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.setup_theme_tabs"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.setup_theme_tabs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.setup_toolbar"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.setup_toolbar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.setup_ui"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.setup_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.theme_changed"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.theme_changed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.toggle_auto_apply"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.toggle_auto_apply()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.update_color_editors"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.update_color_editors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.update_preview"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.update_preview()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.ThemeEditorWidget.update_ui_preview"><code class="docutils literal notranslate"><span class="pre">ThemeEditorWidget.update_ui_preview()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.theme_editor.html#termtel.widgets.theme_editor.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="termtel.utils.security.html" class="btn btn-neutral float-left" title="termtel.utils.security module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="termtel.widgets.serialcon_widget.html" class="btn btn-neutral float-right" title="termtel.widgets.serialcon_widget package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,679 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.ssh.sshshell &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">termtel.ssh.sshshell</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for termtel.ssh.sshshell</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">pyqtSlot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sshshellreader</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShellReaderThread</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.ssh_key_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSHKeyConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">paramiko</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+
+
+<div class="viewcode-block" id="Backend">
+<a class="viewcode-back" href="../../../api/termtel.ssh.sshshell.html#termtel.ssh.sshshell.Backend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Backend</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="n">send_output</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="s1">&#39;22&#39;</span><span class="p">,</span> <span class="n">key_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_widget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_widget</span> <span class="o">=</span> <span class="n">parent_widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth_method_used</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Initialize SSH key config manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key_config</span> <span class="o">=</span> <span class="n">SSHKeyConfig</span><span class="p">()</span>
+
+        <span class="c1"># Define preferred cipher, kex, and key settings for better compatibility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cipher_settings</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;aes128-ctr&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aes192-ctr&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aes256-ctr&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aes128-gcm@openssh.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aes256-gcm@openssh.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chacha20-poly1305@openssh.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aes128-cbc&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aes192-cbc&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;aes256-cbc&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;3des-cbc&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">kex_settings</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;diffie-hellman-group14-sha256&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;diffie-hellman-group-exchange-sha256&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;diffie-hellman-group16-sha512&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;diffie-hellman-group14-sha1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;diffie-hellman-group-exchange-sha1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;diffie-hellman-group1-sha1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ecdh-sha2-nistp256&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ecdh-sha2-nistp384&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ecdh-sha2-nistp521&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;curve25519-sha256&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;curve25519-sha256@libssh.org&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">key_settings</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;rsa-sha2-512&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;rsa-sha2-256&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ssh-rsa&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ecdsa-sha2-nistp256&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ecdsa-sha2-nistp384&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ecdsa-sha2-nistp521&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ssh-ed25519&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ssh-dss&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Apply transport settings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transport_settings</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">load_system_host_keys</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">set_missing_host_key_policy</span><span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">AutoAddPolicy</span><span class="p">())</span>
+
+            <span class="n">host</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">host</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+
+            <span class="c1"># Check if password is blank and use key auth</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">password</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">password</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">password</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">key_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Password is blank and no explicit key_path provided</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Password is blank, attempting key-based authentication&quot;</span><span class="p">)</span>
+                <span class="n">detected_key_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_config</span><span class="o">.</span><span class="n">get_key_path</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">detected_key_path</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found key in config: </span><span class="si">{</span><span class="n">detected_key_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_try_key_auth</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">detected_key_path</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Authentication Error&quot;</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s2">&quot;No password provided and no SSH key found in config.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;Please configure a key in ~/.ssh_manager/keys.json&quot;</span><span class="p">)</span>
+                    <span class="k">return</span>
+            <span class="k">elif</span> <span class="n">key_path</span><span class="p">:</span>
+                <span class="c1"># Explicit key_path was provided</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_try_key_auth</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">key_path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Password authentication</span>
+                <span class="n">available_methods</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_available_auth_methods</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span>
+                <span class="n">auth_methods_to_try</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;keyboard-interactive&quot;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">available_methods</span><span class="p">:</span>
+                    <span class="n">auth_methods_to_try</span> <span class="o">=</span> <span class="p">[</span><span class="n">method</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">auth_methods_to_try</span> <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">available_methods</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_methods_to_try</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No matching auth methods found, falling back to defaults&quot;</span><span class="p">)</span>
+                        <span class="n">auth_methods_to_try</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;keyboard-interactive&quot;</span><span class="p">]</span>
+
+                <span class="n">auth_success</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">auth_method</span> <span class="ow">in</span> <span class="n">auth_methods_to_try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">auth_success</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">auth_method</span> <span class="o">==</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trying password authentication&quot;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_try_password_auth</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+                            <span class="n">auth_success</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">auth_method_used</span> <span class="o">=</span> <span class="s2">&quot;password&quot;</span>
+                        <span class="k">elif</span> <span class="n">auth_method</span> <span class="o">==</span> <span class="s2">&quot;keyboard-interactive&quot;</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trying keyboard-interactive authentication&quot;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_try_keyboard_interactive_auth</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+                            <span class="n">auth_success</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">auth_method_used</span> <span class="o">=</span> <span class="s2">&quot;keyboard-interactive&quot;</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">AuthenticationException</span><span class="p">,</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Auth method </span><span class="si">{</span><span class="n">auth_method</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_success</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Login Failure&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;All authentication methods failed for </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span>
+
+            <span class="c1"># Get transport and set keepalive</span>
+            <span class="n">transport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_transport</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">transport</span><span class="p">:</span>
+                <span class="n">transport</span><span class="o">.</span><span class="n">set_keepalive</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+
+                <span class="c1"># Log negotiated security options for debugging</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Transport acquired&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Negotiated cipher: </span><span class="si">{</span><span class="n">transport</span><span class="o">.</span><span class="n">remote_cipher</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Negotiated MAC: </span><span class="si">{</span><span class="n">transport</span><span class="o">.</span><span class="n">remote_mac</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># KEX algorithm is stored differently in Paramiko</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s1">&#39;kex_algorithm&#39;</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Negotiated KEX: </span><span class="si">{</span><span class="n">transport</span><span class="o">.</span><span class="n">kex_algorithm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="s1">&#39;_agreed_kex_algorithm&#39;</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Negotiated KEX: </span><span class="si">{</span><span class="n">transport</span><span class="o">.</span><span class="n">_agreed_kex_algorithm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Negotiated KEX: (not available)&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✗ ERROR: No transport available!&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Connection Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Failed to get transport from client&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting up shell...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup_shell</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Backend initialization complete!&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Connection Error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Backend initialization failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_transport_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply custom transport settings for better compatibility with network devices&quot;&quot;&quot;</span>
+        <span class="c1"># Suppress deprecation warnings for legacy algorithms</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="s1">&#39;paramiko&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get what Paramiko actually supports by checking the Transport class</span>
+        <span class="c1"># Create a temporary transport to see what&#39;s available</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">paramiko.transport</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">transport_module</span>
+
+            <span class="c1"># Check what&#39;s actually registered in Paramiko</span>
+            <span class="n">available_ciphers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">transport_module</span><span class="o">.</span><span class="n">Transport</span><span class="o">.</span><span class="n">_cipher_info</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">available_kex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">transport_module</span><span class="o">.</span><span class="n">Transport</span><span class="o">.</span><span class="n">_kex_info</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">available_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">transport_module</span><span class="o">.</span><span class="n">Transport</span><span class="o">.</span><span class="n">_key_info</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Paramiko supports:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Ciphers: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">available_ciphers</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">available_ciphers</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  KEX: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">available_kex</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">available_kex</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Keys: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">available_keys</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">available_keys</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Filter our preferences to only what&#39;s available</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cipher_settings</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher_settings</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">available_ciphers</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kex_settings</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kex_settings</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">available_kex</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">key_settings</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_settings</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">available_keys</span><span class="p">])</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Could not detect available algorithms: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using default settings (may cause errors)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Apply globally to paramiko Transport class</span>
+        <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="o">.</span><span class="n">_preferred_ciphers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher_settings</span>
+        <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="o">.</span><span class="n">_preferred_kex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kex_settings</span>
+        <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="o">.</span><span class="n">_preferred_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_settings</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Applied transport settings:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Ciphers: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cipher_settings</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cipher_settings</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  KEX: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kex_settings</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kex_settings</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Keys: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_settings</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span><span class="si">}</span><span class="s2">... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_settings</span><span class="p">)</span><span class="si">}</span><span class="s2"> total)&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_detect_server_algorithms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect what algorithms the server supports (with timeout)&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Detecting server algorithms for </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2"> ===&quot;</span><span class="p">)</span>
+        <span class="n">transport</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Create socket with timeout to prevent hanging</span>
+            <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+
+            <span class="n">transport</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+
+            <span class="c1"># Try to capture the KEX init packet</span>
+            <span class="c1"># We need to hook in before start_client completes negotiation</span>
+            <span class="n">old_parse_kex_init</span> <span class="o">=</span> <span class="n">transport</span><span class="o">.</span><span class="n">_parse_kex_init</span>
+            <span class="n">server_kex_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">capture_kex_init</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                <span class="c1"># Capture the server&#39;s proposals</span>
+                <span class="n">cookie</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_bytes</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+                <span class="n">kex_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+                <span class="n">server_key_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+                <span class="n">client_encrypt_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+                <span class="n">server_encrypt_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+                <span class="n">client_mac_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+                <span class="n">server_mac_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+                <span class="n">client_compress_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+                <span class="n">server_compress_algo_list</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_list</span><span class="p">()</span>
+
+                <span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;kex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kex_algo_list</span>
+                <span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;server_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server_key_algo_list</span>
+                <span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_c2s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">client_encrypt_algo_list</span>
+                <span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_s2c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server_encrypt_algo_list</span>
+                <span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;mac_c2s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">client_mac_algo_list</span>
+                <span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;mac_s2c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server_mac_algo_list</span>
+
+                <span class="c1"># Call the original method</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>  <span class="c1"># Reset message position</span>
+                <span class="k">return</span> <span class="n">old_parse_kex_init</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+            <span class="n">transport</span><span class="o">.</span><span class="n">_parse_kex_init</span> <span class="o">=</span> <span class="n">capture_kex_init</span>
+            <span class="n">transport</span><span class="o">.</span><span class="n">start_client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">server_kex_data</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SERVER PROPOSES:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Ciphers (c-&gt;s): </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_c2s&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_c2s&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;                  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_c2s&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="si">}</span><span class="s2"> more&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Ciphers (s-&gt;c): </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_s2c&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_s2c&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;                  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_s2c&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="si">}</span><span class="s2"> more&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  KEX algorithms: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;kex&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;kex&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;                  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;kex&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="si">}</span><span class="s2"> more&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host key types: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;server_key&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;server_key&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;                  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;server_key&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="si">}</span><span class="s2"> more&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MACs (c-&gt;s):    </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;mac_c2s&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;mac_c2s&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;                  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;mac_c2s&#39;</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="si">}</span><span class="s2"> more&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Check for compatibility</span>
+                <span class="n">our_ciphers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cipher_settings</span><span class="p">)</span>
+                <span class="n">server_ciphers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;cipher_c2s&#39;</span><span class="p">])</span>
+                <span class="n">common_ciphers</span> <span class="o">=</span> <span class="n">our_ciphers</span> <span class="o">&amp;</span> <span class="n">server_ciphers</span>
+
+                <span class="n">our_kex</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kex_settings</span><span class="p">)</span>
+                <span class="n">server_kex</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;kex&#39;</span><span class="p">])</span>
+                <span class="n">common_kex</span> <span class="o">=</span> <span class="n">our_kex</span> <span class="o">&amp;</span> <span class="n">server_kex</span>
+
+                <span class="n">our_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_settings</span><span class="p">)</span>
+                <span class="n">server_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">server_kex_data</span><span class="p">[</span><span class="s1">&#39;server_key&#39;</span><span class="p">])</span>
+                <span class="n">common_keys</span> <span class="o">=</span> <span class="n">our_keys</span> <span class="o">&amp;</span> <span class="n">server_keys</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">COMPATIBILITY CHECK:&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">common_ciphers</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✓ Common ciphers: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">common_ciphers</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✗ WARNING: No common ciphers!&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    We have: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">our_ciphers</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Server wants: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">server_ciphers</span><span class="p">)[:</span><span class="mi">3</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">common_kex</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✓ Common KEX:     </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">common_kex</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✗ WARNING: No common KEX algorithms!&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">common_keys</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✓ Common keys:    </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">common_keys</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✗ WARNING: No common host key types!&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not capture server&#39;s algorithm proposals&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeout (connection took &gt;</span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s2">s)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detection failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">transport</span> <span class="ow">and</span> <span class="n">transport</span><span class="o">.</span><span class="n">is_active</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_detect_available_auth_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect available authentication methods from the server&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detecting supported authentication methods for </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">transport</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">transport</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+            <span class="n">transport</span><span class="o">.</span><span class="n">start_client</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">transport</span><span class="o">.</span><span class="n">auth_none</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">BadAuthenticationType</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">available_methods</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">allowed_types</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Server auth methods: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">available_methods</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">available_methods</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Auth detection error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">transport</span> <span class="ow">and</span> <span class="n">transport</span><span class="o">.</span><span class="n">is_active</span><span class="p">():</span>
+                <span class="n">transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_try_key_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">key_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try authentication with RSA/ED25519/ECDSA key&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trying key authentication with </span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Optional: Detect server algorithms (with timeout, won&#39;t hang)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detect_server_algorithms</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">transport</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Load the key first</span>
+            <span class="n">private_key</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">key_type</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading SSH key...&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Try RSA key</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">private_key</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">RSAKey</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">key_path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">key_type</span> <span class="o">=</span> <span class="s2">&quot;RSA&quot;</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">SSHException</span><span class="p">,</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">PasswordRequiredException</span><span class="p">):</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># Try ED25519 key</span>
+            <span class="k">if</span> <span class="n">private_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">private_key</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">Ed25519Key</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">key_path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="n">key_type</span> <span class="o">=</span> <span class="s2">&quot;ED25519&quot;</span>
+                <span class="k">except</span> <span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">SSHException</span><span class="p">,</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">PasswordRequiredException</span><span class="p">):</span>
+                    <span class="k">pass</span>
+
+            <span class="c1"># Try ECDSA key</span>
+            <span class="k">if</span> <span class="n">private_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">private_key</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ECDSAKey</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">key_path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="n">key_type</span> <span class="o">=</span> <span class="s2">&quot;ECDSA&quot;</span>
+                <span class="k">except</span> <span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">SSHException</span><span class="p">,</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">PasswordRequiredException</span><span class="p">):</span>
+                    <span class="k">pass</span>
+
+            <span class="c1"># Try DSS key</span>
+            <span class="k">if</span> <span class="n">private_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">private_key</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">DSSKey</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">key_path</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="n">key_type</span> <span class="o">=</span> <span class="s2">&quot;DSS&quot;</span>
+                <span class="k">except</span> <span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">SSHException</span><span class="p">,</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">PasswordRequiredException</span><span class="p">):</span>
+                    <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">private_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to load key from </span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2"> (tried RSA, ED25519, ECDSA, DSS)&quot;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Loaded </span><span class="si">{</span><span class="n">key_type</span><span class="si">}</span><span class="s2"> key successfully&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting to </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">key_type</span><span class="si">}</span><span class="s2"> key...&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Use client.connect() - it should use our global Transport settings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+                <span class="n">hostname</span><span class="o">=</span><span class="n">host</span><span class="p">,</span>
+                <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+                <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                <span class="n">pkey</span><span class="o">=</span><span class="n">private_key</span><span class="p">,</span>
+                <span class="n">look_for_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">allow_agent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span>
+            <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Connection established!&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth_method_used</span> <span class="o">=</span> <span class="s2">&quot;publickey&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Successfully authenticated with </span><span class="si">{</span><span class="n">key_type</span><span class="si">}</span><span class="s2"> key&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">PasswordRequiredException</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Key requires passphrase&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Key Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;SSH key is encrypted and requires a passphrase.</span><span class="se">\n</span><span class="s2">Key: </span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">except</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">AuthenticationException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Authentication failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Login Failure&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Key Authentication Failed: </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="se">\n</span><span class="s2">Key: </span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="se">\n</span><span class="s2">Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">except</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ SSH error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Login Failure&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Connection Failed: </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Unexpected error: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Key auth error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_try_password_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try password authentication&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+                <span class="n">hostname</span><span class="o">=</span><span class="n">host</span><span class="p">,</span>
+                <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+                <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+                <span class="n">look_for_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">allow_agent</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Password auth error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_try_keyboard_interactive_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try keyboard-interactive authentication&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">set_missing_host_key_policy</span><span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">AutoAddPolicy</span><span class="p">())</span>
+
+        <span class="n">transport</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="n">transport</span><span class="o">.</span><span class="n">start_client</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">handler</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">instructions</span><span class="p">,</span> <span class="n">prompt_list</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interactive auth: Received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">prompt_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> prompts&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">password</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompt_list</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">transport</span><span class="o">.</span><span class="n">auth_interactive</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">transport</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">_transport</span> <span class="o">=</span> <span class="n">transport</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">ssh_exception</span><span class="o">.</span><span class="n">AuthenticationException</span><span class="p">(</span><span class="s2">&quot;Keyboard-interactive authentication failed&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">transport</span> <span class="ow">and</span> <span class="n">transport</span><span class="o">.</span><span class="n">is_active</span><span class="p">():</span>
+                <span class="n">transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span>
+
+<div class="viewcode-block" id="Backend.setup_shell">
+<a class="viewcode-back" href="../../../api/termtel.ssh.sshshell.html#termtel.ssh.sshshell.Backend.setup_shell">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_shell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Invoking shell...&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">invoke_shell</span><span class="p">(</span><span class="s2">&quot;xterm&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">set_combine_stderr</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ Shell invoked successfully!&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✗ Shell invoke failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, falling back to pty...&quot;</span><span class="p">)</span>
+            <span class="n">transport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_transport</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">transport</span><span class="p">:</span>
+                <span class="n">options</span> <span class="o">=</span> <span class="n">transport</span><span class="o">.</span><span class="n">get_security_options</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Security options: </span><span class="si">{</span><span class="n">options</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">transport</span><span class="o">.</span><span class="n">open_session</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">get_pty</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">set_combine_stderr</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ PTY session created&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✗ No transport available for PTY!&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  → Starting ShellReaderThread...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader_thread</span> <span class="o">=</span> <span class="n">ShellReaderThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">parent_widget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_widget</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader_thread</span><span class="o">.</span><span class="n">data_ready</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send_output</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ ShellReaderThread started&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✗ ERROR: Channel is None!&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Backend.notify">
+<a class="viewcode-back" href="../../../api/termtel.ssh.sshshell.html#termtel.ssh.sshshell.Backend.notify">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Information</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Backend.write_data">
+<a class="viewcode-back" href="../../../api/termtel.ssh.sshshell.html#termtel.ssh.sshshell.Backend.write_data">[docs]</a>
+    <span class="nd">@pyqtSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">send_ready</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while writing to channel: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Closed&quot;</span><span class="p">,</span> <span class="s2">&quot;Connection is closed.&quot;</span><span class="p">)</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Channel is not ready or doesn&#39;t exist&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Channel is not ready or doesn&#39;t exist&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Backend.set_pty_size">
+<a class="viewcode-back" href="../../../api/termtel.ssh.sshshell.html#termtel.ssh.sshshell.Backend.set_pty_size">[docs]</a>
+    <span class="nd">@pyqtSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_pty_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">send_ready</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cols</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;::&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">cols</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cols</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">rows</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;::&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rows</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">resize_pty</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;backend pty resize -&gt; cols:</span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> rows:</span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error setting backend pty term size: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: Channel is not ready or doesn&#39;t exist&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader_thread</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader_thread</span><span class="o">.</span><span class="n">isRunning</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader_thread</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

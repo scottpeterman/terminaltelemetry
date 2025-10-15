@@ -1,0 +1,636 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets.serialcon_widget.serialcon_widget &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">termtel.widgets.serialcon_widget.serialcon_widget</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for termtel.widgets.serialcon_widget.serialcon_widget</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">pyqtSlot</span><span class="p">,</span> <span class="n">QTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QApplication</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span>
+    <span class="n">QDialog</span><span class="p">,</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QDialogButtonBox</span><span class="p">,</span>
+    <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QFrame</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWebEngineWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWebEngineView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWebChannel</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWebChannel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWebEngineCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWebEngineScript</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">serial.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_ports</span>
+
+<span class="c1"># Import the updated SerialBackend</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">serialshell</span><span class="w"> </span><span class="kn">import</span> <span class="n">SerialBackend</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># Try to import from the Library subdirectory</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.Library.serialshell</span><span class="w"> </span><span class="kn">import</span> <span class="n">SerialBackend</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="c1"># If both fail, use a relative import</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">Library.serialshell</span><span class="w"> </span><span class="kn">import</span> <span class="n">SerialBackend</span>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Ui_SerialWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A QWidget that provides a serial console interface using xterm.js</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baudrate</span><span class="o">=</span><span class="mi">9600</span><span class="p">,</span> <span class="n">databits</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">stopbits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">parity</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span>
+                 <span class="n">theme_library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">current_theme</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baudrate</span> <span class="o">=</span> <span class="n">baudrate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">databits</span> <span class="o">=</span> <span class="n">databits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopbits</span> <span class="o">=</span> <span class="n">stopbits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parity</span> <span class="o">=</span> <span class="n">parity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span> <span class="o">=</span> <span class="n">theme_library</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span> <span class="o">=</span> <span class="n">current_theme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Ui_SerialWidget.setupUi">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.setupUi">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+        <span class="c1"># Create backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">SerialBackend</span><span class="p">(</span>
+            <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">baudrate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baudrate</span><span class="p">,</span>
+            <span class="n">databits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">databits</span><span class="p">,</span>
+            <span class="n">stopbits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stopbits</span><span class="p">,</span>
+            <span class="n">parity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parity</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># Set up WebChannel for communication with JS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">QWebChannel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">registerObject</span><span class="p">(</span><span class="s2">&quot;backend&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">connection_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_connection_changed</span><span class="p">)</span>
+
+        <span class="c1"># Create layout</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Status bar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color: #1a1a1a; color: #cccccc;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">StyledPanel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+        <span class="n">status_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="p">)</span>
+        <span class="n">status_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Disconnected&quot;</span><span class="p">)</span>
+        <span class="n">status_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Connect&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_connection_dialog</span><span class="p">)</span>
+        <span class="n">status_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="p">)</span>
+
+        <span class="c1"># Web view for terminal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">QWebEngineView</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">setWebChannel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+
+        <span class="c1"># Connect signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">send_output</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;window.handle_output(</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">))</span>
+        <span class="c1"># self.backend.connection_changed.connect(self.handle_connection_change)</span>
+        <span class="c1"># self.backend.error_occurred.connect(self.handle_error)</span>
+
+        <span class="c1"># Load the HTML file</span>
+        <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">terminal_html</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_dir</span><span class="p">,</span> <span class="s2">&quot;qtserialcon.html&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading terminal HTML from: </span><span class="si">{</span><span class="n">terminal_html</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">QUrl</span><span class="o">.</span><span class="n">fromLocalFile</span><span class="p">(</span><span class="n">terminal_html</span><span class="p">))</span>
+
+        <span class="c1"># When page is loaded, apply theme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">loadFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_page_loaded</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.handle_form_connection">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.handle_form_connection">[docs]</a>
+    <span class="nd">@pyqtSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_form_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">baudrate</span><span class="p">,</span> <span class="n">databits</span><span class="p">,</span> <span class="n">stopbits</span><span class="p">,</span> <span class="n">parity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle connection request from the HTML form&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Connection request from form: Port=</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">, Baud=</span><span class="si">{</span><span class="n">baudrate</span><span class="si">}</span><span class="s2">, DataBits=</span><span class="si">{</span><span class="n">databits</span><span class="si">}</span><span class="s2">, StopBits=</span><span class="si">{</span><span class="n">stopbits</span><span class="si">}</span><span class="s2">, Parity=</span><span class="si">{</span><span class="n">parity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Update backend settings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">baudrate</span> <span class="o">=</span> <span class="n">baudrate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">databits</span> <span class="o">=</span> <span class="n">databits</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">stopbits</span> <span class="o">=</span> <span class="n">stopbits</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">parity</span> <span class="o">=</span> <span class="n">parity</span>
+
+            <span class="c1"># Try to connect</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+            <span class="c1"># Update UI to show connected state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span><span class="s2">&quot;window.updateUIConnected(true)&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connection error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Connection error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+            <span class="c1"># Update UI to show disconnected state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span><span class="s2">&quot;window.updateUIConnected(false)&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.handle_form_disconnection">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.handle_form_disconnection">[docs]</a>
+    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_form_disconnection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle disconnection request from the HTML form&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Disconnect</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+            <span class="c1"># Update UI to show disconnected state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span><span class="s2">&quot;window.updateUIConnected(false)&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Disconnection error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Disconnection error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.on_connection_changed">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.on_connection_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_connection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle connection status changes&quot;&quot;&quot;</span>
+        <span class="c1"># Update the HTML UI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;window.updateConnectButton(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Update the Python UI if needed</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;status_label&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">connected</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;connect_btn&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Disconnect&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;connect_btn&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Connect&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_connection_dialog</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.inject_ports_list">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.inject_ports_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inject_ports_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inject the list of available ports into the HTML dropdown&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ports_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">list_ports</span><span class="o">.</span><span class="n">comports</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s2">&quot;Bluetooth&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">port</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+                    <span class="n">ports_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">port</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">port</span><span class="o">.</span><span class="n">description</span>
+                    <span class="p">})</span>
+
+            <span class="c1"># Convert to JSON and inject into the HTML</span>
+            <span class="n">ports_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ports_list</span><span class="p">)</span>
+            <span class="n">js_code</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            (function() </span><span class="se">{{</span>
+<span class="s2">                const portsSelect = document.getElementById(&#39;port-select&#39;);</span>
+<span class="s2">                const ports = </span><span class="si">{</span><span class="n">ports_json</span><span class="si">}</span><span class="s2">;</span>
+
+<span class="s2">                // Clear existing options</span>
+<span class="s2">                portsSelect.innerHTML = &#39;&#39;;</span>
+
+<span class="s2">                // Add new options</span>
+<span class="s2">                ports.forEach(port =&gt; </span><span class="se">{{</span>
+<span class="s2">                    const option = document.createElement(&#39;option&#39;);</span>
+<span class="s2">                    option.value = port.name;</span>
+<span class="s2">                    option.text = `$</span><span class="se">{{</span><span class="s2">port.name</span><span class="se">}}</span><span class="s2"> - $</span><span class="se">{{</span><span class="s2">port.description</span><span class="se">}}</span><span class="s2">`;</span>
+<span class="s2">                    portsSelect.appendChild(option);</span>
+<span class="s2">                </span><span class="se">}}</span><span class="s2">);</span>
+<span class="s2">            </span><span class="se">}}</span><span class="s2">)();</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span><span class="n">js_code</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error injecting ports list: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.on_page_loaded">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.on_page_loaded">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_page_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">success</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the HTML page is loaded&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Terminal page loaded successfully&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Inject ports list into the HTML dropdown</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inject_ports_list</span><span class="p">()</span>
+            <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inject_ports_list</span><span class="p">)</span>
+
+            <span class="c1"># Apply theme after a short delay to ensure JS is ready</span>
+            <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_current_theme</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed to load terminal page&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.apply_current_theme">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.apply_current_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_current_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the current theme to the terminal&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get theme from theme library</span>
+            <span class="n">theme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span><span class="o">.</span><span class="n">get_theme</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">theme</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Theme &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span><span class="si">}</span><span class="s2">&#39; not found, using default&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Generate terminal theme JS</span>
+            <span class="n">js_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span><span class="o">.</span><span class="n">generate_terminal_js</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+
+            <span class="c1"># Execute the JS in the web view</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">runJavaScript</span><span class="p">(</span><span class="n">js_code</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Theme applied: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error applying theme: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.handle_connection_change">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.handle_connection_change">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_connection_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle connection status changes&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Disconnect&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Connect&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_connection_dialog</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.handle_error">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.handle_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle errors from the backend&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.set_theme">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.set_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current theme&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span> <span class="o">=</span> <span class="n">theme_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_current_theme</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.show_connection_dialog">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.show_connection_dialog">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_connection_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show the connection dialog&quot;&quot;&quot;</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">QDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Connect to Serial Port&quot;</span><span class="p">)</span>
+
+        <span class="n">form</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">()</span>
+
+        <span class="c1"># Port selection</span>
+        <span class="n">combox</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">list_ports</span><span class="o">.</span><span class="n">comports</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s2">&quot;Bluetooth&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">port</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+                    <span class="n">combox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">port</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">port</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error listing ports: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Set default port if available</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="ow">and</span> <span class="n">combox</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">combox</span><span class="o">.</span><span class="n">findData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">combox</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Port&quot;</span><span class="p">,</span> <span class="n">combox</span><span class="p">)</span>
+
+        <span class="c1"># Baud rate</span>
+        <span class="n">baudbox</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="n">baud_rates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;9600&quot;</span><span class="p">,</span> <span class="s2">&quot;19200&quot;</span><span class="p">,</span> <span class="s2">&quot;38400&quot;</span><span class="p">,</span> <span class="s2">&quot;57600&quot;</span><span class="p">,</span> <span class="s2">&quot;115200&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">baud_rates</span><span class="p">:</span>
+            <span class="n">baudbox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
+
+        <span class="c1"># Set default baud rate</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baudrate</span><span class="p">)</span> <span class="ow">in</span> <span class="n">baud_rates</span><span class="p">:</span>
+            <span class="n">baudbox</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baudrate</span><span class="p">))</span>
+
+        <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Baud Rate&quot;</span><span class="p">,</span> <span class="n">baudbox</span><span class="p">)</span>
+
+        <span class="c1"># Data bits</span>
+        <span class="n">databits</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">bits</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;6&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">]:</span>
+            <span class="n">databits</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+        <span class="n">databits</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">databits</span><span class="p">))</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Data Bits&quot;</span><span class="p">,</span> <span class="n">databits</span><span class="p">)</span>
+
+        <span class="c1"># Stop bits</span>
+        <span class="n">stopbits</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">bits</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1.5&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">]:</span>
+            <span class="n">stopbits</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+        <span class="n">stopbits</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stopbits</span><span class="p">))</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Stop Bits&quot;</span><span class="p">,</span> <span class="n">stopbits</span><span class="p">)</span>
+
+        <span class="c1"># Parity</span>
+        <span class="n">parity</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="n">parity_options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="s2">&quot;Even&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="s2">&quot;Odd&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="s2">&quot;Mark&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;S&quot;</span><span class="p">:</span> <span class="s2">&quot;Space&quot;</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">parity_options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">parity</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+
+        <span class="c1"># Set default parity</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">parity</span><span class="o">.</span><span class="n">findData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">parity</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Parity&quot;</span><span class="p">,</span> <span class="n">parity</span><span class="p">)</span>
+
+        <span class="c1"># Dialog buttons</span>
+        <span class="n">button_box</span> <span class="o">=</span> <span class="n">QDialogButtonBox</span><span class="p">(</span>
+            <span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span>
+            <span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Cancel</span>
+        <span class="p">)</span>
+        <span class="n">button_box</span><span class="o">.</span><span class="n">accepted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dialog</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="n">button_box</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dialog</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button_box</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="c1"># Show dialog</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+            <span class="c1"># Get selected port (extract port name from data)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">combox</span><span class="o">.</span><span class="n">currentData</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">baudrate</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">baudbox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">databits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">databits</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
+
+            <span class="c1"># Handle stop bits (could be float)</span>
+            <span class="n">stop_text</span> <span class="o">=</span> <span class="n">stopbits</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">stopbits</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">stop_text</span><span class="p">)</span> <span class="k">if</span> <span class="n">stop_text</span> <span class="o">==</span> <span class="s2">&quot;1.5&quot;</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop_text</span><span class="p">)</span>
+
+            <span class="c1"># Get parity code</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">parity</span> <span class="o">=</span> <span class="n">parity</span><span class="o">.</span><span class="n">currentData</span><span class="p">()</span>
+
+            <span class="c1"># Try to connect</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connection error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Connection error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Ui_SerialWidget.notify">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.Ui_SerialWidget.notify">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show a notification dialog&quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Information</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SerialWidgetWrapper">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.SerialWidgetWrapper">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SerialWidgetWrapper</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A wrapper widget that handles creating the serial widget and showing</span>
+<span class="sd">    the connection dialog.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">current_theme</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span> <span class="o">=</span> <span class="n">theme_library</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span> <span class="o">=</span> <span class="n">current_theme</span>
+
+        <span class="c1"># Create layout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Create the serial widget with theme support</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span> <span class="o">=</span> <span class="n">Ui_SerialWidget</span><span class="p">(</span>
+            <span class="n">theme_library</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_library</span><span class="p">,</span>
+            <span class="n">current_theme</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span><span class="p">,</span>
+            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Show the connection dialog on initialization</span>
+        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">show_connection_dialog</span><span class="p">)</span>
+
+        <span class="c1"># Add widget to layout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SerialWidgetWrapper.set_theme">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.SerialWidgetWrapper.set_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current theme for the terminal&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span> <span class="o">=</span> <span class="n">theme_name</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;serial_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SerialWidgetWrapper.connect_to_port">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.SerialWidgetWrapper.connect_to_port">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">connect_to_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">baudrate</span><span class="o">=</span><span class="mi">9600</span><span class="p">,</span> <span class="n">databits</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">stopbits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">parity</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Programmatically connect to a specific port&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;serial_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">baudrate</span> <span class="o">=</span> <span class="n">baudrate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">databits</span> <span class="o">=</span> <span class="n">databits</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">stopbits</span> <span class="o">=</span> <span class="n">stopbits</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">parity</span> <span class="o">=</span> <span class="n">parity</span>
+
+            <span class="c1"># Update backend settings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">baudrate</span> <span class="o">=</span> <span class="n">baudrate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">databits</span> <span class="o">=</span> <span class="n">databits</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">stopbits</span> <span class="o">=</span> <span class="n">stopbits</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">parity</span> <span class="o">=</span> <span class="n">parity</span>
+
+            <span class="c1"># Connect</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SerialWidgetWrapper.disconnect">
+<a class="viewcode-back" href="../../../../api/termtel.widgets.serialcon_widget.serialcon_widget.html#termtel.widgets.serialcon_widget.serialcon_widget.SerialWidgetWrapper.disconnect">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from the current port&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;serial_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_widget</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+        <span class="n">mainWin</span> <span class="o">=</span> <span class="n">QMainWindow</span><span class="p">()</span>
+        <span class="n">mainWin</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+
+        <span class="c1"># If theme library is available, use it</span>
+        <span class="n">theme_library</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Try to import the theme library</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">themes</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeLibrary</span>
+
+            <span class="n">theme_library</span> <span class="o">=</span> <span class="n">ThemeLibrary</span><span class="p">()</span>
+            <span class="n">current_theme</span> <span class="o">=</span> <span class="s2">&quot;cyberpunk&quot;</span>  <span class="c1"># Default theme</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Theme library not available, using default theme&quot;</span><span class="p">)</span>
+            <span class="n">current_theme</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+
+        <span class="c1"># Use the wrapper with theme support</span>
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">SerialWidgetWrapper</span><span class="p">(</span>
+            <span class="n">theme_library</span><span class="o">=</span><span class="n">theme_library</span><span class="p">,</span>
+            <span class="n">current_theme</span><span class="o">=</span><span class="n">current_theme</span><span class="p">,</span>
+            <span class="n">parent</span><span class="o">=</span><span class="n">mainWin</span>
+        <span class="p">)</span>
+
+        <span class="n">mainWin</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+        <span class="n">mainWin</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">mainWin</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Serial Terminal&quot;</span><span class="p">)</span>
+
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in main: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

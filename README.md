@@ -2,38 +2,55 @@
 
 ![Screenshot](https://raw.githubusercontent.com/scottpeterman/terminaltelemetry/refs/heads/main/screenshots/v2/slides3.gif)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)
-![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![PyPI](https://img.shields.io/badge/pip-installable-green.svg)
 
 **TerminalTelemetry** is a modern, cyberpunk-inspired terminal emulator and network telemetry platform built with PyQt6. It combines powerful SSH terminal capabilities with real-time network device monitoring in a sleek, themeable interface.
 
-## 🚀 Installation
+---
 
-### PyPI Installation (Recommended)
-```bash
-pip install TerminalTelemetry
-termtel-con
-termtel
-```
+## 🖥️ Platform Requirements
 
-### Development Installation
-```bash
-git clone https://github.com/scottpeterman/terminaltelemetry.git
-cd terminaltelemetry
-pip install -e .
-termtel
-```
+**TerminalTelemetry is a native desktop application** - requires a graphical desktop environment (not for headless servers or web browsers).
 
-### Prerequisites
-- Python 3.9+
-- PyQt6, netmiko, textfsm (automatically installed with pip)
+### Quick Installation
+
+#### Application Entry Points
+TerminalTelemetry provides two launcher commands:
+- **`termtel`** - Standard GUI launch (Windows: `termtel.exe`)
+- **`termtel-con`** - Launch with console output (for debugging and troubleshooting)
 
 ---
 
-## Current Features
+**Windows & macOS:**
+```bash
+pip install TerminalTelemetry
+termtel
+```
+
+**Linux & WSL2:**
+
+⚠️ **Linux requires Qt6 system libraries first.** Quick install for Ubuntu/Debian:
+```bash
+sudo apt install -y libqt6gui6t64 libqt6widgets6t64 libqt6core6t64 qt6-base-dev \
+    libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
+    libxcb-render-util0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 \
+    libxcb-shape0 libxcb-shm0 libxcb-sync1 libxcb-xfixes0 libx11-xcb1 libgl1 libglib2.0-0t64
+
+pip install TerminalTelemetry
+termtel
+```
+
+**📘 For other Linux distributions, WSL2 setup, and troubleshooting:** [Linux Installation Guide](README_Linux_Desktops.md)
+
+> **Looking for a web-based tool?** See [Velociterm](https://github.com/scottpeterman/velociterm) instead.
+
+---
+
+## 🚀 Current Features
 
 ### 🎨 **Advanced Theme System**
-- **20+ built-in themes** (Cyberpunk, Dark Mode, Retro Green, Neon Blue, etc.)
+- **24+ built-in themes** (Cyberpunk, Nord, Gruvbox, Doom, Borland, Amiga, CRT-Green/Amber, and more)
 - **Dynamic JSON-based themes** with hot-reload capability
 - **Live theme switching** across all components without restart
 - **Per-tab theme customization** via right-click context menu
@@ -47,29 +64,6 @@ termtel
 - **Session management** with YAML-based configuration
 - **Per-tab customization** - individual themes and renamed tab labels
 - **Context menu controls** - close, rename, and theme individual tabs
-- **Quick Connect** interface for rapid device access
-- **Cross-platform terminal support** (Windows, macOS, Linux)
-
-## Getting Started
-
-### Quick Start
-1. **Install via pip**: `pip install TerminalTelemetry`
-2. **Launch**: `termtel`
-3. **Create SSH sessions** via File → Open Sessions or use Quick Connect
-4. **Open Telemetry Dashboard** via Tools → Telemetry Dashboard
-5. **Connect to devices** and view real-time monitoring data
-6. **Customize themes** via View → Theme menu and Theme Editor
-7. **Right-click tab labels** to rename tabs or set individual themes
-
-### Theme Customization
-- **Global themes**: Use View → Theme menu to change all components
-- **Individual tab themes**: Right-click any tab label → Terminal Theme → select theme
-- **Custom themes**: Use View → Theme → Theme Editor to create new themes
-- **Theme files**: Drop JSON theme files in the `themes/` directory for instant availability
-- 
-### 🖥️ **Multi-Session Terminal Environment**
-- **Tabbed SSH terminals** with xterm.js backend
-- **Session management** with YAML-based configuration
 - **Quick Connect** interface for rapid device access
 - **Cross-platform terminal support** (Windows, macOS, Linux)
 
@@ -98,11 +92,18 @@ termtel
 ### 🔒 **Enterprise Security**
 - **Encrypted credential storage** with Fernet (AES-128-CBC) + HMAC
 - **PBKDF2-HMAC-SHA256** key derivation (480,000 iterations)
+- 
+- **SSH key authentication** 🆕
+  - Automatic private key detection from `~/.ssh/`
+  - Support for RSA, ED25519, ECDSA, DSS key types
+  - Config-based key management (`~/.ssh_manager/keys.json`)
+  - Per-session key preferences with persistent settings
 - **Platform-specific secure storage** locations
 - **Machine-specific credential binding**
 - **Rate-limited authentication** prevents brute force
 - **Zero plaintext storage** of sensitive data
 
+![Screenshot](https://raw.githubusercontent.com/scottpeterman/terminaltelemetry/refs/heads/main/screenshots/v2/key_auth_sessions.png)
 ### 🚀 **Session Import Tools**
 - **NetBox Integration**:
   - Import devices directly from NetBox instances
@@ -113,51 +114,50 @@ termtel
   - Progress feedback and error handling
   - SSL certificate validation support
 
-### 🎮 **Built-in Productivity Tools**
+### 🧰 **Built-in Tools**
 - **Text Editor** with syntax highlighting
 - **Diff Tool** for configuration comparison
-- **Space Debris Game** (Asteroids clone)
-- **Doom** (WebAssembly port)
 - **Serial Terminal** for console connections
+- **Space Debris & Doom** - Demonstrates the framework's capability as a general-purpose tool delivery platform. The terminal application's architecture is designed to host any PyQt6 or web-based component, making it easy to extend with custom tools and utilities.
 
 ---
 
-## Architecture Highlights
+## 🏗️ Architecture Highlights
 
 ### **SSH-Only Monitoring**
-- **Universal compatibility** - works with any SSH-accessible device
-- **No agent installation** required on target devices
-- **Leverages existing access** - uses SSH credentials you already have
-- **Zero infrastructure** - no monitoring servers or databases needed
+- Works with any SSH-accessible device
+- No agent installation required on target devices
+- Leverages existing SSH credentials
+- Zero infrastructure - no monitoring servers or databases needed
 
 ### **Template-Driven Parsing**
-- **200+ TextFSM templates** packaged with the application
-- **Live template editing** with syntax highlighting and testing
-- **Field normalization** across different vendors
-- **Package resource system** - templates accessible in any environment
-- **User-customizable** - fix parsing issues yourself
+- 200+ TextFSM templates packaged with the application
+- Live template editing with syntax highlighting and testing
+- Field normalization across different vendors
+- Package resource system - templates accessible in any environment
+- User-customizable - fix parsing issues yourself
 
-### **Modern Desktop Architecture**
-- **Qt6-based UI** with native performance
-- **Threaded data collection** prevents UI blocking
-- **Signal-based communication** between components
-- **Modular widget system** for easy extension
-- **Package-aware resource management** for pip installations
+### **Extensible Desktop Platform**
+- Qt6-based UI with native performance
+- Threaded data collection prevents UI blocking
+- Signal-based communication between components
+- Modular widget system - easily add new tools and features
+- Package-aware resource management for pip installations
+- Tab-based interface can host any PyQt6 widget or web content
 
 ---
 
-## Getting Started
+## 🎯 Getting Started
 
 ### Quick Start
 1. **Install via pip**: `pip install TerminalTelemetry`
-2. **Launch**: `termtel-con`
-   - themes will bootstrap
-   - run `termtel` or `termtel-con`
-   - For Windows, venv\Scripts will contain .exe files you can create shortcuts to termtel.exe to feel more native.
+2. **Launch**: `termtel`
 3. **Create SSH sessions** via File → Open Sessions or use Quick Connect
 4. **Open Telemetry Dashboard** via Tools → Telemetry Dashboard
 5. **Connect to devices** and view real-time monitoring data
 6. **Customize themes** via View → Theme menu and Theme Editor
+
+**Note for Windows users:** After installation, you can create a desktop shortcut to `venv\Scripts\termtel.exe` for easier access.
 
 ### First Device Connection
 1. Click **"Quick Connect"** in the bottom panel
@@ -165,6 +165,12 @@ termtel
 3. Click **"Connect"** - terminal tab opens automatically
 4. Open **Tools → Telemetry Dashboard** to see real-time monitoring
 5. Use the **gear buttons** in widgets to customize TextFSM templates
+
+### Theme Customization
+- **Global themes**: Use View → Theme menu to change all components
+- **Individual tab themes**: Right-click any tab label → Terminal Theme → select theme
+- **Custom themes**: Use View → Theme → Theme Editor to create new themes
+- **Theme files**: Drop JSON theme files in the `~/.termtel/themes/` directory for instant availability
 
 ### Template Customization
 1. Connect to a device and open telemetry dashboard
@@ -176,26 +182,7 @@ termtel
 
 ---
 
-## Why This Approach Works
-
-### **Superior to Commercial Tools**
-- **No vendor lock-in** - works with any SSH device
-- **Instant deployment** - `pip install` and run anywhere
-- **Full customization** - templates, themes, everything is editable
-- **Cost effective** - no licensing fees or subscription costs
-- **Engineer friendly** - shows actual commands and output
-- **Self-contained** - no external dependencies or servers
-
-### **Network Engineer Workflow**
-- Uses **familiar SSH access** you already have configured
-- **Command-line transparency** - see exactly what commands are run
-- **Template debugging** - fix parsing issues when vendors change output
-- **Portable** - runs on your laptop without server infrastructure
-- **Export capability** - CSV export for further analysis
-
----
-
-## Supported Platforms
+## 📡 Supported Platforms
 
 ### **Full Support (Complete Telemetry Dashboard)**
 - **Cisco IOS/IOS-XE**: System info, CDP neighbors, ARP table, routing table, CPU/memory utilization, system logs, VRF support
@@ -223,7 +210,7 @@ Based on your actual TextFSM template library:
 
 ---
 
-## Known Issues & Limitations
+## ⚠️ Known Issues & Limitations
 
 ### **Known Platform Limitations**
 - **Cisco NX-OS**: Missing CPU/memory utilization and system log templates
@@ -245,31 +232,31 @@ Based on your actual TextFSM template library:
 
 ---
 
-## Planned Features & Roadmap
+## 🗺️ Planned Features & Roadmap
 
-### **Near Term (v0.11-0.12)**
-- **Multi-device dashboards** for network-wide monitoring
-- **Historical data collection** with basic trending graphs
-- **Enhanced error handling** and automatic reconnection
-- **Template sharing** and import/export functionality
-- **Custom command execution** with ad-hoc template creation
+### **Near Term (v0.16-0.17)**
+- Multi-device dashboards for network-wide monitoring
+- Historical data collection with basic trending graphs
+- Enhanced error handling and automatic reconnection
+- Template sharing and import/export functionality
+- Custom command execution with ad-hoc template creation
 
-### **Medium Term (v0.13-0.15)**
-- **Network topology discovery** and visualization
-- **Configuration backup** and change detection
-- **Alert system** for threshold monitoring
-- **Plugin architecture** for community extensions
-- **REST API** for external integrations
+### **Medium Term (v0.18-0.20)**
+- Network topology discovery and visualization
+- Configuration backup and change detection
+- Alert system for threshold monitoring
+- Plugin architecture for community extensions
+- REST API for external integrations
 
 ### **Long Term (v1.0+)**
-- **Distributed monitoring** across multiple instances
-- **Community template repository** with automatic updates
-- **Advanced analytics** and machine learning insights
-- **Mobile companion app** for alerts and basic monitoring
+- Distributed monitoring across multiple instances
+- Community template repository with automatic updates
+- Advanced analytics and machine learning insights
+- Mobile companion app for alerts and basic monitoring
 
 ---
 
-## Technical Architecture
+## 🔧 Technical Architecture
 
 ### **Data Flow**
 ```
@@ -284,16 +271,18 @@ SSH Connection → Command Execution → TextFSM Parsing → Field Normalization
 - **Threaded Telemetry Controller**: Non-blocking data collection
 - **Template Editor**: Live template editing and testing
 - **Theme System**: JSON-based UI customization
+- **Modular Tab System**: Extensible framework for hosting custom tools and widgets
 
 ### **Security Architecture**
 - **Credential encryption** using Fernet with PBKDF2 key derivation
+- **SSH key authentication** with automatic key detection
 - **No network exposure** - purely SSH client connections
 - **Local data storage** with machine-specific encryption keys
 - **Memory-safe** credential handling with automatic cleanup
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 ### **Bug Reports**
 Found an issue? Please report it with:
@@ -319,7 +308,7 @@ python -m pytest tests/  # Run tests
 
 ---
 
-## Screenshots
+## 📸 Screenshots
 
 ### Main Interface with Cyberpunk Theme
 *Terminal sessions alongside real-time telemetry monitoring*
@@ -332,13 +321,13 @@ python -m pytest tests/  # Run tests
 
 ---
 
-## License
+## 📄 License
 
 TerminalTelemetry is licensed under the GPLv3 License. See the LICENSE file for details.
 
 ---
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - Built on PyQt6 and the Python ecosystem
 - Network automation powered by netmiko and TextFSM
@@ -349,22 +338,27 @@ TerminalTelemetry is licensed under the GPLv3 License. See the LICENSE file for 
 
 ---
 
-## Support & Community
+## 📚 Support & Community
 
 - **GitHub Issues**: Bug reports and feature requests
+- **GitHub Repository**: https://github.com/scottpeterman/terminaltelemetry
 - **Documentation**: Comprehensive guides and API reference  
 - **Template Library**: Community-contributed TextFSM templates
 
 ---
 
-*"The best network monitoring tool is the one that gets out of your way and shows you what you need to know."*
+## 📋 Version History
 
-## Version History
-
-### v0.10.0 (Current)
+### v0.15.0 (Current - October 2025)
+- ✅ **SSH key authentication** - Passwordless authentication with auto-detection
+- ✅ **24+ themes** - Expanded theme library with vintage and retro options
 - ✅ **Package resource system** - pip installable with embedded templates
 - ✅ **Template editor integration** - live editing and testing
 - ✅ **CSV export functionality** for all telemetry tables
 - ✅ **Enhanced platform support** with JSON configuration
 - ✅ **Threaded telemetry collection** for responsive UI
 - ✅ **Improved error handling** and connection management
+
+---
+
+*"The best network monitoring tool is the one that gets out of your way and shows you what you need to know."*

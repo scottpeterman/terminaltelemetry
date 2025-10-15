@@ -1,0 +1,847 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets.setup &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">termtel.widgets.setup</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for termtel.widgets.setup</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Termtel - UI Setup Module</span>
+<span class="sd">Handles menu system with proper theme signaling for telemetry widgets</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QActionGroup</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QDesktopServices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QMenuBar</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span>
+    <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QMessageBox</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWebEngineWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWebEngineView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QProcess</span><span class="p">,</span> <span class="n">QProcessEnvironment</span><span class="p">,</span> <span class="n">pyqtSignal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.theme_launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">launch_theme_editor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.credential_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">CredentialManagerDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.lmtosession</span><span class="w"> </span><span class="kn">import</span> <span class="n">LMDownloader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.nbtosession</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span> <span class="k">as</span> <span class="n">NetboxExporter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_themed_svg</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;termtel.setup&#39;</span><span class="p">)</span>
+
+<span class="c1"># Import main theme manager</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">termtel.themes3</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeLibrary</span>
+    <span class="n">MAIN_THEME_MANAGER_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">MAIN_THEME_MANAGER_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Main theme manager not available&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AboutDialog">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.AboutDialog">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AboutDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;About TerminalTelemetry&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+
+        <span class="c1"># Get theme colors from parent window&#39;s theme manager</span>
+        <span class="n">theme_name</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">theme</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;theme&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;cyberpunk&#39;</span>
+        <span class="n">theme_colors</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">get_colors</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;theme_manager&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">web_view</span> <span class="o">=</span> <span class="n">QWebEngineView</span><span class="p">()</span>
+
+        <span class="c1"># Define colors based on theme or fallback to defaults</span>
+        <span class="k">if</span> <span class="n">theme_colors</span><span class="p">:</span>
+            <span class="n">bg_color</span> <span class="o">=</span> <span class="n">theme_colors</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span>
+            <span class="n">text_color</span> <span class="o">=</span> <span class="n">theme_colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+            <span class="n">highlight_color</span> <span class="o">=</span> <span class="n">theme_colors</span><span class="p">[</span><span class="s1">&#39;primary&#39;</span><span class="p">]</span>
+            <span class="n">secondary_color</span> <span class="o">=</span> <span class="n">theme_colors</span><span class="p">[</span><span class="s1">&#39;border&#39;</span><span class="p">]</span>
+            <span class="n">border_color</span> <span class="o">=</span> <span class="n">theme_colors</span><span class="p">[</span><span class="s1">&#39;border&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bg_color</span> <span class="o">=</span> <span class="s2">&quot;#1e1e1e&quot;</span>
+            <span class="n">text_color</span> <span class="o">=</span> <span class="s2">&quot;#ffffff&quot;</span>
+            <span class="n">highlight_color</span> <span class="o">=</span> <span class="s2">&quot;#0affff&quot;</span>
+            <span class="n">secondary_color</span> <span class="o">=</span> <span class="s2">&quot;#888888&quot;</span>
+            <span class="n">border_color</span> <span class="o">=</span> <span class="s2">&quot;#444444&quot;</span>
+
+        <span class="c1"># Get the themed SVG content</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">theme_colors</span><span class="p">:</span>
+                <span class="n">svg_content</span> <span class="o">=</span> <span class="n">get_themed_svg</span><span class="p">(</span><span class="n">theme_colors</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">svg_content</span> <span class="o">=</span> <span class="n">get_themed_svg</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="c1"># Fallback SVG if the module isn&#39;t available</span>
+            <span class="n">svg_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 500 500&quot;&gt;</span>
+<span class="s1">                &lt;rect width=&quot;500&quot; height=&quot;500&quot; fill=&quot;</span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s1">&quot;/&gt;</span>
+<span class="s1">                &lt;circle cx=&quot;250&quot; cy=&quot;250&quot; r=&quot;150&quot; fill=&quot;none&quot; stroke=&quot;</span><span class="si">{</span><span class="n">highlight_color</span><span class="si">}</span><span class="s1">&quot; stroke-width=&quot;5&quot;/&gt;</span>
+<span class="s1">                &lt;path d=&quot;M250 100 L400 350 L100 350 Z&quot; fill=&quot;none&quot; stroke=&quot;</span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s1">&quot; stroke-width=&quot;5&quot;/&gt;</span>
+<span class="s1">                &lt;text x=&quot;40&quot; y=&quot;50&quot; fill=&quot;</span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s1">&quot; font-family=&quot;monospace&quot; font-size=&quot;16&quot; font-weight=&quot;bold&quot;&gt;SSH&lt;/text&gt;</span>
+<span class="s1">            &lt;/svg&gt;&#39;&#39;&#39;</span>
+
+        <span class="c1"># NOW build the HTML content - after all variables are defined</span>
+        <span class="n">about_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;html&gt;</span>
+<span class="s2">        &lt;head&gt;</span>
+<span class="s2">            &lt;style&gt;</span>
+<span class="s2">                body </span><span class="se">{{</span>
+<span class="s2">                    background-color: </span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    font-family: &#39;Segoe UI&#39;, Arial, sans-serif;</span>
+<span class="s2">                    line-height: 1.6;</span>
+<span class="s2">                    margin: 0;</span>
+<span class="s2">                    padding: 20px 40px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .container </span><span class="se">{{</span>
+<span class="s2">                    max-width: 900px;</span>
+<span class="s2">                    margin: 0 auto;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .logo-container </span><span class="se">{{</span>
+<span class="s2">                    text-align: center;</span>
+<span class="s2">                    margin-bottom: 20px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .svg-container </span><span class="se">{{</span>
+<span class="s2">                    width: 120px;</span>
+<span class="s2">                    height: 120px;</span>
+<span class="s2">                    margin: 0 auto;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .svg-container svg </span><span class="se">{{</span>
+<span class="s2">                    width: 100%;</span>
+<span class="s2">                    height: 100%;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                h1 </span><span class="se">{{</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    text-align: center;</span>
+<span class="s2">                    font-size: 2.5em;</span>
+<span class="s2">                    margin-bottom: 10px;</span>
+<span class="s2">                    font-weight: 300;</span>
+<span class="s2">                    letter-spacing: 2px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                h2 </span><span class="se">{{</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    margin-top: 30px;</span>
+<span class="s2">                    margin-bottom: 15px;</span>
+<span class="s2">                    font-size: 1.5em;</span>
+<span class="s2">                    border-bottom: 2px solid </span><span class="si">{</span><span class="n">border_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    padding-bottom: 8px;</span>
+<span class="s2">                    font-weight: bold;</span>
+<span class="s2">                    background: rgba(255, 255, 255, 0.05);</span>
+<span class="s2">                    padding: 10px;</span>
+<span class="s2">                    padding-bottom: 8px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                h3 </span><span class="se">{{</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    margin-top: 20px;</span>
+<span class="s2">                    margin-bottom: 10px;</span>
+<span class="s2">                    font-size: 1.2em;</span>
+<span class="s2">                    font-weight: bold;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .subtitle </span><span class="se">{{</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    text-align: center;</span>
+<span class="s2">                    font-size: 1.1em;</span>
+<span class="s2">                    margin-bottom: 40px;</span>
+<span class="s2">                    font-style: italic;</span>
+<span class="s2">                    opacity: 0.8;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .version </span><span class="se">{{</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    text-align: center;</span>
+<span class="s2">                    font-size: 0.95em;</span>
+<span class="s2">                    margin-bottom: 30px;</span>
+<span class="s2">                    opacity: 0.7;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                ul </span><span class="se">{{</span>
+<span class="s2">                    list-style-type: none;</span>
+<span class="s2">                    padding-left: 0;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                ul li </span><span class="se">{{</span>
+<span class="s2">                    margin: 8px 0;</span>
+<span class="s2">                    padding-left: 25px;</span>
+<span class="s2">                    position: relative;</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                ul li:before </span><span class="se">{{</span>
+<span class="s2">                    content: &quot;▸&quot;;</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    position: absolute;</span>
+<span class="s2">                    left: 0;</span>
+<span class="s2">                    font-weight: bold;</span>
+<span class="s2">                    opacity: 0.6;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .highlight </span><span class="se">{{</span>
+<span class="s2">                    font-weight: 700;</span>
+<span class="s2">                    text-decoration: underline;</span>
+<span class="s2">                    text-decoration-color: </span><span class="si">{</span><span class="n">border_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    text-decoration-thickness: 1px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .badge </span><span class="se">{{</span>
+<span class="s2">                    display: inline-block;</span>
+<span class="s2">                    background: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    padding: 2px 8px;</span>
+<span class="s2">                    border-radius: 3px;</span>
+<span class="s2">                    font-size: 0.85em;</span>
+<span class="s2">                    font-weight: bold;</span>
+<span class="s2">                    margin-left: 6px;</span>
+<span class="s2">                    border: 1px solid </span><span class="si">{</span><span class="n">border_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .footer </span><span class="se">{{</span>
+<span class="s2">                    margin-top: 50px;</span>
+<span class="s2">                    text-align: center;</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    border-top: 1px solid </span><span class="si">{</span><span class="n">border_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    padding-top: 20px;</span>
+<span class="s2">                    font-size: 0.9em;</span>
+<span class="s2">                    opacity: 0.7;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .code </span><span class="se">{{</span>
+<span class="s2">                    background: rgba(255, 255, 255, 0.05);</span>
+<span class="s2">                    padding: 12px 15px;</span>
+<span class="s2">                    border-radius: 6px;</span>
+<span class="s2">                    margin: 15px 0;</span>
+<span class="s2">                    font-family: &#39;Consolas&#39;, &#39;Monaco&#39;, monospace;</span>
+<span class="s2">                    font-size: 0.9em;</span>
+<span class="s2">                    border-left: 3px solid </span><span class="si">{</span><span class="n">border_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .stats </span><span class="se">{{</span>
+<span class="s2">                    display: flex;</span>
+<span class="s2">                    justify-content: space-around;</span>
+<span class="s2">                    margin: 20px 0;</span>
+<span class="s2">                    padding: 15px;</span>
+<span class="s2">                    background: rgba(255, 255, 255, 0.05);</span>
+<span class="s2">                    border-radius: 8px;</span>
+<span class="s2">                    border: 1px solid </span><span class="si">{</span><span class="n">border_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .stat-item </span><span class="se">{{</span>
+<span class="s2">                    text-align: center;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .stat-number </span><span class="se">{{</span>
+<span class="s2">                    font-size: 2em;</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    font-weight: bold;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .stat-label </span><span class="se">{{</span>
+<span class="s2">                    color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    font-size: 0.9em;</span>
+<span class="s2">                    margin-top: 5px;</span>
+<span class="s2">                    opacity: 0.7;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                ::-webkit-scrollbar </span><span class="se">{{</span>
+<span class="s2">                    width: 10px;</span>
+<span class="s2">                    height: 10px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                ::-webkit-scrollbar-track </span><span class="se">{{</span>
+<span class="s2">                    background: </span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    border-radius: 4px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                ::-webkit-scrollbar-thumb </span><span class="se">{{</span>
+<span class="s2">                    background: </span><span class="si">{</span><span class="n">border_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    border-radius: 4px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                ::-webkit-scrollbar-thumb:hover </span><span class="se">{{</span>
+<span class="s2">                    background: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    opacity: 0.5;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">            &lt;/style&gt;</span>
+<span class="s2">        &lt;/head&gt;</span>
+<span class="s2">        &lt;body&gt;</span>
+<span class="s2">            &lt;div class=&quot;container&quot;&gt;</span>
+<span class="s2">                &lt;!-- Logo --&gt;</span>
+<span class="s2">                &lt;div class=&quot;svg-container logo-container&quot;&gt;</span>
+<span class="s2">                    </span><span class="si">{</span><span class="n">svg_content</span><span class="si">}</span>
+<span class="s2">                &lt;/div&gt;</span>
+
+<span class="s2">                &lt;h1&gt;TerminalTelemetry&lt;/h1&gt;</span>
+<span class="s2">                &lt;div class=&quot;subtitle&quot;&gt;Cyberpunk-Inspired Terminal Emulator &amp; Network Telemetry Platform&lt;/div&gt;</span>
+<span class="s2">                &lt;div class=&quot;version&quot;&gt;Version 0.10.0 • October 2025&lt;/div&gt;</span>
+
+<span class="s2">                &lt;!-- Quick Stats --&gt;</span>
+<span class="s2">                &lt;div class=&quot;stats&quot;&gt;</span>
+<span class="s2">                    &lt;div class=&quot;stat-item&quot;&gt;</span>
+<span class="s2">                        &lt;div class=&quot;stat-number&quot;&gt;24+&lt;/div&gt;</span>
+<span class="s2">                        &lt;div class=&quot;stat-label&quot;&gt;Themes&lt;/div&gt;</span>
+<span class="s2">                    &lt;/div&gt;</span>
+<span class="s2">                    &lt;div class=&quot;stat-item&quot;&gt;</span>
+<span class="s2">                        &lt;div class=&quot;stat-number&quot;&gt;200+&lt;/div&gt;</span>
+<span class="s2">                        &lt;div class=&quot;stat-label&quot;&gt;TextFSM Templates&lt;/div&gt;</span>
+<span class="s2">                    &lt;/div&gt;</span>
+<span class="s2">                    &lt;div class=&quot;stat-item&quot;&gt;</span>
+<span class="s2">                        &lt;div class=&quot;stat-number&quot;&gt;7+&lt;/div&gt;</span>
+<span class="s2">                        &lt;div class=&quot;stat-label&quot;&gt;Network Platforms&lt;/div&gt;</span>
+<span class="s2">                    &lt;/div&gt;</span>
+<span class="s2">                &lt;/div&gt;</span>
+
+<span class="s2">                &lt;h2&gt;Core Features&lt;/h2&gt;</span>
+
+<span class="s2">                &lt;h3&gt;Advanced Theme System&lt;/h3&gt;</span>
+<span class="s2">                &lt;ul&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;24+ built-in themes&lt;/span&gt; (Cyberpunk, Nord, Gruvbox, Doom, Borland, Amiga, CRT-Green/Amber, and more)&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Dynamic JSON-based themes&lt;/span&gt; with hot-reload capability&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Live theme switching&lt;/span&gt; across all components without restart&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Per-tab theme customization&lt;/span&gt; via right-click context menu&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Theme editor&lt;/span&gt; with real-time preview and custom theme creation&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Individual terminal theming&lt;/span&gt; - different theme for each tab&lt;/li&gt;</span>
+<span class="s2">                &lt;/ul&gt;</span>
+<span class="s2">                &lt;div class=&quot;code&quot;&gt;</span>
+<span class="s2">Available Themes: Cyberpunk • Nord • Gruvbox • Doom • Solarized • Neon City&lt;br&gt;</span>
+<span class="s2">Borland • Amiga • Norton Commander • PC Tools • CRT Green/Amber • Vintage&lt;br&gt;</span>
+<span class="s2">Ice • Forest • 1-2-3 • Dark • Light • and more!</span>
+<span class="s2">                &lt;/div&gt;</span>
+
+<span class="s2">                &lt;h3&gt;Multi-Session Terminal Environment&lt;/h3&gt;</span>
+<span class="s2">                &lt;ul&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Tabbed SSH terminals&lt;/span&gt; with xterm.js backend&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Session management&lt;/span&gt; with YAML-based configuration&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Quick Connect&lt;/span&gt; interface for rapid device access&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Per-tab customization&lt;/span&gt; - rename tabs and set individual themes&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Context menu controls&lt;/span&gt; - close, rename, theme individual tabs&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Serial terminal support&lt;/span&gt; for console connections&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Cross-platform support&lt;/span&gt; (Windows, macOS, Linux)&lt;/li&gt;</span>
+<span class="s2">                &lt;/ul&gt;</span>
+
+<span class="s2">                &lt;h3&gt;Real-Time Network Telemetry&lt;/h3&gt;</span>
+<span class="s2">                &lt;ul&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Live device monitoring&lt;/span&gt; via SSH (no SNMP required)&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Multi-vendor support&lt;/span&gt; (Cisco IOS/IOS-XE/NX-OS, Arista EOS, Linux, HP, Aruba)&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Real-time data collection:&lt;/span&gt; system info, CPU/memory, neighbors (CDP/LLDP), ARP, routing tables, logs&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Threaded data collection&lt;/span&gt; keeps UI responsive&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;200+ TextFSM templates&lt;/span&gt; for network device parsing&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;CSV export&lt;/span&gt; for all telemetry data tables&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;VRF support&lt;/span&gt; for routing table monitoring&lt;/li&gt;</span>
+<span class="s2">                &lt;/ul&gt;</span>
+
+<span class="s2">                &lt;h3&gt;Template System &amp; Customization&lt;/h3&gt;</span>
+<span class="s2">                &lt;ul&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Built-in template editor&lt;/span&gt; with syntax highlighting&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Live template testing&lt;/span&gt; against real device output&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Field mapping validation&lt;/span&gt; with coverage reports&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Template debugging&lt;/span&gt; with detailed error reporting&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Package resource management&lt;/span&gt; - templates included in installation&lt;/li&gt;</span>
+<span class="s2">                &lt;/ul&gt;</span>
+
+<span class="s2">                &lt;h2&gt;Enterprise Security&lt;/h2&gt;</span>
+<span class="s2">                &lt;ul&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Encrypted credential storage&lt;/span&gt; with Fernet (AES-128-CBC) + HMAC&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;PBKDF2-HMAC-SHA256&lt;/span&gt; key derivation (480,000 iterations)&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;SSH key authentication&lt;/span&gt;&lt;span class=&quot;badge&quot;&gt;NEW&lt;/span&gt;&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Automatic private key detection&lt;/span&gt; from ~/.ssh/&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Support for RSA, ED25519, ECDSA, DSS&lt;/span&gt; key types&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Config-based key management&lt;/span&gt; (~/.ssh_manager/keys.json)&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Per-session key preferences&lt;/span&gt; with persistent settings&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Platform-specific secure storage&lt;/span&gt; locations&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Machine-specific credential binding&lt;/span&gt;&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Rate-limited authentication&lt;/span&gt; prevents brute force&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Zero plaintext storage&lt;/span&gt; of sensitive data&lt;/li&gt;</span>
+<span class="s2">                &lt;/ul&gt;</span>
+
+<span class="s2">                &lt;h2&gt;Session Import Tools&lt;/h2&gt;</span>
+<span class="s2">                &lt;ul&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;NetBox Integration&lt;/span&gt; - Import devices directly from NetBox instances&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;LogicMonitor Integration&lt;/span&gt; - SDK-based device discovery&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Site-based organization&lt;/span&gt; and grouping&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Automatic credential mapping&lt;/span&gt;&lt;/li&gt;</span>
+<span class="s2">                &lt;/ul&gt;</span>
+
+<span class="s2">                &lt;h2&gt;Built-in Productivity Tools&lt;/h2&gt;</span>
+<span class="s2">                &lt;ul&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Text Editor&lt;/span&gt; with syntax highlighting&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Diff Tool&lt;/span&gt; for configuration comparison&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Serial Terminal&lt;/span&gt; for console connections&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Space Debris Game&lt;/span&gt; (Asteroids clone)&lt;/li&gt;</span>
+<span class="s2">                    &lt;li&gt;&lt;span class=&quot;highlight&quot;&gt;Doom&lt;/span&gt; (WebAssembly port)&lt;/li&gt;</span>
+<span class="s2">                &lt;/ul&gt;</span>
+
+<span class="s2">                &lt;h2&gt;Installation&lt;/h2&gt;</span>
+<span class="s2">                &lt;div class=&quot;code&quot;&gt;</span>
+<span class="s2"># Install via pip&lt;br&gt;</span>
+<span class="s2">pip install TerminalTelemetry&lt;br&gt;</span>
+<span class="s2">&lt;br&gt;</span>
+<span class="s2"># Launch application&lt;br&gt;</span>
+<span class="s2">termtel-con  # Bootstrap themes&lt;br&gt;</span>
+<span class="s2">termtel      # Start application</span>
+<span class="s2">                &lt;/div&gt;</span>
+
+<span class="s2">                &lt;h2&gt;Theme Management&lt;/h2&gt;</span>
+<span class="s2">                &lt;div class=&quot;code&quot;&gt;</span>
+<span class="s2"># Global themes: View → Theme menu&lt;br&gt;</span>
+<span class="s2"># Per-tab themes: Right-click tab → Terminal Theme&lt;br&gt;</span>
+<span class="s2"># Custom themes: View → Theme → Theme Editor&lt;br&gt;</span>
+<span class="s2"># Download themes: View → Theme → Download Themes</span>
+<span class="s2">                &lt;/div&gt;</span>
+
+<span class="s2">                &lt;div class=&quot;footer&quot;&gt;</span>
+<span class="s2">                    &lt;p&gt;&lt;strong&gt;Author:&lt;/strong&gt; Scott Peterman&lt;/p&gt;</span>
+<span class="s2">                    &lt;p&gt;&lt;strong&gt;GitHub:&lt;/strong&gt; github.com/scottpeterman/terminaltelemetry&lt;/p&gt;</span>
+<span class="s2">                    &lt;p&gt;&lt;strong&gt;License:&lt;/strong&gt; GNU General Public License v3 (GPLv3)&lt;/p&gt;</span>
+<span class="s2">                    &lt;p style=&quot;margin-top: 15px; font-size: 0.85em; font-style: italic;&quot;&gt;</span>
+<span class="s2">                        &quot;The best network monitoring tool is the one that gets out of your way&lt;br&gt;</span>
+<span class="s2">                        and shows you what you need to know.&quot;</span>
+<span class="s2">                    &lt;/p&gt;</span>
+<span class="s2">                &lt;/div&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">        &lt;/body&gt;</span>
+<span class="s2">        &lt;/html&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">web_view</span><span class="o">.</span><span class="n">setHtml</span><span class="p">(</span><span class="n">about_html</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">web_view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="c1"># Apply the parent&#39;s theme to the dialog</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;theme_manager&#39;</span><span class="p">):</span>
+            <span class="n">parent</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setup_menus">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.setup_menus">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_menus</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup menu system for the main window&quot;&quot;&quot;</span>
+    <span class="n">menubar</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">menuBar</span><span class="p">()</span>
+
+    <span class="c1"># File Menu</span>
+    <span class="n">file_menu</span> <span class="o">=</span> <span class="n">menubar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;&amp;File&quot;</span><span class="p">)</span>
+    <span class="n">open_action</span> <span class="o">=</span> <span class="n">file_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;&amp;Open Sessions...&quot;</span><span class="p">)</span>
+    <span class="n">open_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">handle_open_sessions</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+    <span class="n">file_menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+    <span class="n">exit_action</span> <span class="o">=</span> <span class="n">file_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;E&amp;xit&quot;</span><span class="p">)</span>
+    <span class="n">exit_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+
+    <span class="c1"># View Menu</span>
+    <span class="n">view_menu</span> <span class="o">=</span> <span class="n">menubar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;&amp;View&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create Themes submenu with dynamic theme loading</span>
+    <span class="n">themes_menu</span> <span class="o">=</span> <span class="n">view_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Theme&quot;</span><span class="p">)</span>
+    <span class="n">theme_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">theme_group</span><span class="o">.</span><span class="n">setExclusive</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Get available themes from ThemeLibrary</span>
+    <span class="n">available_themes</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">get_theme_names</span><span class="p">()</span>
+
+    <span class="c1"># Create theme actions with safe theme switching</span>
+    <span class="k">for</span> <span class="n">theme_name</span> <span class="ow">in</span> <span class="n">available_themes</span><span class="p">:</span>
+        <span class="c1"># Convert theme name to display name (e.g., &quot;dark_mode&quot; -&gt; &quot;Dark Mode&quot;)</span>
+        <span class="n">display_name</span> <span class="o">=</span> <span class="n">theme_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+
+        <span class="n">theme_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">display_name</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+        <span class="n">theme_action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">theme_action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">theme_name</span> <span class="o">==</span> <span class="n">window</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="n">theme_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">checked</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">theme_name</span><span class="p">:</span> <span class="n">safe_switch_theme</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">theme_group</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">theme_action</span><span class="p">)</span>
+        <span class="n">themes_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">theme_action</span><span class="p">)</span>
+
+    <span class="c1"># Add theme reload action</span>
+    <span class="n">themes_menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+    <span class="n">theme_editor_action</span> <span class="o">=</span> <span class="n">themes_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Theme Editor&quot;</span><span class="p">)</span>
+    <span class="n">theme_editor_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">launch_theme_editor</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+
+    <span class="n">reload_themes</span> <span class="o">=</span> <span class="n">themes_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Reload Themes&quot;</span><span class="p">)</span>
+    <span class="n">reload_themes</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">reload_theme_menu</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">themes_menu</span><span class="p">,</span> <span class="n">theme_group</span><span class="p">))</span>
+    <span class="n">download_themes</span> <span class="o">=</span> <span class="n">themes_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Download Themes&quot;</span><span class="p">)</span>
+    <span class="n">download_themes</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">QDesktopServices</span><span class="o">.</span><span class="n">openUrl</span><span class="p">(</span>
+            <span class="n">QUrl</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/scottpeterman/terminaltelemetry/main/themes.zip&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">credentials_action</span> <span class="o">=</span> <span class="n">view_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;&amp;Credentials&quot;</span><span class="p">)</span>
+    <span class="n">credentials_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">show_credentials_dialog</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+
+    <span class="c1"># Tools Menu</span>
+    <span class="n">tools_menu</span> <span class="o">=</span> <span class="n">menubar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;&amp;Tools&quot;</span><span class="p">)</span>
+    <span class="n">serial_terminal_action</span> <span class="o">=</span> <span class="n">tools_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Serial &amp;Terminal&quot;</span><span class="p">)</span>
+    <span class="n">serial_terminal_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_serial_terminal_tab</span><span class="p">(</span><span class="s2">&quot;Serial Terminal&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">netbox_action</span> <span class="o">=</span> <span class="n">tools_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;&amp;Netbox Import&quot;</span><span class="p">)</span>
+    <span class="n">netbox_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">show_netbox_importer</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+
+    <span class="n">lm_action</span> <span class="o">=</span> <span class="n">tools_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;&amp;LogicMonitor Import&quot;</span><span class="p">)</span>
+    <span class="n">lm_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">show_logicmonitor_importer</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+
+    <span class="c1"># Use safe telemetry tab creation</span>
+    <span class="n">telemetry_action</span> <span class="o">=</span> <span class="n">tools_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s1">&#39;Telemetry Dashboard&#39;</span><span class="p">)</span>
+    <span class="n">telemetry_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">safe_create_telemetry_tab</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+
+    <span class="n">manage_sessions_action</span> <span class="o">=</span> <span class="n">tools_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s1">&#39;Manage Sessions&#39;</span><span class="p">)</span>
+    <span class="n">manage_sessions_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">show_session_manager</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+
+    <span class="c1"># Add separator before distractions menu</span>
+    <span class="n">tools_menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+
+    <span class="c1"># Add Distractions submenu</span>
+    <span class="n">distractions_menu</span> <span class="o">=</span> <span class="n">tools_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Distractions&quot;</span><span class="p">)</span>
+    <span class="n">distractions_menu</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;menu_distractions&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Add Notepad action</span>
+    <span class="n">notepad_action</span> <span class="o">=</span> <span class="n">distractions_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Notepad&quot;</span><span class="p">)</span>
+    <span class="n">notepad_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_text_editor_tab</span><span class="p">(</span><span class="s2">&quot;Notepad&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">diff_tool_action</span> <span class="o">=</span> <span class="n">distractions_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Diff Tool&quot;</span><span class="p">)</span>
+    <span class="n">diff_tool_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_diff_tool_tab</span><span class="p">(</span><span class="s2">&quot;Diff Tool&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">space_debris</span> <span class="o">=</span> <span class="n">distractions_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Space Debris&quot;</span><span class="p">)</span>
+    <span class="n">space_debris</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_game_tab</span><span class="p">(</span><span class="s2">&quot;Space Debris&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">doom_action</span> <span class="o">=</span> <span class="n">distractions_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Doom&quot;</span><span class="p">)</span>
+    <span class="n">doom_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_doom_tab</span><span class="p">(</span><span class="s2">&quot;Doom&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Help Menu</span>
+    <span class="n">help_menu</span> <span class="o">=</span> <span class="n">menubar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;&amp;Help&quot;</span><span class="p">)</span>
+    <span class="n">about_action</span> <span class="o">=</span> <span class="n">help_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;&amp;About&quot;</span><span class="p">)</span>
+    <span class="n">about_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">show_about_dialog</span><span class="p">(</span><span class="n">window</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="safe_switch_theme">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.safe_switch_theme">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_switch_theme</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Safe theme switching that handles both old and new telemetry properly</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Safe theme switch to: </span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Apply theme to main window using existing method</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;switch_theme&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">switch_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;️ Error in main switch_theme: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># Fallback: apply directly if switch_theme fails</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;theme_manager&#39;</span><span class="p">):</span>
+                    <span class="n">window</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">apply_theme</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">)</span>
+                    <span class="n">window</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme_name</span>
+
+        <span class="c1"># Handle new telemetry widgets</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;telemetry_widgets&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">telemetry_widgets</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s1">&#39;set_theme_from_parent&#39;</span><span class="p">):</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">set_theme_from_parent</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s1">&#39;_apply_theme&#39;</span><span class="p">):</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">_apply_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;️ Could not apply theme to telemetry widget: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Emit theme change signal for other components</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;theme_changed&#39;</span><span class="p">):</span>
+            <span class="n">window</span><span class="o">.</span><span class="n">theme_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Theme switch to </span><span class="si">{</span><span class="n">theme_name</span><span class="si">}</span><span class="s2"> completed&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Error in safe_switch_theme: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">window</span><span class="p">,</span>
+            <span class="s2">&quot;Theme Switch Warning&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Theme change partially failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="safe_create_telemetry_tab">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.safe_create_telemetry_tab">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_create_telemetry_tab</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Safe telemetry tab creation with theme manager registration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Initialize telemetry theme manager if this is the first telemetry tab</span>
+        <span class="k">if</span>  <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;telemetry_theme_manager&#39;</span><span class="p">):</span>
+            <span class="c1"># window.telemetry_theme_manager = TelemetryWidgetThemeManager(window)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Initialized telemetry theme manager&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create telemetry tab using existing method</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="p">,</span> <span class="s1">&#39;create_telemetry_tab&#39;</span><span class="p">):</span>
+            <span class="n">tab</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_telemetry_tab</span><span class="p">(</span><span class="s2">&quot;Telemetry&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Register with theme manager if it&#39;s a new-style widget</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;telemetry_theme_manager&#39;</span><span class="p">)):</span>
+
+                <span class="n">telemetry_widget</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="c1"># Find the telemetry widget in the tab</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="s1">&#39;telemetry_widget&#39;</span><span class="p">):</span>
+                    <span class="n">telemetry_widget</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">telemetry_widget</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="s1">&#39;set_theme_from_parent&#39;</span><span class="p">):</span>
+                    <span class="n">telemetry_widget</span> <span class="o">=</span> <span class="n">tab</span>
+
+                <span class="k">if</span> <span class="n">telemetry_widget</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">window</span><span class="o">.</span><span class="n">telemetry_theme_manager</span><span class="o">.</span><span class="n">register_telemetry_widget</span><span class="p">(</span><span class="n">telemetry_widget</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Registered telemetry widget with theme manager&quot;</span><span class="p">)</span>
+
+                        <span class="c1"># Apply current theme to new widget</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;theme&#39;</span><span class="p">):</span>
+                            <span class="n">telemetry_widget</span><span class="o">.</span><span class="n">set_theme_from_parent</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;️ Could not register telemetry widget: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fallback to old method</span>
+            <span class="n">window</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_telemetry_tab</span><span class="p">(</span><span class="s2">&quot;Telemetry&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Error creating telemetry tab: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s2">&quot;Telemetry Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Could not create telemetry tab: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="reload_theme_menu">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.reload_theme_menu">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reload_theme_menu</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">themes_menu</span><span class="p">,</span> <span class="n">theme_group</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reload the themes menu with current themes from ThemeLibrary&quot;&quot;&quot;</span>
+    <span class="c1"># Clear existing theme actions</span>
+    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">theme_group</span><span class="o">.</span><span class="n">actions</span><span class="p">():</span>
+        <span class="n">themes_menu</span><span class="o">.</span><span class="n">removeAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">theme_group</span><span class="o">.</span><span class="n">removeAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+    <span class="c1"># Reload themes from library</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">_load_custom_themes</span><span class="p">()</span>
+
+    <span class="c1"># Add new theme actions with safe switching</span>
+    <span class="n">available_themes</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">get_theme_names</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">theme_name</span> <span class="ow">in</span> <span class="n">available_themes</span><span class="p">:</span>
+        <span class="n">display_name</span> <span class="o">=</span> <span class="n">theme_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+        <span class="n">theme_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">display_name</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
+        <span class="n">theme_action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">theme_action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">theme_name</span> <span class="o">==</span> <span class="n">window</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="n">theme_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">checked</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">theme_name</span><span class="p">:</span> <span class="n">safe_switch_theme</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">theme_group</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">theme_action</span><span class="p">)</span>
+        <span class="n">themes_menu</span><span class="o">.</span><span class="n">insertAction</span><span class="p">(</span><span class="n">themes_menu</span><span class="o">.</span><span class="n">actions</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">theme_action</span><span class="p">)</span>  <span class="c1"># Insert before separator</span></div>
+
+
+
+<div class="viewcode-block" id="show_session_manager">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.show_session_manager">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_session_manager</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Launch the session manager dialog&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.session_editor</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionEditorDialog</span>
+
+    <span class="n">dialog</span> <span class="o">=</span> <span class="n">SessionEditorDialog</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">session_file</span><span class="o">=</span><span class="n">window</span><span class="o">.</span><span class="n">session_file_with_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span> <span class="o">==</span> <span class="n">dialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">session_file_with_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">sessions_data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">session_navigator</span><span class="o">.</span><span class="n">load_sessions</span><span class="p">(</span><span class="n">file_content_to_load</span><span class="o">=</span><span class="n">sessions_data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load sessions: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="show_netbox_importer">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.show_netbox_importer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_netbox_importer</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the Netbox to Session importer&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">NetboxExporter</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModality</span><span class="o">.</span><span class="n">ApplicationModal</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error showing Netbox importer: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="handle_open_sessions">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.handle_open_sessions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">handle_open_sessions</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle opening a new sessions file&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">file_name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+            <span class="n">window</span><span class="p">,</span>
+            <span class="s2">&quot;Open Sessions File&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;YAML Files (*.yaml);;All Files (*)&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_name</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Opening sessions file: </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">window</span><span class="o">.</span><span class="n">session_file</span> <span class="o">=</span> <span class="n">file_name</span>
+            <span class="n">window</span><span class="o">.</span><span class="n">load_sessions</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error opening sessions file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="show_credentials_dialog">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.show_credentials_dialog">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_credentials_dialog</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the credentials management dialog&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">CredentialManagerDialog</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">credentials_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">session_navigator</span><span class="o">.</span><span class="n">load_sessions</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error showing credentials dialog: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="show_about_dialog">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.show_about_dialog">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_about_dialog</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the about dialog&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">AboutDialog</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error showing about dialog: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="show_logicmonitor_importer">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.show_logicmonitor_importer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_logicmonitor_importer</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the LogicMonitor to Session importer&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">lmdialog</span> <span class="o">=</span> <span class="n">LMDownloader</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">lmdialog</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModality</span><span class="o">.</span><span class="n">ApplicationModal</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">lmdialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error showing LogicMonitor importer: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="safe_close_telemetry_tab">
+<a class="viewcode-back" href="../../../api/termtel.widgets.setup.html#termtel.widgets.setup.safe_close_telemetry_tab">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_close_telemetry_tab</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">tab_widget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Safe cleanup when closing telemetry tabs</span>
+<span class="sd">    Call this when a telemetry tab is closed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="s1">&#39;telemetry_widgets&#39;</span><span class="p">):</span>
+            <span class="c1"># Remove from telemetry widgets list</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tab_widget</span><span class="p">,</span> <span class="s1">&#39;telemetry_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tab_widget</span><span class="o">.</span><span class="n">telemetry_widget</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">telemetry_widgets</span><span class="p">:</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">telemetry_widgets</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">telemetry_widget</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tab_widget</span><span class="p">,</span> <span class="s1">&#39;set_theme_from_parent&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tab_widget</span> <span class="ow">in</span> <span class="n">window</span><span class="o">.</span><span class="n">telemetry_widgets</span><span class="p">:</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">telemetry_widgets</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tab_widget</span><span class="p">)</span>
+
+        <span class="c1"># Call cleanup on telemetry widget if it has one</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tab_widget</span><span class="p">,</span> <span class="s1">&#39;telemetry_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">telemetry_widget</span><span class="p">,</span> <span class="s1">&#39;cleanup&#39;</span><span class="p">):</span>
+            <span class="n">tab_widget</span><span class="o">.</span><span class="n">telemetry_widget</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tab_widget</span><span class="p">,</span> <span class="s1">&#39;cleanup&#39;</span><span class="p">):</span>
+            <span class="n">tab_widget</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;️ Error during telemetry tab cleanup: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

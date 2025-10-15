@@ -1,8 +1,8 @@
 graph TD
     %% User Interface Layer
     UI[EnhancedTelemetryMainWindow<br/>Menu system with platform management]
-    TS[Theme Selector<br/>gruvbox, cyberpunk, etc.]
-    CONN[Connection Dialog<br/>Device credentials & platform selection]
+    TS[Theme Selector<br/>gruvbox, cyberpunk, nord, doom, etc.]
+    CONN[Connection Dialog<br/>Device credentials & platform selection<br/>SSH key authentication support]
     
     %% Platform Configuration System (Updated File Structure)
     subgraph "Platform Configuration System"
@@ -20,10 +20,11 @@ graph TD
         LEGACY[EnhancedPlatformAwareTelemetryController<br/>Legacy controller wrapped]
     end
 
-    %% Real Device Communication (Updated)
+    %% Real Device Communication (Updated with SSH Key Support)
     subgraph "Device Communication (Worker Thread)"
-        NETMIKO[Netmiko Integration<br/>Real SSH connections<br/>ConnectHandler instances]
-        CREDS[ConnectionCredentials<br/>username, password, secret<br/>port, timeout]
+        NETMIKO[Netmiko Integration<br/>Real SSH connections<br/>ConnectHandler instances<br/>SSH key authentication]
+        CREDS[ConnectionCredentials<br/>username, password, secret<br/>ssh_key_file, use_keys<br/>port, timeout]
+        SSHKEY[SSH Key Manager<br/>~/.ssh_manager/keys.json<br/>Auto-detection from ~/.ssh/<br/>RSA, ED25519, ECDSA, DSS support]
         CMGR[Connection Management<br/>Worker thread connection tracking]
     end
 
@@ -67,17 +68,24 @@ graph TD
         LWIDGET[SimplifiedLogWidget<br/>Live log streaming<br/>Raw log display]
     end
 
-    %% Theme System (Current File Structure)
+    %% Theme System (Current File Structure - Updated)
     subgraph "Theme System"
-        TL[OptimizedThemeLibrary<br/>23+ themes with lazy loading]
-        TDIR[themes/<br/>cyberpunk.json<br/>gruvbox.json<br/>matrix-green.json]
+        TL[OptimizedThemeLibrary<br/>24+ themes with lazy loading<br/>cyberpunk, nord, gruvbox, doom, etc.]
+        TDIR[themes/<br/>cyberpunk.json gruvbox.json nord.json<br/>doom.json borland.json amiga.json<br/>crt-green.json vintage.json]
         TFW[ThemedFrameWidget<br/>Base themed styling]
+    end
+
+    %% Security System (NEW)
+    subgraph "Security & Credential Management"
+        CREDMGR[Credential Manager<br/>Fernet AES-128-CBC + HMAC<br/>PBKDF2-HMAC-SHA256 480k iterations]
+        CREDSTOR[Encrypted Credential Storage<br/>Platform-specific secure storage<br/>Machine-specific binding]
     end
 
     %% Data Flow - UI to Controller
     UI --> CONN
     UI --> TS
     CONN --> TTC
+    CONN --> SSHKEY
     
     %% NEW: Threaded Controller Flow
     TTC --> TWS
@@ -92,10 +100,16 @@ graph TD
     PCM --> PCMD
     PCM --> PMAP
 
+    %% SSH Key Authentication Flow (NEW)
+    CONN --> CREDMGR
+    SSHKEY --> CREDS
+    CREDMGR --> CREDSTOR
+    
     %% Device Connection Flow (Worker Thread)
     TWS --> CREDS
     TWS --> NETMIKO
     TWS --> CMGR
+    CREDS --> SSHKEY
     NETMIKO --> DEV1
     NETMIKO --> DEV2
     NETMIKO --> DEV3
@@ -176,6 +190,8 @@ graph TD
         TL
         TDIR
         TFW
+        CREDMGR
+        CREDSTOR
     end
     
     subgraph "Worker Thread"
@@ -186,6 +202,7 @@ graph TD
         CMGR
         TPARSE
         NORM
+        SSHKEY
     end
 
     %% Styling
@@ -198,6 +215,7 @@ graph TD
     classDef normalization fill:#4a1a4a,stroke:#ff88ff,color:#ff88ff
     classDef templates fill:#4a4a1a,stroke:#ffff88,color:#ffff88
     classDef threaded fill:#4a2a1a,stroke:#ff8844,color:#ff8844
+    classDef security fill:#4a1a1a,stroke:#ff4444,color:#ff4444
 
     class TTC,TWS,PCM,CMGR controller
     class LEGACY threaded
@@ -208,3 +226,4 @@ graph TD
     class DEV1,DEV2,DEV3,NETMIKO device
     class NORM,NROUTE,NNEIGH,NARP,NSYS normalization
     class TLIB,TFILES,TPARSE,TEDITOR templates
+    class CREDMGR,CREDSTOR,SSHKEY security

@@ -1,0 +1,606 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.widgets.space_debris module &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="termtel.widgets.terminal_app_wrapper module" href="termtel.widgets.terminal_app_wrapper.html" />
+    <link rel="prev" title="termtel.widgets.setup module" href="termtel.widgets.setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="termtel.widgets.html">termtel.widgets package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="termtel.widgets.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="termtel.widgets.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.TelemetryWidget.html">termtel.widgets.TelemetryWidget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.credential_manager.html">termtel.widgets.credential_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.dialogs.html">termtel.widgets.dialogs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.diff_tool_widget.html">termtel.widgets.diff_tool_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.game_integration_wrapper.html">termtel.widgets.game_integration_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.lmtosession.html">termtel.widgets.lmtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.map_preview.html">termtel.widgets.map_preview module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.nbtosession.html">termtel.widgets.nbtosession module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.new_session_dialog.html">termtel.widgets.new_session_dialog module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.notepad_widget.html">termtel.widgets.notepad_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.qtssh_widget.html">termtel.widgets.qtssh_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.sclite_widget.html">termtel.widgets.sclite_widget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_editor.html">termtel.widgets.session_editor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.session_navigator.html">termtel.widgets.session_navigator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.setup.html">termtel.widgets.setup module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">termtel.widgets.space_debris module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.space_debris.Asteroid"><code class="docutils literal notranslate"><span class="pre">Asteroid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.space_debris.AsteroidsWidget"><code class="docutils literal notranslate"><span class="pre">AsteroidsWidget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.space_debris.Bullet"><code class="docutils literal notranslate"><span class="pre">Bullet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.space_debris.GameState"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.space_debris.GameView"><code class="docutils literal notranslate"><span class="pre">GameView</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#termtel.widgets.space_debris.Ship"><code class="docutils literal notranslate"><span class="pre">Ship</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_app_wrapper.html">termtel.widgets.terminal_app_wrapper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.terminal_tabs.html">termtel.widgets.terminal_tabs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="termtel.widgets.theme_editor.html">termtel.widgets.theme_editor module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="termtel.html">termtel package</a></li>
+          <li class="breadcrumb-item"><a href="termtel.widgets.html">termtel.widgets package</a></li>
+      <li class="breadcrumb-item active">termtel.widgets.space_debris module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/termtel.widgets.space_debris.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-termtel.widgets.space_debris">
+<span id="termtel-widgets-space-debris-module"></span><h1>termtel.widgets.space_debris module<a class="headerlink" href="#module-termtel.widgets.space_debris" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Asteroid">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.space_debris.</span></span><span class="sig-name descname"><span class="pre">Asteroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">GlobalColor.white</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Asteroid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Asteroid" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGraphicsItem</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Asteroid.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Asteroid.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Asteroid.advance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Asteroid.boundingRect">
+<span class="sig-name descname"><span class="pre">boundingRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QRectF</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Asteroid.boundingRect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Asteroid.boundingRect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Asteroid.paint">
+<span class="sig-name descname"><span class="pre">paint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPainter</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QStyleOptionGraphicsItem</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Asteroid.paint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Asteroid.paint" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Asteroid.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Asteroid.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Asteroid.setColor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.space_debris.</span></span><span class="sig-name descname"><span class="pre">AsteroidsWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">GlobalColor.white</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.ensure_visible_on_black">
+<span class="sig-name descname"><span class="pre">ensure_visible_on_black</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.ensure_visible_on_black"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.ensure_visible_on_black" title="Link to this definition"></a></dt>
+<dd><p>Ensures a color will be visible on a black background by checking its luminance
+and adjusting if necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>color</strong> – QColor or Qt.GlobalColor to check</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>QColor that is guaranteed to be visible on black</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.gameStateChanged">
+<span class="sig-name descname"><span class="pre">gameStateChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.gameStateChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.getGameState">
+<span class="sig-name descname"><span class="pre">getGameState</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.getGameState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.getGameState" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.getLevel">
+<span class="sig-name descname"><span class="pre">getLevel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.getLevel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.getLevel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.getLives">
+<span class="sig-name descname"><span class="pre">getLives</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.getLives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.getLives" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.getScore">
+<span class="sig-name descname"><span class="pre">getScore</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.getScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.getScore" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.initUI">
+<span class="sig-name descname"><span class="pre">initUI</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.initUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.initUI" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QKeyEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.keyPressEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.keyReleaseEvent">
+<span class="sig-name descname"><span class="pre">keyReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QKeyEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.keyReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.keyReleaseEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.levelChanged">
+<span class="sig-name descname"><span class="pre">levelChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.levelChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.livesChanged">
+<span class="sig-name descname"><span class="pre">livesChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.livesChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.pauseGame">
+<span class="sig-name descname"><span class="pre">pauseGame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.pauseGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.pauseGame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.resetGame">
+<span class="sig-name descname"><span class="pre">resetGame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.resetGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.resetGame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.resumeGame">
+<span class="sig-name descname"><span class="pre">resumeGame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.resumeGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.resumeGame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.scoreChanged">
+<span class="sig-name descname"><span class="pre">scoreChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.scoreChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id7"><span class="problematic" id="id8">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.setColor" title="Link to this definition"></a></dt>
+<dd><p>Update the game color during runtime</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.AsteroidsWidget.startGame">
+<span class="sig-name descname"><span class="pre">startGame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#AsteroidsWidget.startGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.AsteroidsWidget.startGame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Bullet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.space_debris.</span></span><span class="sig-name descname"><span class="pre">Bullet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">GlobalColor.white</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Bullet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Bullet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGraphicsItem</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Bullet.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Bullet.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Bullet.advance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Bullet.boundingRect">
+<span class="sig-name descname"><span class="pre">boundingRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QRectF</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Bullet.boundingRect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Bullet.boundingRect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Bullet.paint">
+<span class="sig-name descname"><span class="pre">paint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPainter</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QStyleOptionGraphicsItem</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Bullet.paint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Bullet.paint" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Bullet.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Bullet.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Bullet.setColor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameState">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.space_debris.</span></span><span class="sig-name descname"><span class="pre">GameState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameState" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameState.GAME_OVER">
+<span class="sig-name descname"><span class="pre">GAME_OVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#termtel.widgets.space_debris.GameState.GAME_OVER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameState.PAUSED">
+<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#termtel.widgets.space_debris.GameState.PAUSED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameState.RUNNING">
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#termtel.widgets.space_debris.GameState.RUNNING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameState.WAITING">
+<span class="sig-name descname"><span class="pre">WAITING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#termtel.widgets.space_debris.GameState.WAITING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.space_debris.</span></span><span class="sig-name descname"><span class="pre">GameView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">GlobalColor.white</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGraphicsView</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.advance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.createUIElements">
+<span class="sig-name descname"><span class="pre">createUIElements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.createUIElements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.createUIElements" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.create_glow_pen">
+<span class="sig-name descname"><span class="pre">create_glow_pen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.create_glow_pen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.create_glow_pen" title="Link to this definition"></a></dt>
+<dd><p>Create a pen with a glowing effect</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.gameStateChanged">
+<span class="sig-name descname"><span class="pre">gameStateChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.GameView.gameStateChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id9"><span class="problematic" id="id10">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.game_over">
+<span class="sig-name descname"><span class="pre">game_over</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.game_over"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.game_over" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.handle_asteroid_destruction">
+<span class="sig-name descname"><span class="pre">handle_asteroid_destruction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asteroid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.handle_asteroid_destruction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.handle_asteroid_destruction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.handle_ship_collision">
+<span class="sig-name descname"><span class="pre">handle_ship_collision</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.handle_ship_collision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.handle_ship_collision" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.initializeGame">
+<span class="sig-name descname"><span class="pre">initializeGame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.initializeGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.initializeGame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QKeyEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.keyPressEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.keyReleaseEvent">
+<span class="sig-name descname"><span class="pre">keyReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QKeyEvent</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.keyReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.keyReleaseEvent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.levelChanged">
+<span class="sig-name descname"><span class="pre">levelChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.GameView.levelChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id11"><span class="problematic" id="id12">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.livesChanged">
+<span class="sig-name descname"><span class="pre">livesChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.GameView.livesChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id13"><span class="problematic" id="id14">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.respawn_ship">
+<span class="sig-name descname"><span class="pre">respawn_ship</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.respawn_ship"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.respawn_ship" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.scoreChanged">
+<span class="sig-name descname"><span class="pre">scoreChanged</span></span><a class="headerlink" href="#termtel.widgets.space_debris.GameView.scoreChanged" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id15"><span class="problematic" id="id16">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.setColor" title="Link to this definition"></a></dt>
+<dd><p>Update the game color during runtime</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.start_game">
+<span class="sig-name descname"><span class="pre">start_game</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.start_game"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.start_game" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.start_new_level">
+<span class="sig-name descname"><span class="pre">start_new_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.start_new_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.start_new_level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.GameView.update_game">
+<span class="sig-name descname"><span class="pre">update_game</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#GameView.update_game"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.GameView.update_game" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Ship">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">termtel.widgets.space_debris.</span></span><span class="sig-name descname"><span class="pre">Ship</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">GlobalColor.white</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Ship"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Ship" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGraphicsItem</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Ship.advance">
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Ship.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Ship.advance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Ship.boundingRect">
+<span class="sig-name descname"><span class="pre">boundingRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QRectF</span></span></span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Ship.boundingRect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Ship.boundingRect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Ship.paint">
+<span class="sig-name descname"><span class="pre">paint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPainter</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QStyleOptionGraphicsItem</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Ship.paint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Ship.paint" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Ship.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Ship.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Ship.setColor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="termtel.widgets.space_debris.Ship.shoot">
+<span class="sig-name descname"><span class="pre">shoot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/termtel/widgets/space_debris.html#Ship.shoot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#termtel.widgets.space_debris.Ship.shoot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="termtel.widgets.setup.html" class="btn btn-neutral float-left" title="termtel.widgets.setup module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="termtel.widgets.terminal_app_wrapper.html" class="btn btn-neutral float-right" title="termtel.widgets.terminal_app_wrapper module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

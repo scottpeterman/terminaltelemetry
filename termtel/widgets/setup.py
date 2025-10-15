@@ -68,14 +68,14 @@ class AboutDialog(QDialog):
                 svg_content = get_themed_svg()
         except ImportError:
             # Fallback SVG if the module isn't available
-            svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-                <rect width="500" height="500" fill="''' + bg_color + '''"/>
-                <circle cx="250" cy="250" r="150" fill="none" stroke="''' + highlight_color + '''" stroke-width="5"/>
-                <path d="M250 100 L400 350 L100 350 Z" fill="none" stroke="''' + text_color + '''" stroke-width="5"/>
-                <text x="40" y="50" fill="''' + text_color + '''" font-family="monospace" font-size="16" font-weight="bold">SSH</text>
+            svg_content = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                <rect width="500" height="500" fill="{bg_color}"/>
+                <circle cx="250" cy="250" r="150" fill="none" stroke="{highlight_color}" stroke-width="5"/>
+                <path d="M250 100 L400 350 L100 350 Z" fill="none" stroke="{text_color}" stroke-width="5"/>
+                <text x="40" y="50" fill="{text_color}" font-family="monospace" font-size="16" font-weight="bold">SSH</text>
             </svg>'''
 
-        # Embed the SVG in the HTML content
+        # NOW build the HTML content - after all variables are defined
         about_html = f"""
         <html>
         <head>
@@ -89,156 +89,298 @@ class AboutDialog(QDialog):
                     padding: 20px 40px;
                 }}
                 .container {{
-                    max-width: 800px;
+                    max-width: 900px;
                     margin: 0 auto;
                 }}
                 .logo-container {{
                     text-align: center;
                     margin-bottom: 20px;
                 }}
-                .logo {{
-                    width: 200px;
-                    height: 200px;
+                .svg-container {{
+                    width: 120px;
+                    height: 120px;
                     margin: 0 auto;
+                }}
+                .svg-container svg {{
+                    width: 100%;
+                    height: 100%;
                 }}
                 h1 {{
                     color: {text_color};
                     text-align: center;
                     font-size: 2.5em;
                     margin-bottom: 10px;
+                    font-weight: 300;
+                    letter-spacing: 2px;
                 }}
                 h2 {{
                     color: {text_color};
-                    margin-top: 25px;
+                    margin-top: 30px;
+                    margin-bottom: 15px;
+                    font-size: 1.5em;
+                    border-bottom: 2px solid {border_color};
+                    padding-bottom: 8px;
+                    font-weight: bold;
+                    background: rgba(255, 255, 255, 0.05);
+                    padding: 10px;
+                    padding-bottom: 8px;
                 }}
                 h3 {{
                     color: {text_color};
                     margin-top: 20px;
+                    margin-bottom: 10px;
                     font-size: 1.2em;
+                    font-weight: bold;
                 }}
                 .subtitle {{
                     color: {text_color};
                     text-align: center;
                     font-size: 1.1em;
+                    margin-bottom: 40px;
+                    font-style: italic;
+                    opacity: 0.8;
+                }}
+                .version {{
+                    color: {text_color};
+                    text-align: center;
+                    font-size: 0.95em;
                     margin-bottom: 30px;
+                    opacity: 0.7;
                 }}
-                .feature-list {{
+                ul {{
                     list-style-type: none;
-                    padding: 0;
+                    padding-left: 0;
                 }}
-                .feature-list li {{
-                    margin: 10px 0;
+                ul li {{
+                    margin: 8px 0;
                     padding-left: 25px;
                     position: relative;
+                    color: {text_color};
                 }}
-                .feature-list li:before {{
-                    content: "";
+                ul li:before {{
+                    content: "▸";
                     color: {text_color};
                     position: absolute;
                     left: 0;
+                    font-weight: bold;
+                    opacity: 0.6;
                 }}
                 .highlight {{
-                    color: {text_color};
+                    font-weight: 700;
+                    text-decoration: underline;
+                    text-decoration-color: {border_color};
+                    text-decoration-thickness: 1px;
+                }}
+                .badge {{
+                    display: inline-block;
+                    background: {text_color};
+                    color: {bg_color};
+                    padding: 2px 8px;
+                    border-radius: 3px;
+                    font-size: 0.85em;
+                    font-weight: bold;
+                    margin-left: 6px;
+                    border: 1px solid {border_color};
                 }}
                 .footer {{
-                    margin-top: 40px;
+                    margin-top: 50px;
                     text-align: center;
-                    color: {secondary_color};
+                    color: {text_color};
                     border-top: 1px solid {border_color};
                     padding-top: 20px;
+                    font-size: 0.9em;
+                    opacity: 0.7;
                 }}
                 .code {{
-                    background: rgba(0,0,0,0.2);
-                    padding: 10px;
-                    border-radius: 4px;
+                    background: rgba(255, 255, 255, 0.05);
+                    padding: 12px 15px;
+                    border-radius: 6px;
                     margin: 15px 0;
-                    font-family: monospace;
+                    font-family: 'Consolas', 'Monaco', monospace;
+                    font-size: 0.9em;
+                    border-left: 3px solid {border_color};
+                    color: {text_color};
                 }}
-                .svg-container {{
-            width: 100px;
-            height: 100px;
-            margin: 0 auto;
-        }}
-        
-        .svg-container svg {{
-            width: 100%;
-            height: 100%;
-        }}
-
-        ::-webkit-scrollbar {{
-            width: 10px;
-            height: 10px;
-        }}
-        ::-webkit-scrollbar-track {{
-            background: {bg_color};
-            border-radius: 4px;
-        }}
-        ::-webkit-scrollbar-thumb {{
-            background: {border_color};
-            border-radius: 4px;
-        }}
-        ::-webkit-scrollbar-thumb:hover {{
-            background: {border_color};
-            border-radius: 4px;
-        }}
-        ::-webkit-scrollbar-corner {{
-            background: {bg_color};
-        }}
-                </style>
+                .stats {{
+                    display: flex;
+                    justify-content: space-around;
+                    margin: 20px 0;
+                    padding: 15px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 8px;
+                    border: 1px solid {border_color};
+                }}
+                .stat-item {{
+                    text-align: center;
+                }}
+                .stat-number {{
+                    font-size: 2em;
+                    color: {text_color};
+                    font-weight: bold;
+                }}
+                .stat-label {{
+                    color: {text_color};
+                    font-size: 0.9em;
+                    margin-top: 5px;
+                    opacity: 0.7;
+                }}
+                ::-webkit-scrollbar {{
+                    width: 10px;
+                    height: 10px;
+                }}
+                ::-webkit-scrollbar-track {{
+                    background: {bg_color};
+                    border-radius: 4px;
+                }}
+                ::-webkit-scrollbar-thumb {{
+                    background: {border_color};
+                    border-radius: 4px;
+                }}
+                ::-webkit-scrollbar-thumb:hover {{
+                    background: {text_color};
+                    opacity: 0.5;
+                }}
+            </style>
         </head>
         <body>
             <div class="container">
-                <!-- SVG Logo -->
-                <div class="svg svg-container logo-container">
+                <!-- Logo -->
+                <div class="svg-container logo-container">
                     {svg_content}
                 </div>
 
                 <h1>TerminalTelemetry</h1>
-                <div class="subtitle">A minimalist, cyber-inspired terminal emulator with modern features</div>
+                <div class="subtitle">Cyberpunk-Inspired Terminal Emulator & Network Telemetry Platform</div>
+                <div class="version">Version 0.10.0 • October 2025</div>
 
-                <h2>Key Features</h2>
-                <div class="feature-list">
-                    <h3>Modern Terminal Emulator</h3>
-                    <ul>
-                        <li>Multi-session support with tabbed interface</li>
-                        <li>Customizable themes (Cyberpunk, Dark Mode, Light Mode, Retro Green, Retro Amber, Neon Blue)</li>
-                        <li>Session management and quick connect functionality</li>
-                        <li>Secure credential storage</li>
-                    </ul>
-
-                     <h3>Theme System</h3>
-                    <ul>
-                        <li>Dynamic JSON-based themes</li>
-                        <li>Live theme preview and hot-reload</li>
-                        <li>Custom theme creation support</li>
-                    </ul>
-                    <div class="code">
-                    To install themes:
-                    1. Download themes.zip from View > Theme > Download Themes
-                    2. Extract to 'themes' directory
-                    3. Click View > Theme > Reload Themes
+                <!-- Quick Stats -->
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">24+</div>
+                        <div class="stat-label">Themes</div>
                     </div>
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">TextFSM Templates</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">7+</div>
+                        <div class="stat-label">Network Platforms</div>
+                    </div>
+                </div>
 
-                    <h3>Security Features</h3>
-                    <ul>
-                        <li>PBKDF2-HMAC-SHA256 key derivation (480,000 iterations)</li>
-                        <li>Fernet (AES-128-CBC) encryption with HMAC authentication</li>
-                        <li>Platform-specific secure storage locations</li>
-                        <li>Machine-specific binding</li>
-                        <li>Rate-limited authentication</li>
-                        <li>Cross-platform secure credential management</li>
-                        <li>Zero plaintext storage of sensitive data</li>
-                    </ul>
+                <h2>Core Features</h2>
+
+                <h3>Advanced Theme System</h3>
+                <ul>
+                    <li><span class="highlight">24+ built-in themes</span> (Cyberpunk, Nord, Gruvbox, Doom, Borland, Amiga, CRT-Green/Amber, and more)</li>
+                    <li><span class="highlight">Dynamic JSON-based themes</span> with hot-reload capability</li>
+                    <li><span class="highlight">Live theme switching</span> across all components without restart</li>
+                    <li><span class="highlight">Per-tab theme customization</span> via right-click context menu</li>
+                    <li><span class="highlight">Theme editor</span> with real-time preview and custom theme creation</li>
+                    <li><span class="highlight">Individual terminal theming</span> - different theme for each tab</li>
+                </ul>
+                <div class="code">
+Available Themes: Cyberpunk • Nord • Gruvbox • Doom • Solarized • Neon City<br>
+Borland • Amiga • Norton Commander • PC Tools • CRT Green/Amber • Vintage<br>
+Ice • Forest • 1-2-3 • Dark • Light • and more!
+                </div>
+
+                <h3>Multi-Session Terminal Environment</h3>
+                <ul>
+                    <li><span class="highlight">Tabbed SSH terminals</span> with xterm.js backend</li>
+                    <li><span class="highlight">Session management</span> with YAML-based configuration</li>
+                    <li><span class="highlight">Quick Connect</span> interface for rapid device access</li>
+                    <li><span class="highlight">Per-tab customization</span> - rename tabs and set individual themes</li>
+                    <li><span class="highlight">Context menu controls</span> - close, rename, theme individual tabs</li>
+                    <li><span class="highlight">Serial terminal support</span> for console connections</li>
+                    <li><span class="highlight">Cross-platform support</span> (Windows, macOS, Linux)</li>
+                </ul>
+
+                <h3>Real-Time Network Telemetry</h3>
+                <ul>
+                    <li><span class="highlight">Live device monitoring</span> via SSH (no SNMP required)</li>
+                    <li><span class="highlight">Multi-vendor support</span> (Cisco IOS/IOS-XE/NX-OS, Arista EOS, Linux, HP, Aruba)</li>
+                    <li><span class="highlight">Real-time data collection:</span> system info, CPU/memory, neighbors (CDP/LLDP), ARP, routing tables, logs</li>
+                    <li><span class="highlight">Threaded data collection</span> keeps UI responsive</li>
+                    <li><span class="highlight">200+ TextFSM templates</span> for network device parsing</li>
+                    <li><span class="highlight">CSV export</span> for all telemetry data tables</li>
+                    <li><span class="highlight">VRF support</span> for routing table monitoring</li>
+                </ul>
+
+                <h3>Template System & Customization</h3>
+                <ul>
+                    <li><span class="highlight">Built-in template editor</span> with syntax highlighting</li>
+                    <li><span class="highlight">Live template testing</span> against real device output</li>
+                    <li><span class="highlight">Field mapping validation</span> with coverage reports</li>
+                    <li><span class="highlight">Template debugging</span> with detailed error reporting</li>
+                    <li><span class="highlight">Package resource management</span> - templates included in installation</li>
+                </ul>
+
+                <h2>Enterprise Security</h2>
+                <ul>
+                    <li><span class="highlight">Encrypted credential storage</span> with Fernet (AES-128-CBC) + HMAC</li>
+                    <li><span class="highlight">PBKDF2-HMAC-SHA256</span> key derivation (480,000 iterations)</li>
+                    <li><span class="highlight">SSH key authentication</span><span class="badge">NEW</span></li>
+                    <li><span class="highlight">Automatic private key detection</span> from ~/.ssh/</li>
+                    <li><span class="highlight">Support for RSA, ED25519, ECDSA, DSS</span> key types</li>
+                    <li><span class="highlight">Config-based key management</span> (~/.ssh_manager/keys.json)</li>
+                    <li><span class="highlight">Per-session key preferences</span> with persistent settings</li>
+                    <li><span class="highlight">Platform-specific secure storage</span> locations</li>
+                    <li><span class="highlight">Machine-specific credential binding</span></li>
+                    <li><span class="highlight">Rate-limited authentication</span> prevents brute force</li>
+                    <li><span class="highlight">Zero plaintext storage</span> of sensitive data</li>
+                </ul>
+
+                <h2>Session Import Tools</h2>
+                <ul>
+                    <li><span class="highlight">NetBox Integration</span> - Import devices directly from NetBox instances</li>
+                    <li><span class="highlight">LogicMonitor Integration</span> - SDK-based device discovery</li>
+                    <li><span class="highlight">Site-based organization</span> and grouping</li>
+                    <li><span class="highlight">Automatic credential mapping</span></li>
+                </ul>
+
+                <h2>Built-in Productivity Tools</h2>
+                <ul>
+                    <li><span class="highlight">Text Editor</span> with syntax highlighting</li>
+                    <li><span class="highlight">Diff Tool</span> for configuration comparison</li>
+                    <li><span class="highlight">Serial Terminal</span> for console connections</li>
+                    <li><span class="highlight">Space Debris Game</span> (Asteroids clone)</li>
+                    <li><span class="highlight">Doom</span> (WebAssembly port)</li>
+                </ul>
+
+                <h2>Installation</h2>
+                <div class="code">
+# Install via pip<br>
+pip install TerminalTelemetry<br>
+<br>
+# Launch application<br>
+termtel-con  # Bootstrap themes<br>
+termtel      # Start application
+                </div>
+
+                <h2>Theme Management</h2>
+                <div class="code">
+# Global themes: View → Theme menu<br>
+# Per-tab themes: Right-click tab → Terminal Theme<br>
+# Custom themes: View → Theme → Theme Editor<br>
+# Download themes: View → Theme → Download Themes
                 </div>
 
                 <div class="footer">
-                    <p>Author: Scott Peterman (github.com/scottpeterman)</p>
-                    <p>Licensed under GNU General Public License v3 (GPLv3)</p>
+                    <p><strong>Author:</strong> Scott Peterman</p>
+                    <p><strong>GitHub:</strong> github.com/scottpeterman/terminaltelemetry</p>
+                    <p><strong>License:</strong> GNU General Public License v3 (GPLv3)</p>
+                    <p style="margin-top: 15px; font-size: 0.85em; font-style: italic;">
+                        "The best network monitoring tool is the one that gets out of your way<br>
+                        and shows you what you need to know."
+                    </p>
                 </div>
             </div>
         </body>
         </html>
         """
+
         web_view.setHtml(about_html)
         layout.addWidget(web_view)
         self.setLayout(layout)
@@ -246,7 +388,6 @@ class AboutDialog(QDialog):
         # Apply the parent's theme to the dialog
         if hasattr(parent, 'theme_manager'):
             parent.theme_manager.apply_theme(self, theme_name)
-
 
 def setup_menus(window):
     """Setup menu system for the main window"""

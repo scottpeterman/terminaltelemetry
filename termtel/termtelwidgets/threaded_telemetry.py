@@ -1,21 +1,24 @@
 """
-FIXED Threaded Architecture with proper device info collection
+FIXED Threaded Architecture with proper device info collection and SSH KEY SUPPORT
 The key fix is in _gather_device_info() to properly parse and populate device information
+ENHANCED: Added full SSH key authentication support to worker thread
 """
 
 from PyQt6.QtCore import QThread, QObject, pyqtSignal, QTimer
 from netmiko import ConnectHandler, NetmikoTimeoutException, NetmikoAuthenticationException
 import time
 import threading
+import os
 from dataclasses import dataclass
 from typing import Optional, List, Dict
+from pathlib import Path
 from termtel.termtelwidgets.netmiko_controller import DeviceInfo, LocalTemplateParser, \
     RawCommandOutput, NormalizedSystemMetrics
 
 
 @dataclass
 class ConnectionConfig:
-    """Immutable connection configuration for worker thread"""
+    """Immutable connection configuration for worker thread with SSH key support"""
     hostname: str
     ip_address: str
     platform: str
@@ -25,11 +28,12 @@ class ConnectionConfig:
     port: int = 22
     timeout: int = 30
     auth_timeout: int = 10
+    key_file: str = None  # SSH key file path
 
 
 class TelemetryWorkerThread(QThread):
     """
-    FIXED Worker thread with proper device info collection
+    FIXED Worker thread with proper device info collection and SSH key support
     """
 
     # Connection status signals
@@ -96,7 +100,7 @@ class TelemetryWorkerThread(QThread):
             print(f" Worker thread {thread_name} shutting down")
 
     def _establish_connection(self) -> bool:
-        """Establish netmiko connection in worker thread"""
+        """Establish netmiko connection in worker thread with SSH key support"""
         self.status_update.emit("Connecting...")
 
         try:
@@ -115,19 +119,127 @@ class TelemetryWorkerThread(QThread):
                 timeout = self.connection_config.timeout
                 auth_timeout = self.connection_config.auth_timeout
 
+            # Build base connection params
             connection_params = {
                 'device_type': device_type,
                 'host': self.connection_config.ip_address,
                 'username': self.connection_config.username,
-                'password': self.connection_config.password,
-                'secret': self.connection_config.secret,
                 'port': self.connection_config.port,
                 'timeout': timeout,
                 'auth_timeout': auth_timeout,
                 'fast_cli': fast_cli,
             }
 
+            # ============ SSH KEY SUPPORT ============
+            use_ssh_key = False
+            key_file_path = self.connection_config.key_file
+
+            print("\n" + "="*60)
+            print("WORKER THREAD SSH KEY AUTHENTICATION")
+            print("="*60)
+
+            if key_file_path:
+                # Explicit key file provided
+                use_ssh_key = True
+                print(f"✓ Using SSH key: {key_file_path}")
+
+                # Verify key exists
+                if Path(key_file_path).exists():
+                    print(f"  ✓ Key file exists")
+                    print(f"  Size: {Path(key_file_path).stat().st_size} bytes")
+                    print(f"  Permissions: {oct(Path(key_file_path).stat().st_mode)[-3:]}")
+
+                    # Check key type
+                    try:
+                        with open(key_file_path, 'r') as f:
+                            first_line = f.readline().strip()
+                            if 'BEGIN RSA PRIVATE KEY' in first_line:
+                                print(f"  ✓ Key type: RSA")
+                            elif 'BEGIN OPENSSH PRIVATE KEY' in first_line:
+                                print(f"  ✓ Key type: OpenSSH")
+                            elif 'BEGIN EC PRIVATE KEY' in first_line:
+                                print(f"  ✓ Key type: ECDSA")
+                            else:
+                                print(f"  ⚠ Key type: Unknown")
+                    except:
+                        pass
+                else:
+                    print(f"  ✗ WARNING: Key file not found: {key_file_path}")
+
+            elif not self.connection_config.password or self.connection_config.password == "":
+                # No password, try to find SSH key
+                print("⚠ No password provided, attempting SSH key auth")
+
+                # Try to find key automatically
+                try:
+                    from termtel.ssh.ssh_key_config import SSHKeyConfig
+                    key_config = SSHKeyConfig()
+
+                    detected_key = key_config.get_key_path(
+                        host=self.connection_config.ip_address,
+                        username=self.connection_config.username
+                    )
+
+                    if detected_key:
+                        key_file_path = detected_key
+                        use_ssh_key = True
+                        print(f"✓ Found key from config: {key_file_path}")
+                    else:
+                        print("⚠ No key found in config")
+
+                        # Try default locations
+                        default_keys = [
+                            Path.home() / ".ssh" / "id_rsa",
+                            Path.home() / ".ssh" / "id_ed25519",
+                            Path.home() / ".ssh" / "id_ecdsa",
+                        ]
+
+                        print("→ Checking default key locations:")
+                        for default_key in default_keys:
+                            print(f"  Checking: {default_key}")
+                            if default_key.exists():
+                                key_file_path = str(default_key)
+                                use_ssh_key = True
+                                print(f"  ✓ Found: {key_file_path}")
+                                break
+                            else:
+                                print(f"  ✗ Not found")
+
+                except Exception as e:
+                    print(f"⚠ Error looking up SSH key: {e}")
+                    import traceback
+                    traceback.print_exc()
+
+            # Apply authentication settings
+            if use_ssh_key and key_file_path:
+                print(f"\n→ USING SSH KEY AUTHENTICATION")
+                print(f"  Key: {key_file_path}")
+                connection_params['use_keys'] = True
+                connection_params['key_file'] = key_file_path
+                # CRITICAL: Do NOT set password when using keys!
+                # Netmiko will handle this internally. Setting password="" causes keyboard-interactive!
+                connection_params['allow_agent'] = False
+                # connection_params['look_for_keys'] = False
+                print(f"  Connection params: use_keys=True, allow_agent=False, look_for_keys=False")
+            else:
+                print(f"\n→ USING PASSWORD AUTHENTICATION")
+                if self.connection_config.password:
+                    print(f"  Password: {'*' * len(self.connection_config.password)}")
+                else:
+                    print(f"  ⚠ WARNING: No password provided!")
+                connection_params['password'] = self.connection_config.password
+                connection_params['secret'] = self.connection_config.secret
+                connection_params['allow_agent'] = False
+
+            print("="*60 + "\n")
+            # ============================================
+
             print(f" Worker connecting to {self.connection_config.ip_address} as {device_type}...")
+            if use_ssh_key:
+                print(f"  Auth method: SSH Key")
+                print(f"  Key file: {key_file_path}")
+            else:
+                print(f"  Auth method: Password")
 
             # Create connection in THIS thread
             self.connection = ConnectHandler(**connection_params)
@@ -138,24 +250,38 @@ class TelemetryWorkerThread(QThread):
 
             if test_output:
                 # Connection successful - gather device info
+                print(f"✓ Connection test successful")
                 self._gather_device_info()
                 self.is_connected = True
                 self.status_update.emit("Connected")
                 self.connection_established.emit(self.device_info)
+                print(f"✓ Worker connection fully established")
                 return True
             else:
+                print(f"✗ Connection test failed (no output)")
                 self.connection_failed.emit("Connection test failed")
                 return False
 
         except NetmikoAuthenticationException as e:
-            self.connection_failed.emit(f"Authentication failed: {str(e)}")
-
+            error_msg = f"Authentication failed: {str(e)}"
+            print(f"✗ {error_msg}")
+            if use_ssh_key:
+                print(f"  SSH key used: {key_file_path}")
+                print(f"  Verify public key is in device's authorized_keys")
+                print(f"  Check key permissions (should be 600)")
+            self.connection_failed.emit(error_msg)
             return False
         except NetmikoTimeoutException as e:
-            self.connection_failed.emit(f"Connection timeout: {str(e)}")
+            error_msg = f"Connection timeout: {str(e)}"
+            print(f"✗ {error_msg}")
+            self.connection_failed.emit(error_msg)
             return False
         except Exception as e:
-            self.connection_failed.emit(f"Connection error: {str(e)}")
+            error_msg = f"Connection error: {str(e)}"
+            print(f"✗ {error_msg}")
+            import traceback
+            traceback.print_exc()
+            self.connection_failed.emit(error_msg)
             return False
 
     def _get_fallback_device_type(self) -> str:
@@ -181,8 +307,6 @@ class TelemetryWorkerThread(QThread):
     def _gather_device_info(self):
         """FIXED: Gather device information using worker connection"""
         print(" Worker gathering device information...")
-
-
 
         # Create basic device info with connection details
         self.device_info = DeviceInfo(
@@ -357,7 +481,7 @@ class TelemetryWorkerThread(QThread):
             print(f" Connection available: {self.connection is not None}")
         print(f"sending command raw: {command}")
         output = self.connection.send_command(command, read_timeout=30)
-        # print(f"raw output: {output}")
+
         if data_type == "logs":
             print(f" Logs command output length: {len(output)} characters")
             print(f" First 200 chars: {output[:200]}")
@@ -395,13 +519,13 @@ class TelemetryWorkerThread(QThread):
         # Emit to main thread
         self.data_collected.emit(data_type, raw_output, parsed_data, normalized_data)
         print(f" Worker completed {data_type}")
+
     def _create_system_metrics_from_cpu(self, parsed_data):
         """Create NormalizedSystemMetrics from CPU data"""
         if not parsed_data:
             return None
 
         try:
-
             cpu_entry = parsed_data[0]
             print(f" Creating system metrics from CPU data: {list(cpu_entry.keys())}")
 
@@ -445,15 +569,9 @@ class TelemetryWorkerThread(QThread):
 
                 # Extract load averages if available
                 if 'GLOBAL_LOAD_AVERAGE_1_MINUTES' in cpu_entry:
-                    metrics.load_1min = float(cpu_entry['GLOBAL_LOAD_AVERAGE_1_MINUTES'])
+                    metrics.cpu_1min_avg = float(cpu_entry['GLOBAL_LOAD_AVERAGE_1_MINUTES'])
                 if 'GLOBAL_LOAD_AVERAGE_5_MINUTES' in cpu_entry:
-                    metrics.load_5min = float(cpu_entry['GLOBAL_LOAD_AVERAGE_5_MINUTES'])
-
-                # Extract process counts if available
-                if 'GLOBAL_TASKS_TOTAL' in cpu_entry:
-                    metrics.process_count_total = int(cpu_entry['GLOBAL_TASKS_TOTAL'])
-                if 'GLOBAL_TASKS_RUNNING' in cpu_entry:
-                    metrics.process_count_running = int(cpu_entry['GLOBAL_TASKS_RUNNING'])
+                    metrics.cpu_5min_avg = float(cpu_entry['GLOBAL_LOAD_AVERAGE_5_MINUTES'])
 
             elif self.connection_config.platform.startswith('cisco'):
                 # Cisco: Simple CPU fields
@@ -462,8 +580,7 @@ class TelemetryWorkerThread(QThread):
                         metrics.cpu_usage_percent = float(cpu_entry[field])
                         break
 
-            print(
-                f" Created metrics: CPU={metrics.cpu_usage_percent}%, Memory={metrics.memory_used_percent}%, Total_MB={metrics.memory_total_mb}")
+            print(f" Created metrics: CPU={metrics.cpu_usage_percent}%, Memory={metrics.memory_used_percent}%")
             return metrics
 
         except Exception as e:
@@ -471,19 +588,14 @@ class TelemetryWorkerThread(QThread):
             return None
 
     def _create_system_metrics_from_memory(self, parsed_data):
-        """Create NormalizedSystemMetrics from memory data - FIXED VERSION"""
+        """Create NormalizedSystemMetrics from memory data"""
         if not parsed_data:
             return None
 
         try:
-
-            # For memory-only data, create metrics with ONLY memory fields populated
             metrics = NormalizedSystemMetrics()
             metrics.platform = self.connection_config.platform
             metrics.timestamp = time.time()
-
-            # Only set memory fields, leave CPU fields at 0 (which won't overwrite existing CPU data)
-            # The CPU widget should handle partial updates properly
 
             if self.connection_config.platform.startswith('cisco'):
                 # Cisco: Simple memory pools
@@ -504,8 +616,7 @@ class TelemetryWorkerThread(QThread):
                             metrics.memory_used_mb = used_mb
                             metrics.memory_free_mb = free_mb
 
-                            print(
-                                f" Created MEMORY-ONLY metrics: Memory={metrics.memory_used_percent}%, Total_MB={metrics.memory_total_mb}")
+                            print(f" Created memory metrics: {metrics.memory_used_percent}%")
                             return metrics
 
                         except (ValueError, KeyError) as e:
@@ -513,15 +624,14 @@ class TelemetryWorkerThread(QThread):
                             continue
 
             elif self.connection_config.platform.startswith('arista'):
-                # For Arista, memory often comes with CPU, so fall back to the full method
+                # For Arista, memory often comes with CPU
                 return self._create_system_metrics_from_cpu(parsed_data)
 
-            # If we couldn't parse memory data, return None instead of empty metrics
-            print(f" No memory data could be parsed for platform: {self.connection_config.platform}")
+            print(f" No memory data could be parsed")
             return None
 
         except Exception as e:
-            print(f" Error creating memory-only metrics: {e}")
+            print(f" Error creating memory metrics: {e}")
             return None
 
     def _parse_output(self, command_type: str, output: str):
@@ -655,7 +765,6 @@ class ThreadedTelemetryController(QObject):
     normalized_system_metrics_ready = pyqtSignal(object)
 
     device_info_updated = pyqtSignal(object)
-    connection_status_changed = pyqtSignal(str, str)
     theme_changed = pyqtSignal(str)
 
     def __init__(self, original_controller):
@@ -672,7 +781,7 @@ class ThreadedTelemetryController(QObject):
         self.data_collection_timer.timeout.connect(self.collect_telemetry_data)
 
     def connect_to_device(self, hostname: str, ip_address: str, platform: str, credentials) -> bool:
-        """Connect to device using worker thread"""
+        """Connect to device using worker thread with SSH key support"""
         print(f" Starting threaded connection to {hostname} ({ip_address})")
 
         # Store connection details for error reporting
@@ -685,7 +794,7 @@ class ThreadedTelemetryController(QObject):
             self.worker_thread.stop_worker()
             self.worker_thread.wait(3000)
 
-        # Create connection configuration
+        # Create connection configuration - NOW WITH KEY FILE SUPPORT
         connection_config = ConnectionConfig(
             hostname=hostname,
             ip_address=ip_address,
@@ -695,7 +804,8 @@ class ThreadedTelemetryController(QObject):
             secret=credentials.secret,
             port=credentials.port,
             timeout=credentials.timeout,
-            auth_timeout=credentials.auth_timeout
+            auth_timeout=credentials.auth_timeout,
+            key_file=getattr(credentials, 'key_file', None)  # Get key_file if it exists
         )
 
         # Create worker thread
@@ -730,15 +840,13 @@ class ThreadedTelemetryController(QObject):
         self.device_info_updated.emit(device_info)
 
     def _on_connection_failed(self, error_message: str):
-        """Handle connection failure from worker - FIXED VERSION"""
+        """Handle connection failure from worker"""
         print(f" Worker connection failed: {error_message}")
         self.is_connected = False
-        # Only emit status change - don't show dialog here
         self.connection_status_changed.emit("", f"connection failed: {error_message}")
-        # The widget will handle showing the error to the user
 
     def _on_data_collected(self, data_type: str, raw_output, parsed_data, normalized_data):
-        """Handle data from worker thread - FIXED VERSION"""
+        """Handle data from worker thread"""
         print(f" Received {data_type} from worker")
 
         # Route to appropriate signals
@@ -760,16 +868,10 @@ class ThreadedTelemetryController(QObject):
         elif data_type == "cpu":
             self.raw_cpu_output.emit(raw_output)
 
-            # === FIXED: Convert CPU data to NormalizedSystemMetrics ===
             if normalized_data:
-                print(f" Converting CPU data to NormalizedSystemMetrics...")
-
-                # Check if we already have proper NormalizedSystemMetrics
                 if hasattr(normalized_data, 'cpu_usage_percent'):
                     # It's already a NormalizedSystemMetrics object
-                    print(f" Already proper metrics: CPU={normalized_data.cpu_usage_percent}%")
                     self.normalized_system_metrics_ready.emit(normalized_data)
-
                 elif isinstance(normalized_data, dict) and 'cpu_usage' in normalized_data:
                     # Convert worker's simple format to full metrics
                     metrics = NormalizedSystemMetrics(
@@ -777,26 +879,15 @@ class ThreadedTelemetryController(QObject):
                         platform=normalized_data['platform'],
                         timestamp=normalized_data['timestamp']
                     )
-                    print(f" Created metrics: CPU={metrics.cpu_usage_percent}%")
                     self.normalized_system_metrics_ready.emit(metrics)
-
-                else:
-                    print(f" Unexpected CPU normalized_data format: {type(normalized_data)}")
-                    print(f"    Data: {normalized_data}")
 
         elif data_type == "memory":
             self.raw_memory_output.emit(raw_output)
-
-            # Memory data might also contain system metrics
             if normalized_data and hasattr(normalized_data, 'memory_used_percent'):
-                print(f" Memory metrics: {normalized_data.memory_used_percent}%")
                 self.normalized_system_metrics_ready.emit(normalized_data)
 
         elif data_type == "logs":
             self.raw_log_output.emit(raw_output)
-
-        else:
-            print(f" Unknown data type: {data_type}")
 
     def _on_collection_complete(self):
         """Handle completion of collection cycle"""

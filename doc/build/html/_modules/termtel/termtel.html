@@ -1,0 +1,1196 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>termtel.termtel &mdash; TerminalTelemetry 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            TerminalTelemetry
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.html">termtel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.helpers.html">termtel.helpers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.routers.html">termtel.routers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.ssh.html">termtel.ssh package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.widgets.html">termtel.widgets package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.schemas.html">termtel.schemas package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.utils.html">termtel.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.termtelng.html">termtel.termtelng package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.termtelng.backend.html">termtel.termtelng.backend package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/termtel.termtelng.frontend.html">termtel.termtelng.frontend package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TerminalTelemetry</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">termtel.termtel</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for termtel.termtel</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">termtel - A PyQt6 Terminal Emulator</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.helpers.theme_bootstrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeBootstrap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.qtssh_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ui_Terminal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.session_navigator</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionNavigator</span>
+<span class="c1"># from termtel.widgets.TelemetryWidget import TelemetryWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.termtelwidgets.telemetry_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelemetryWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.themes3</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThemeLibrary</span><span class="p">,</span> <span class="n">LayeredHUDFrame</span><span class="p">,</span> <span class="n">ThemeMapper</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPalette</span><span class="p">,</span> <span class="n">QColor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> \
+    <span class="n">QInputDialog</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QStyleFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">QThread</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QCoreApplication</span><span class="p">,</span> <span class="n">pyqtSignal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">closing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.helpers.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.helpers.credslib</span><span class="w"> </span><span class="kn">import</span> <span class="n">SecureCredentials</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_menus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">termtel.widgets.terminal_tabs</span><span class="w"> </span><span class="kn">import</span> <span class="n">TerminalTabWidget</span>
+
+<span class="c1"># Configure logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                   <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;termtel&#39;</span><span class="p">)</span>
+
+<span class="n">THEME_MAPPING</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="initialize_sessions">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.initialize_sessions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">initialize_sessions</span><span class="p">():</span>
+    <span class="n">sessions_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./sessions&#39;</span><span class="p">)</span>
+    <span class="n">sessions_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Check for sessions.yaml</span>
+    <span class="n">sessions_file</span> <span class="o">=</span> <span class="n">sessions_dir</span> <span class="o">/</span> <span class="s1">&#39;sessions.yaml&#39;</span>
+
+    <span class="c1"># Only write default config if file doesn&#39;t exist</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sessions_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">default_config</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;- folder_name: Example</span>
+<span class="s1">  sessions:</span>
+<span class="s1">  - DeviceType: linux</span>
+<span class="s1">    Model: Thinkstation </span>
+<span class="s1">    SerialNumber: &#39;&#39;</span>
+<span class="s1">    SoftwareVersion: &#39;&#39;</span>
+<span class="s1">    Vendor: Lenovo</span>
+<span class="s1">    credsid: &#39;1&#39;</span>
+<span class="s1">    display_name: T1000</span>
+<span class="s1">    host: 10.0.0.104</span>
+<span class="s1">    port: &#39;22&#39;</span>
+<span class="s1">    &#39;&#39;&#39;</span>
+        <span class="c1"># Write the default configuration to sessions.yaml</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">sessions_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">default_config</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">sessions_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">sessions_file</span></div>
+
+
+
+
+<div class="viewcode-block" id="termtelWindow">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">termtelWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+    <span class="n">credentials_unlocked</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cyberpunk&quot;</span><span class="p">,</span> <span class="n">session_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sessions.yaml&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;TerminalTelemetry&quot;</span><span class="p">)</span>
+        <span class="c1"># self.server_thread: Optional[FastAPIServer] = None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_free_port</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span> <span class="o">=</span> <span class="n">ThemeLibrary</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_file</span> <span class="o">=</span> <span class="n">session_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span> <span class="o">=</span> <span class="n">SecureCredentials</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings_manager</span> <span class="o">=</span> <span class="n">SettingsManager</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_themes</span><span class="p">()</span>
+
+        <span class="c1"># Override theme with saved preference if it exists</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_manager</span><span class="o">.</span><span class="n">get_app_theme</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">master_password</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Initialize UI before applying theme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_ui</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_credentials</span><span class="p">()</span>
+
+
+        <span class="c1"># self.start_server()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_navigator</span><span class="o">.</span><span class="n">connect_requested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_session_connect</span><span class="p">)</span>
+
+<div class="viewcode-block" id="termtelWindow.launch_telemetry">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.launch_telemetry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">launch_telemetry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.setup_themes">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.setup_themes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up theme system with one-time auto-bootstrap&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">termtel.helpers.resource_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">resource_manager</span>
+
+            <span class="c1"># Set up themes directory</span>
+            <span class="n">themes_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./themes&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Initialize theme bootstrap</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theme_bootstrap</span> <span class="o">=</span> <span class="n">ThemeBootstrap</span><span class="p">(</span><span class="n">resource_manager</span><span class="p">,</span> <span class="n">themes_dir</span><span class="p">)</span>
+
+            <span class="c1"># Check if this is first run</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_bootstrap</span><span class="o">.</span><span class="n">_is_bootstrap_complete</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;First run detected - bootstrapping themes from package...&quot;</span><span class="p">)</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theme_bootstrap</span><span class="o">.</span><span class="n">bootstrap_themes</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+                    <span class="n">successful</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First-run theme setup: </span><span class="si">{</span><span class="n">successful</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2"> themes installed&quot;</span><span class="p">)</span>
+
+                    <span class="c1"># Update theme manager to scan the populated directory</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="s1">&#39;rescan_themes&#39;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">rescan_themes</span><span class="p">()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial themes bootstrapped, restart application&quot;</span><span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Theme bootstrap already completed - using existing user themes&quot;</span><span class="p">)</span>
+                <span class="c1"># Still rescan in case user added themes manually</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="s1">&#39;rescan_themes&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">rescan_themes</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Theme setup failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+            <span class="c1"># Continue with basic themes only</span>
+
+<div class="viewcode-block" id="termtelWindow.load_saved_settings">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.load_saved_settings">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_saved_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load and apply saved settings.&quot;&quot;&quot;</span>
+        <span class="c1"># Apply window geometry if saved</span>
+        <span class="n">nav_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_manager</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;navigation&#39;</span><span class="p">,</span> <span class="s1">&#39;tree_width&#39;</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nav_width</span> <span class="o">!=</span> <span class="mi">250</span><span class="p">:</span>  <span class="c1"># Only update if different from default</span>
+            <span class="n">sizes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">sizes</span><span class="p">()</span>
+            <span class="n">total_width</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span>
+            <span class="n">term_width</span> <span class="o">=</span> <span class="n">total_width</span> <span class="o">-</span> <span class="n">nav_width</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="n">nav_width</span><span class="p">,</span> <span class="n">term_width</span><span class="p">])</span>
+
+        <span class="c1"># Apply terminal settings</span>
+        <span class="n">term_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_manager</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="s1">&#39;terminal&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">term_settings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">apply_settings</span><span class="p">(</span><span class="n">term_settings</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.apply_dark_palette">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.apply_dark_palette">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_dark_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply dark color palette to the application.&quot;&quot;&quot;</span>
+        <span class="n">dark_palette</span> <span class="o">=</span> <span class="n">QPalette</span><span class="p">()</span>
+
+        <span class="c1"># Base colors</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Window</span><span class="p">,</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">53</span><span class="p">))</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">WindowText</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Base</span><span class="p">,</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">AlternateBase</span><span class="p">,</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">53</span><span class="p">))</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">ToolTipBase</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">ToolTipText</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Button</span><span class="p">,</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">53</span><span class="p">))</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">ButtonText</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">BrightText</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Link</span><span class="p">,</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">218</span><span class="p">))</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Highlight</span><span class="p">,</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">218</span><span class="p">))</span>
+        <span class="n">dark_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">HighlightedText</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+
+        <span class="n">app</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">QApplication</span><span class="p">,</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">setPalette</span><span class="p">(</span><span class="n">dark_palette</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.apply_light_palette">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.apply_light_palette">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_light_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply an improved light color palette to the application.&quot;&quot;&quot;</span>
+        <span class="n">light_palette</span> <span class="o">=</span> <span class="n">QPalette</span><span class="p">()</span>
+
+        <span class="c1"># Define colors</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">248</span><span class="p">,</span> <span class="mi">248</span><span class="p">,</span> <span class="mi">248</span><span class="p">)</span>  <span class="c1"># Soft white background</span>
+        <span class="n">panel_background</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span>  <span class="c1"># Slightly darker for panels</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="s2">&quot;#000000&quot;</span><span class="p">)</span>  <span class="c1"># Soft black for text</span>
+        <span class="n">highlight</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">215</span><span class="p">)</span>  <span class="c1"># Windows-style blue for selection</span>
+        <span class="n">inactive_text</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">119</span><span class="p">)</span>  <span class="c1"># Grey for disabled items</span>
+
+        <span class="c1"># Base interface colors</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Window</span><span class="p">,</span> <span class="n">background</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">WindowText</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Base</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">AlternateBase</span><span class="p">,</span> <span class="n">panel_background</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Button</span><span class="p">,</span> <span class="n">panel_background</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">ButtonText</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Selection and highlighting</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Highlight</span><span class="p">,</span> <span class="n">highlight</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">HighlightedText</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+
+        <span class="c1"># Tooltips</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">ToolTipBase</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">GlobalColor</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">ToolTipText</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Links</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Link</span><span class="p">,</span> <span class="n">highlight</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">LinkVisited</span><span class="p">,</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+
+        <span class="c1"># Disabled state colors</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorGroup</span><span class="o">.</span><span class="n">Disabled</span><span class="p">,</span> <span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">WindowText</span><span class="p">,</span> <span class="n">inactive_text</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorGroup</span><span class="o">.</span><span class="n">Disabled</span><span class="p">,</span> <span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Text</span><span class="p">,</span> <span class="n">inactive_text</span><span class="p">)</span>
+        <span class="n">light_palette</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorGroup</span><span class="o">.</span><span class="n">Disabled</span><span class="p">,</span> <span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">ButtonText</span><span class="p">,</span> <span class="n">inactive_text</span><span class="p">)</span>
+
+        <span class="n">app</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">QApplication</span><span class="p">,</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">setPalette</span><span class="p">(</span><span class="n">light_palette</span><span class="p">)</span>
+
+            <span class="c1"># Apply additional styling for specific widgets</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                QTreeView {</span>
+<span class="s2">                    background-color: white;</span>
+<span class="s2">                    border: 1px solid #e0e0e0;</span>
+<span class="s2">                    padding: 5px;</span>
+<span class="s2">                    color: #333333;</span>
+<span class="s2">                }</span>
+<span class="s2">                QTreeView::item {</span>
+<span class="s2">                    padding: 5px;</span>
+<span class="s2">                    border-radius: 2px;</span>
+<span class="s2">                }</span>
+<span class="s2">                QTreeView::item:hover {</span>
+<span class="s2">                    background-color: #f5f5f5;</span>
+<span class="s2">                }</span>
+<span class="s2">                QTreeView::item:selected {</span>
+<span class="s2">                    background-color: #0078d7;</span>
+<span class="s2">                    color: white;</span>
+<span class="s2">                }</span>
+<span class="s2">                QHeaderView::section {</span>
+<span class="s2">                    background-color: #f8f8f8;</span>
+<span class="s2">                    color: #333333;</span>
+<span class="s2">                    padding: 5px;</span>
+<span class="s2">                    border: none;</span>
+<span class="s2">                    border-bottom: 1px solid #e0e0e0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QLineEdit {</span>
+<span class="s2">                    background-color: white;</span>
+<span class="s2">                    border: 1px solid #e0e0e0;</span>
+<span class="s2">                    border-radius: 2px;</span>
+<span class="s2">                    padding: 5px;</span>
+<span class="s2">                    color: #333333;</span>
+<span class="s2">                }</span>
+<span class="s2">                QLineEdit:focus {</span>
+<span class="s2">                    border: 1px solid #0078d7;</span>
+<span class="s2">                }</span>
+<span class="s2">                QPushButton {</span>
+<span class="s2">                    background-color: #f8f8f8;</span>
+<span class="s2">                    border: 1px solid #e0e0e0;</span>
+<span class="s2">                    border-radius: 2px;</span>
+<span class="s2">                    padding: 5px 15px;</span>
+<span class="s2">                    color: #333333;</span>
+<span class="s2">                }</span>
+<span class="s2">                QPushButton:hover {</span>
+<span class="s2">                    background-color: #f0f0f0;</span>
+<span class="s2">                    border: 1px solid #d0d0d0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QPushButton:pressed {</span>
+<span class="s2">                    background-color: #e0e0e0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QSplitter::handle {</span>
+<span class="s2">                    background-color: #e0e0e0;</span>
+<span class="s2">                    width: 1px;</span>
+<span class="s2">                }</span>
+<span class="s2">                QTabWidget::pane {</span>
+<span class="s2">                    border: 1px solid #e0e0e0;</span>
+<span class="s2">                    border-top: none;</span>
+<span class="s2">                }</span>
+<span class="s2">                QTabBar::tab {</span>
+<span class="s2">                    background-color: #f8f8f8;</span>
+<span class="s2">                    color: #333333;</span>
+<span class="s2">                    padding: 8px 12px;</span>
+<span class="s2">                    border: 1px solid #e0e0e0;</span>
+<span class="s2">                    border-bottom: none;</span>
+<span class="s2">                    margin-right: 2px;</span>
+<span class="s2">                }</span>
+<span class="s2">                QTabBar::tab:hover {</span>
+<span class="s2">                    background-color: #f0f0f0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QTabBar::tab:selected {</span>
+<span class="s2">                    background-color: white;</span>
+<span class="s2">                    border-bottom: 1px solid white;</span>
+<span class="s2">                }</span>
+<span class="s2">                QMenuBar {</span>
+<span class="s2">                    background-color: #f8f8f8;</span>
+<span class="s2">                    color: #333333;</span>
+<span class="s2">                    border-bottom: 1px solid #e0e0e0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QMenuBar::item:selected {</span>
+<span class="s2">                    background-color: #f0f0f0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QMenu {</span>
+<span class="s2">                    background-color: white;</span>
+<span class="s2">                    color: #333333;</span>
+<span class="s2">                    border: 1px solid #e0e0e0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QMenu::item:selected {</span>
+<span class="s2">                    background-color: #f0f0f0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QScrollBar:vertical {</span>
+<span class="s2">                    background: #f8f8f8;</span>
+<span class="s2">                    width: 14px;</span>
+<span class="s2">                    margin: 0px;</span>
+<span class="s2">                }</span>
+<span class="s2">                QScrollBar::handle:vertical {</span>
+<span class="s2">                    background: #d0d0d0;</span>
+<span class="s2">                    min-height: 20px;</span>
+<span class="s2">                    border-radius: 7px;</span>
+<span class="s2">                    margin: 2px;</span>
+<span class="s2">                }</span>
+<span class="s2">                QScrollBar::handle:vertical:hover {</span>
+<span class="s2">                    background: #b0b0b0;</span>
+<span class="s2">                }</span>
+<span class="s2">                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {</span>
+<span class="s2">                    height: 0px;</span>
+<span class="s2">                }</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="termtelWindow.init_ui">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.init_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;TerminalTelemetry&#39;</span><span class="p">)</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span>
+        <span class="n">screen_geometry</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">screen_geometry</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">screen_geometry</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">)</span>
+        <span class="n">center_point</span> <span class="o">=</span> <span class="n">screen_geometry</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">center_point</span><span class="o">.</span><span class="n">x</span><span class="p">()</span> <span class="o">-</span> <span class="n">width</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">center_point</span><span class="o">.</span><span class="n">y</span><span class="p">()</span> <span class="o">-</span> <span class="n">height</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>  <span class="c1"># Reasonable minimum size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="n">LayeredHUDFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="n">theme_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="p">)</span>
+
+        <span class="c1"># Main horizontal splitter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">content_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_splitter</span><span class="p">)</span>
+
+        <span class="c1"># Left side container</span>
+        <span class="n">left_container</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">left_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="n">left_container</span><span class="p">)</span>
+        <span class="n">left_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Terminal section splitter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
+        <span class="n">left_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminal_splitter</span><span class="p">)</span>
+
+        <span class="c1"># Session Navigator</span>
+        <span class="n">nav_frame</span> <span class="o">=</span> <span class="n">LayeredHUDFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="n">theme_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_navigator</span> <span class="o">=</span> <span class="n">SessionNavigator</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">cred_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="p">)</span>
+        <span class="n">nav_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">nav_frame</span><span class="o">.</span><span class="n">content_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">nav_layout</span><span class="p">)</span>
+        <span class="n">nav_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_navigator</span><span class="p">)</span>
+        <span class="n">nav_frame</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+        <span class="n">nav_frame</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">nav_frame</span><span class="p">)</span>
+
+        <span class="c1"># Terminal Tabs</span>
+        <span class="n">term_frame</span> <span class="o">=</span> <span class="n">LayeredHUDFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="n">theme_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span> <span class="o">=</span> <span class="n">TerminalTabWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">term_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">term_frame</span><span class="o">.</span><span class="n">content_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">term_layout</span><span class="p">)</span>
+        <span class="n">term_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">term_frame</span><span class="p">)</span>
+
+        <span class="c1"># Add left container to main splitter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">left_container</span><span class="p">)</span>
+
+        <span class="c1"># Add telemetry panel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_frame</span> <span class="o">=</span> <span class="n">LayeredHUDFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="p">,</span> <span class="n">theme_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theme</span><span class="p">)</span>
+        <span class="c1"># self.telemetry = DeviceDashboardWidget(parent=self)</span>
+        <span class="n">telemetry_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_frame</span><span class="o">.</span><span class="n">content_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">telemetry_layout</span><span class="p">)</span>
+        <span class="c1"># telemetry_layout.addWidget(self.telemetry)</span>
+        <span class="c1"># self.main_splitter.addWidget(self.telemetry_frame)</span>
+
+        <span class="c1"># Set initial telemetry visibility from settings</span>
+        <span class="n">telemetry_visible</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_manager</span><span class="o">.</span><span class="n">get_view_setting</span><span class="p">(</span><span class="s1">&#39;telemetry_visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_frame</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">telemetry_visible</span><span class="p">)</span>
+
+        <span class="c1"># Set proportions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.6</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.4</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="mi">250</span><span class="p">,</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">250</span><span class="p">])</span>
+        <span class="n">setup_menus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+    <span class="c1"># In termtel.py, add this import</span>
+    <span class="c1"># def launch_telemetry(window):</span>
+    <span class="c1">#     &quot;&quot;&quot;Launch the telemetry interface in a tab&quot;&quot;&quot;</span>
+    <span class="c1">#     try:</span>
+    <span class="c1">#         # Check if telemetry tab already exists</span>
+    <span class="c1">#         for i in range(window.terminal_tabs.count()):</span>
+    <span class="c1">#             if &quot;Telemetry&quot; in window.terminal_tabs.tabText(i):</span>
+    <span class="c1">#                 # Tab already exists, just select it</span>
+    <span class="c1">#                 window.terminal_tabs.setCurrentIndex(i)</span>
+    <span class="c1">#                 return</span>
+    <span class="c1">#</span>
+    <span class="c1">#         # Create new telemetry tab</span>
+    <span class="c1">#         frontend_path = Path(__file__).parent / &#39;termtelng&#39; / &#39;frontend&#39;</span>
+    <span class="c1">#         telemetry_widget = TelemetryWidget(parent=window, base_path=frontend_path)</span>
+    <span class="c1">#</span>
+    <span class="c1">#         # Connect cleanup signal</span>
+    <span class="c1">#         telemetry_widget.cleanup_requested.connect(window.handle_telemetry_cleanup)</span>
+    <span class="c1">#</span>
+    <span class="c1">#         # Add tab with an icon if available</span>
+    <span class="c1">#         try:</span>
+    <span class="c1">#             from PyQt6.QtGui import QIcon</span>
+    <span class="c1">#             icon_path = Path(__file__).parent / &#39;termtelng&#39; / &#39;frontend&#39; / &#39;radar.svg&#39;</span>
+    <span class="c1">#</span>
+    <span class="c1">#             if icon_path.exists():</span>
+    <span class="c1">#                 tab_icon = QIcon(str(icon_path))</span>
+    <span class="c1">#                 index = window.terminal_tabs.addTab(telemetry_widget, tab_icon, &quot;Telemetry&quot;)</span>
+    <span class="c1">#             else:</span>
+    <span class="c1">#                 index = window.terminal_tabs.addTab(telemetry_widget, &quot;Telemetry&quot;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#             window.terminal_tabs.setTabToolTip(index, &quot;Terminal Telemetry Dashboard&quot;)</span>
+    <span class="c1">#             window.terminal_tabs.setCurrentIndex(index)  # Switch to the new tab</span>
+    <span class="c1">#</span>
+    <span class="c1">#             # Store reference if needed for cleanup</span>
+    <span class="c1">#             if not hasattr(window, &#39;telemetry_widgets&#39;):</span>
+    <span class="c1">#                 window.telemetry_widgets = []</span>
+    <span class="c1">#             window.telemetry_widgets.append(telemetry_widget)</span>
+    <span class="c1">#</span>
+    <span class="c1">#         except Exception as e:</span>
+    <span class="c1">#             logger.error(f&quot;Error adding telemetry tab: {e}&quot;)</span>
+    <span class="c1">#             traceback.print_exc()</span>
+    <span class="c1">#</span>
+    <span class="c1">#     except Exception as e:</span>
+    <span class="c1">#         logger.error(f&quot;Failed to launch telemetry: {e}&quot;)</span>
+    <span class="c1">#         traceback.print_exc()</span>
+    <span class="c1">#         QMessageBox.warning(window, &quot;Error&quot;, f&quot;Failed to launch telemetry: {e}&quot;)</span>
+
+    <span class="c1"># Then in the termtelWindow class, add this method</span>
+<div class="viewcode-block" id="termtelWindow.add_telemetry_tab">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.add_telemetry_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_telemetry_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a terminal telemetry tab to the terminal tabs&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Create the path to frontend files</span>
+            <span class="n">frontend_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;termtelng&#39;</span> <span class="o">/</span> <span class="s1">&#39;frontend&#39;</span>
+
+            <span class="c1"># Create the telemetry widget</span>
+            <span class="c1"># telemetry_widget = TelemetryWidget(parent=self, base_path=frontend_path)</span>
+
+            <span class="n">telemetry_widget</span> <span class="o">=</span> <span class="n">TelemetryWidget</span><span class="p">()</span>
+            <span class="c1"># Connect cleanup signal</span>
+            <span class="c1"># telemetry_widget.cleanup_requested.connect(self.handle_telemetry_cleanup)</span>
+
+            <span class="c1"># Add tab with an icon if available</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QIcon</span>
+            <span class="n">icon_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;termtelng&#39;</span> <span class="o">/</span> <span class="s1">&#39;frontend&#39;</span> <span class="o">/</span> <span class="s1">&#39;radar.svg&#39;</span>
+
+            <span class="k">if</span> <span class="n">icon_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">tab_icon</span> <span class="o">=</span> <span class="n">QIcon</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">icon_path</span><span class="p">))</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">telemetry_widget</span><span class="p">,</span> <span class="n">tab_icon</span><span class="p">,</span> <span class="s2">&quot;Telemetry&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">telemetry_widget</span><span class="p">,</span> <span class="s2">&quot;Telemetry&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">setTabToolTip</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;Terminal Telemetry Dashboard&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Store reference</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_widget</span> <span class="o">=</span> <span class="n">telemetry_widget</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to add telemetry tab: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.handle_telemetry_cleanup">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.handle_telemetry_cleanup">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_telemetry_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle cleanup notification from telemetry widget&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Telemetry cleanup requested&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Call the synchronous cleanup method directly</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">telemetry_widget</span><span class="p">,</span> <span class="s1">&#39;cleanup&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_widget</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during telemetry cleanup: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span></div>
+
+
+    <span class="c1"># In termtel.py, modify the switch_theme method:</span>
+
+<div class="viewcode-block" id="termtelWindow.switch_theme">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.switch_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">switch_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override switch_theme to handle both UI and terminal theming.&quot;&quot;&quot;</span>
+        <span class="c1"># Update main theme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">theme_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="c1"># Save the theme preference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings_manager</span><span class="o">.</span><span class="n">set_app_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="c1"># Update all frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">LayeredHUDFrame</span><span class="p">):</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="c1"># Update session navigator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_navigator</span><span class="o">.</span><span class="n">update_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="c1"># Update terminal tabs with the actual theme name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">update_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="c1"># Update telemetry tabs if they exist</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;telemetry_widgets&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">telemetry_widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_widgets</span><span class="p">:</span>
+                <span class="n">telemetry_widget</span><span class="o">.</span><span class="n">update_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;telemetry_widget&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_widget</span><span class="o">.</span><span class="n">update_theme</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">update_all_theme_aware_widgets</span><span class="p">(</span><span class="n">theme_name</span><span class="p">)</span>
+
+        <span class="c1"># Update the application palette based on theme</span>
+        <span class="k">if</span> <span class="n">theme_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;light_mode&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apply_light_palette</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apply_dark_palette</span><span class="p">()</span></div>
+
+
+    <span class="c1"># In TerminalTabWidget:</span>
+<div class="viewcode-block" id="termtelWindow.update_theme">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.update_theme">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update terminal themes.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_term_theme</span> <span class="o">=</span> <span class="n">theme_name</span>
+
+        <span class="c1"># Update all terminal instances</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+            <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tab</span><span class="p">:</span>
+                <span class="n">terminal</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">Ui_Terminal</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">terminal</span><span class="p">:</span>
+                    <span class="c1"># Use the theme manager directly</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">theme_manager</span><span class="o">.</span><span class="n">apply_theme_to_terminal</span><span class="p">(</span><span class="n">terminal</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="termtelWindow.handle_session_connect">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.handle_session_connect">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_session_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle connection request.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting to: </span><span class="si">{</span><span class="n">connection_data</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">connection_data</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO : Error trapping here</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">create_terminal</span><span class="p">(</span><span class="n">connection_data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to initialize session to </span><span class="si">{</span><span class="n">connection_data</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">connection_data</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New session failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="termtelWindow.find_free_port">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.find_free_port">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_free_port</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">))</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found available port: </span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">port</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.reset_master_password">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.reset_master_password">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_master_password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the master password and recreate credential store.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Confirm reset</span>
+            <span class="n">confirm</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Confirm Reset&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;WARNING: Resetting the master password will make all saved passwords inaccessible.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Are you sure you want to continue?&quot;</span><span class="p">,</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">No</span><span class="p">,</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">No</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">confirm</span> <span class="o">!=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+                <span class="c1"># Return to password dialog</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initialize_credentials</span><span class="p">()</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Get new password</span>
+            <span class="n">password</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Set New Master Password&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Enter a new master password:&quot;</span><span class="p">,</span>
+                <span class="n">QLineEdit</span><span class="o">.</span><span class="n">EchoMode</span><span class="o">.</span><span class="n">Password</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+                <span class="c1"># Return to password dialog</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initialize_credentials</span><span class="p">()</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Confirm new password</span>
+            <span class="n">confirm_password</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Confirm New Master Password&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Confirm your new master password:&quot;</span><span class="p">,</span>
+                <span class="n">QLineEdit</span><span class="o">.</span><span class="n">EchoMode</span><span class="o">.</span><span class="n">Password</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="ow">or</span> <span class="n">confirm_password</span> <span class="o">!=</span> <span class="n">password</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Password Mismatch&quot;</span><span class="p">,</span> <span class="s2">&quot;The passwords you entered do not match.&quot;</span><span class="p">)</span>
+                <span class="c1"># Return to password dialog</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initialize_credentials</span><span class="p">()</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Reset credentials</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">reset_credentials</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">master_password</span> <span class="o">=</span> <span class="n">password</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Master password reset successfully. All saved credentials have been cleared.&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">credentials_unlocked</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Failed to reset master password. Please restart the application.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">QCoreApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to reset master password: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to reset master password: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">QCoreApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.initialize_credentials">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.initialize_credentials">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the credential system with strict authentication.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Check if credential store exists</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">:</span>
+                <span class="c1"># First-time setup</span>
+                <span class="n">password</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="s2">&quot;Set Master Password&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;No credential store found. Enter a master password to create one:&quot;</span><span class="p">,</span>
+                    <span class="n">QLineEdit</span><span class="o">.</span><span class="n">EchoMode</span><span class="o">.</span><span class="n">Password</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>
+                    <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="p">,</span>
+                        <span class="s2">&quot;Application Exit&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;A master password is required to use this application.</span><span class="se">\n</span><span class="s2">The application will now close.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="c1"># Force immediate termination</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="c1"># Create credential store with new password</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">setup_new_credentials</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+                    <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="p">,</span>
+                        <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Failed to initialize credentials. The application will now close.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">master_password</span> <span class="o">=</span> <span class="n">password</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">credentials_unlocked</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Existing credential store - create a separate dialog</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLabel</span>
+
+                <span class="k">class</span><span class="w"> </span><span class="nc">PasswordDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+                    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Unlock Credentials&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">max_attempts</span> <span class="o">=</span> <span class="mi">3</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+
+                    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+                        <span class="c1"># Add message</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Enter master password (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_attempts</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">attempts</span><span class="si">}</span><span class="s2"> attempts remaining):&quot;</span><span class="p">)</span>
+                        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+                        <span class="c1"># Add password field</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">password_field</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">password_field</span><span class="o">.</span><span class="n">setEchoMode</span><span class="p">(</span><span class="n">QLineEdit</span><span class="o">.</span><span class="n">EchoMode</span><span class="o">.</span><span class="n">Password</span><span class="p">)</span>
+                        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">password_field</span><span class="p">)</span>
+
+                        <span class="c1"># Add buttons</span>
+                        <span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+                        <span class="c1"># Cancel button</span>
+                        <span class="n">cancel_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">)</span>
+                        <span class="n">cancel_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+                        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">cancel_button</span><span class="p">)</span>
+
+                        <span class="c1"># Reset button</span>
+                        <span class="n">reset_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Reset Password&quot;</span><span class="p">)</span>
+                        <span class="n">reset_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># Return code 2 for reset</span>
+                        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">reset_button</span><span class="p">)</span>
+
+                        <span class="c1"># OK button</span>
+                        <span class="n">ok_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+                        <span class="n">ok_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_password</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">password_field</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_password</span><span class="p">)</span>  <span class="c1"># Enter key</span>
+                        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">ok_button</span><span class="p">)</span>
+
+                        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">button_layout</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+                    <span class="k">def</span><span class="w"> </span><span class="nf">try_password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">password_field</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+
+                <span class="c1"># Create and show the password dialog</span>
+                <span class="n">password_dialog</span> <span class="o">=</span> <span class="n">PasswordDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+                <span class="k">while</span> <span class="n">password_dialog</span><span class="o">.</span><span class="n">attempts</span> <span class="o">&lt;</span> <span class="n">password_dialog</span><span class="o">.</span><span class="n">max_attempts</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">password_dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+                    <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+                        <span class="c1"># Try to unlock</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cred_manager</span><span class="o">.</span><span class="n">unlock</span><span class="p">(</span><span class="n">password_dialog</span><span class="o">.</span><span class="n">password</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">master_password</span> <span class="o">=</span> <span class="n">password_dialog</span><span class="o">.</span><span class="n">password</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">credentials_unlocked</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+                            <span class="k">return</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">password_dialog</span><span class="o">.</span><span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="n">password_dialog</span><span class="o">.</span><span class="n">attempts</span> <span class="o">&lt;</span> <span class="n">password_dialog</span><span class="o">.</span><span class="n">max_attempts</span><span class="p">:</span>
+                                <span class="n">password_dialog</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;Invalid password. </span><span class="si">{</span><span class="n">password_dialog</span><span class="o">.</span><span class="n">max_attempts</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">password_dialog</span><span class="o">.</span><span class="n">attempts</span><span class="si">}</span><span class="s2"> attempts remaining:&quot;</span><span class="p">)</span>
+                                <span class="n">password_dialog</span><span class="o">.</span><span class="n">password_field</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                                    <span class="bp">self</span><span class="p">,</span>
+                                    <span class="s2">&quot;Access Denied&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;Maximum password attempts exceeded.</span><span class="se">\n</span><span class="s2">The application will now close.&quot;</span>
+                                <span class="p">)</span>
+                                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                    <span class="k">elif</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Rejected</span><span class="p">:</span>
+                        <span class="c1"># User cancelled</span>
+                        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="p">,</span>
+                            <span class="s2">&quot;Application Exit&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;Authentication is required to use this application.</span><span class="se">\n</span><span class="s2">The application will now close.&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                    <span class="k">elif</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Reset password code</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">reset_master_password</span><span class="p">()</span>
+                        <span class="k">return</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to initialize credentials: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to initialize credentials: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">The application will now close.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.start_server">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.start_server">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">pass</span>
+            <span class="c1"># settings[&#39;theme&#39;] = self.theme</span>
+            <span class="c1"># settings[&#39;sessionfile&#39;] = self.session_file</span>
+            <span class="c1">#</span>
+            <span class="c1"># # self.server_thread = FastAPIServer(app, self.port)</span>
+            <span class="c1"># # self.server_thread.start()</span>
+            <span class="c1">#</span>
+            <span class="c1"># # Load sessions after server starts</span>
+            <span class="c1"># from PyQt6.QtCore import QTimer</span>
+            <span class="c1"># QTimer.singleShot(1000, self.load_sessions)</span>
+            <span class="c1"># logger.info(f&quot;Server started on port {self.port}&quot;)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to start server: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.load_sessions">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.load_sessions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load sessions from the YAML file.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">sessions_data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session_navigator</span><span class="o">.</span><span class="n">load_sessions</span><span class="p">(</span><span class="n">sessions_data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load sessions: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="termtelWindow.closeEvent">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.termtelWindow.closeEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle application closure.&quot;&quot;&quot;</span>
+        <span class="c1"># Clean up terminals</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;terminal_tabs&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_tabs</span><span class="o">.</span><span class="n">cleanup_all</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;telemetry_widgets&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">telemetry_widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_widgets</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">telemetry_widget</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error cleaning up telemetry widget: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Clean up main telemetry widget if it exists</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;telemetry_widget&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">telemetry_widget</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error cleaning up telemetry widget: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Shut down server</span>
+        <span class="c1"># if self.server_thread and self.server_thread.isRunning():</span>
+        <span class="c1">#     logger.info(&quot;Shutting down server...&quot;)</span>
+        <span class="c1">#     self.server_thread.terminate()</span>
+        <span class="c1">#     self.server_thread.wait()</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="setup_logging">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.setup_logging">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_logging</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure logging to write to a file instead of stdout.&quot;&quot;&quot;</span>
+    <span class="n">log_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;./termtel&quot;</span> <span class="o">/</span> <span class="s2">&quot;logs&quot;</span>
+    <span class="n">log_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">log_file</span> <span class="o">=</span> <span class="n">log_dir</span> <span class="o">/</span> <span class="s2">&quot;termtel.log&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+        <span class="n">filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">log_file</span><span class="p">),</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="redirect_output">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.redirect_output">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">redirect_output</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Redirect stdout and stderr to devnull when running in GUI mode.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;frozen&#39;</span><span class="p">):</span>  <span class="c1"># Running as compiled executable</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Running from pythonw</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;pythonw.exe&#39;</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../api/termtel.termtel.html#termtel.termtel.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;termtel - A modern terminal emulator.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Import Qt classes at the top to avoid scoping issues</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QMessageBox</span>
+
+    <span class="c1"># CRITICAL: Install global exception handler FIRST (before any other code)</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">global_exception_handler</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle all unhandled exceptions - critical for pythonw.exe debugging&quot;&quot;&quot;</span>
+
+        <span class="c1"># Skip keyboard interrupts (let them work normally)</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="ne">KeyboardInterrupt</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">__excepthook__</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Create crash log in user&#39;s home directory</span>
+        <span class="n">crash_log</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;termtel_crash.log&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">crash_log</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TERMTEL CRASH - </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Python Executable: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running under pythonw: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;pythonw.exe&#39;</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Working Directory: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception Type: </span><span class="si">{</span><span class="n">exc_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception Message: </span><span class="si">{</span><span class="n">exc_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Full Traceback:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">)))</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">log_error</span><span class="p">:</span>
+            <span class="c1"># If we can&#39;t write to the log file, try a backup location</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">backup_log</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;termtel_crash_backup.log&quot;</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">backup_log</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CRASH: </span><span class="si">{</span><span class="n">exc_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc_value</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log error: </span><span class="si">{</span><span class="n">log_error</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># Last resort: fail silently</span>
+
+        <span class="c1"># Try to show error dialog if Qt is available</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">existing_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">existing_app</span><span class="p">:</span>
+                <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;TermTel has encountered a critical error:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exc_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc_value</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Details have been logged to:</span><span class="se">\n</span><span class="si">{</span><span class="n">crash_log</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Please report this error with the log file contents.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;TermTel Critical Error&quot;</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Qt not available, try creating minimal app for the dialog</span>
+                <span class="n">temp_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;TermTel Critical Error&quot;</span><span class="p">,</span>
+                                     <span class="sa">f</span><span class="s2">&quot;Critical error occurred. Check </span><span class="si">{</span><span class="n">crash_log</span><span class="si">}</span><span class="s2"> for details.&quot;</span><span class="p">)</span>
+                <span class="n">temp_app</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># If Qt dialog fails, continue silently</span>
+
+        <span class="c1"># Also try to write to stderr if it exists (for console debugging)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">CRITICAL ERROR: </span><span class="si">{</span><span class="n">exc_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Details logged to: </span><span class="si">{</span><span class="n">crash_log</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># Install the global exception handler</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">global_exception_handler</span>
+
+    <span class="c1"># Create a startup logger for this session</span>
+    <span class="n">startup_log</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;termtel_startup.log&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Set up logging before anything else</span>
+        <span class="n">setup_logging</span><span class="p">()</span>
+
+        <span class="c1"># Log startup information</span>
+        <span class="n">startup_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;termtel.startup&#39;</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TERMTEL STARTUP - </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Python: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executable: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running under pythonw: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;pythonw.exe&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stdout available: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stderr available: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Working directory: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Redirect output if running in GUI mode</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Redirecting output...&quot;</span><span class="p">)</span>
+        <span class="n">redirect_output</span><span class="p">()</span>
+
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initializing sessions...&quot;</span><span class="p">)</span>
+        <span class="n">initialize_sessions</span><span class="p">()</span>
+
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating QApplication...&quot;</span><span class="p">)</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">setApplicationName</span><span class="p">(</span><span class="s2">&quot;termtel&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Install Qt-specific error handling</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">qt_message_handler</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Handle Qt framework messages&quot;&quot;&quot;</span>
+            <span class="n">qt_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;termtel.qt&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># QtDebugMsg</span>
+                <span class="n">qt_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Qt: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># QtWarningMsg</span>
+                <span class="n">qt_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Qt: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># QtCriticalMsg</span>
+                <span class="n">qt_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Qt Critical: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># QtFatalMsg</span>
+                <span class="n">qt_logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Qt Fatal: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># Qt fatal errors should trigger our crash handler</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Qt Fatal Error: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Install Qt message handler (if available in PyQt6)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">qInstallMessageHandler</span>
+            <span class="n">qInstallMessageHandler</span><span class="p">(</span><span class="n">qt_message_handler</span><span class="p">)</span>
+            <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Qt message handler installed&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">startup_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Qt message handler not available&quot;</span><span class="p">)</span>
+
+        <span class="n">theme</span> <span class="o">=</span> <span class="s2">&quot;cyberpunk&quot;</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting theme: </span><span class="si">{</span><span class="n">theme</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create theme manager instance</span>
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating theme manager...&quot;</span><span class="p">)</span>
+        <span class="n">theme_manager</span> <span class="o">=</span> <span class="n">ThemeLibrary</span><span class="p">()</span>
+
+        <span class="c1"># Validate theme</span>
+        <span class="k">if</span> <span class="n">theme</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">theme_manager</span><span class="o">.</span><span class="n">themes</span><span class="p">:</span>
+            <span class="n">startup_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Theme &#39;</span><span class="si">{</span><span class="n">theme</span><span class="si">}</span><span class="s2">&#39; not found, using &#39;cyberpunk&#39;&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Theme &#39;</span><span class="si">{</span><span class="n">theme</span><span class="si">}</span><span class="s2">&#39; not found, using &#39;cyberpunk&#39;&quot;</span><span class="p">)</span>
+            <span class="n">theme</span> <span class="o">=</span> <span class="s1">&#39;cyberpunk&#39;</span>
+
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating main window...&quot;</span><span class="p">)</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="n">termtelWindow</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">)</span>
+
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Showing main window...&quot;</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Qt event loop...&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+        <span class="n">startup_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Application exited normally with code: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># This catch block handles exceptions in the startup process itself</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Fatal error during startup: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Log to file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">startup_log</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> - STARTUP FAILURE</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Log using logging system if available</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Fatal error in main&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Try to show error dialog</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">existing_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">existing_app</span><span class="p">:</span>
+                <span class="n">app</span> <span class="o">=</span> <span class="n">existing_app</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Startup Error&quot;</span><span class="p">,</span>
+                                 <span class="sa">f</span><span class="s2">&quot;TermTel failed to start:</span><span class="se">\n\n</span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">Check </span><span class="si">{</span><span class="n">startup_log</span><span class="si">}</span><span class="s2"> for details.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">dialog_error</span><span class="p">:</span>
+            <span class="c1"># If showing dialog fails, just continue silently</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Re-raise to trigger global exception handler</span>
+        <span class="k">raise</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Scott Peterman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

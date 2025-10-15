@@ -418,13 +418,14 @@ class LocalTemplateParser:
 
 @dataclass
 class ConnectionCredentials:
-    """Device connection credentials"""
+    """Device connection credentials with SSH key support"""
     username: str
     password: str
     secret: str = ""  # Enable password
     port: int = 22
     timeout: int = 10
     auth_timeout: int = 10
+    key_file: str = None  # SSH key file path
 
 
 @dataclass
@@ -1118,7 +1119,7 @@ class NetmikoConnectionManager:
         self.platform_config = platform_config_manager
 
     def create_connection(self, device_info: DeviceInfo, credentials: ConnectionCredentials) -> bool:
-        """Create a new netmiko connection using platform configuration"""
+        """Create a new netmiko connection using platform configuration with SSH key support"""
         if not NETMIKO_AVAILABLE:
             print("Netmiko not available, cannot create real connection")
             return False
@@ -1155,20 +1156,164 @@ class NetmikoConnectionManager:
             timeout = 30
             auth_timeout = 10
 
+        # Build base connection params
         connection_params = {
             'device_type': netmiko_platform,
             'host': device_info.ip_address,
             'username': credentials.username,
-            'password': credentials.password,
-            'secret': credentials.secret,
             'port': credentials.port,
             'timeout': timeout,
             'auth_timeout': auth_timeout,
             'fast_cli': fast_cli,
         }
 
+        # ============ SSH KEY SUPPORT - ENHANCED VERSION WITH LOGGING ============
+        # Check if we should use SSH key authentication
+        use_ssh_key = False
+        key_file_path = None
+
+        print("\n" + "=" * 60)
+        print("SSH KEY AUTHENTICATION DEBUG")
+        print("=" * 60)
+
+        if hasattr(credentials, 'key_file') and credentials.key_file:
+            key_file_path = credentials.key_file
+            use_ssh_key = True
+            print(f"✓ Explicit key file provided: {key_file_path}")
+        elif not credentials.password or credentials.password == "":
+            # Password is blank - try to find SSH key
+            print("⚠ Password is blank, attempting SSH key authentication")
+            print(f"  Device IP: {device_info.ip_address}")
+            print(f"  Username: {credentials.username}")
+
+            # Try to import and use SSH key config
+            try:
+                from termtel.ssh.ssh_key_config import SSHKeyConfig
+                key_config = SSHKeyConfig()
+                print(f"✓ SSHKeyConfig imported successfully")
+
+                detected_key = key_config.get_key_path(
+                    host=device_info.ip_address,
+                    username=credentials.username
+                )
+                if detected_key:
+                    key_file_path = detected_key
+                    use_ssh_key = True
+                    print(f"✓ Found SSH key from config: {key_file_path}")
+                else:
+                    print("⚠ No SSH key found in config")
+            except ImportError as e:
+                print(f"⚠ Could not import SSHKeyConfig: {e}")
+            except Exception as e:
+                print(f"⚠ Error using SSHKeyConfig: {e}")
+                import traceback
+                traceback.print_exc()
+
+            # Try common default key locations if still no key
+            if not key_file_path:
+                from pathlib import Path
+                print("→ Searching for default SSH keys...")
+
+                default_keys = [
+                    Path.home() / ".ssh" / "id_rsa",
+                    Path.home() / ".ssh" / "id_ed25519",
+                    Path.home() / ".ssh" / "id_ecdsa",
+                ]
+
+                for default_key in default_keys:
+                    print(f"  Checking: {default_key}")
+                    if default_key.exists():
+                        key_file_path = str(default_key)
+                        use_ssh_key = True
+                        print(f"  ✓ FOUND: {key_file_path}")
+                        break
+                    else:
+                        print(f"  ✗ Not found")
+
+        # Verify key file exists and is readable
+        if use_ssh_key and key_file_path:
+            from pathlib import Path
+            key_path_obj = Path(key_file_path)
+
+            print(f"\n→ Verifying SSH key file:")
+            print(f"  Path: {key_file_path}")
+            print(f"  Exists: {key_path_obj.exists()}")
+
+            if key_path_obj.exists():
+                print(f"  Size: {key_path_obj.stat().st_size} bytes")
+                print(f"  Readable: {os.access(key_file_path, os.R_OK)}")
+                print(f"  Permissions: {oct(key_path_obj.stat().st_mode)[-3:]}")
+
+                # Try to read first line to verify it's a valid key
+                try:
+                    with open(key_file_path, 'r') as f:
+                        first_line = f.readline().strip()
+                        print(f"  First line: {first_line[:50]}...")
+
+                        # Check key type
+                        if 'BEGIN RSA PRIVATE KEY' in first_line:
+                            print(f"  ✓ Key type: RSA (traditional format)")
+                        elif 'BEGIN OPENSSH PRIVATE KEY' in first_line:
+                            print(f"  ✓ Key type: OpenSSH format")
+                        elif 'BEGIN EC PRIVATE KEY' in first_line:
+                            print(f"  ✓ Key type: ECDSA")
+                        elif 'BEGIN DSA PRIVATE KEY' in first_line:
+                            print(f"  ✓ Key type: DSA")
+                        else:
+                            print(f"  ⚠ Unknown key format: {first_line[:30]}")
+                except Exception as e:
+                    print(f"  ✗ Error reading key file: {e}")
+            else:
+                print(f"  ✗ KEY FILE DOES NOT EXIST!")
+                # Try parent directory
+                parent_dir = key_path_obj.parent
+                print(f"\n→ Checking parent directory: {parent_dir}")
+                if parent_dir.exists():
+                    print(f"  Parent exists, listing files:")
+                    for item in parent_dir.iterdir():
+                        print(f"    - {item.name}")
+
+                use_ssh_key = False
+                key_file_path = None
+
+        print("=" * 60)
+
+        # Apply SSH key settings to connection params
+        if use_ssh_key and key_file_path:
+            print(f"\n→ USING SSH KEY AUTHENTICATION")
+            print(f"  Key file: {key_file_path}")
+            connection_params['use_keys'] = True
+            connection_params['key_file'] = key_file_path
+            # CRITICAL: Do NOT set password parameter at all when using keys!
+            # Netmiko will handle this internally. Setting password="" causes keyboard-interactive auth!
+            connection_params['allow_agent'] = False  # Don't use SSH agent
+            connection_params['look_for_keys'] = False  # Only use our specified key
+
+            print(f"  Connection params keys: {list(connection_params.keys())}")
+            print(f"  use_keys: {connection_params['use_keys']}")
+            print(f"  allow_agent: {connection_params['allow_agent']}")
+            print(f"  look_for_keys: {connection_params['look_for_keys']}")
+        else:
+            # Password authentication
+            print(f"\n→ USING PASSWORD AUTHENTICATION")
+            if credentials.password:
+                print(f"  Password provided: {'*' * len(credentials.password)}")
+            else:
+                print(f"  ⚠ WARNING: No password and no SSH key found!")
+            connection_params['password'] = credentials.password
+            connection_params['secret'] = credentials.secret
+            connection_params['allow_agent'] = False
+
+        print("=" * 60 + "\n")
+        # ============================================================
+
         try:
             print(f"Connecting to {device_info.hostname} ({device_info.ip_address}) via netmiko...")
+            print(f"  Platform: {netmiko_platform}")
+            print(f"  Auth method: {'SSH Key' if use_ssh_key else 'Password'}")
+            if use_ssh_key:
+                print(f"  Key file: {key_file_path}")
+
             connection = ConnectHandler(**connection_params)
 
             # Test connection with a simple command
@@ -1184,25 +1329,32 @@ class NetmikoConnectionManager:
             if test_output:
                 self.connections[connection_key] = connection
                 self.connection_params[connection_key] = connection_params
-                print(f"Successfully connected to {device_info.hostname}")
+                print(f"✓ Successfully connected to {device_info.hostname}")
                 return True
             else:
-                print(f"Connection test failed for {device_info.hostname}")
+                print(f"✗ Connection test failed for {device_info.hostname}")
                 connection.disconnect()
                 return False
 
         except NetmikoAuthenticationException as e:
-            print(f"Authentication failed for {device_info.hostname}: {e}")
+            print(f"✗ Authentication failed for {device_info.hostname}: {e}")
+            if use_ssh_key:
+                print(f"  SSH key used: {key_file_path}")
+                print(f"  Hint: Check if the key has a passphrase or wrong permissions")
+                print(f"  Hint: Verify the public key is in the device's authorized_keys")
             return False
         except NetmikoTimeoutException as e:
-            print(f"Connection timeout for {device_info.hostname}: {e}")
+            print(f"✗ Connection timeout for {device_info.hostname}: {e}")
             return False
         except NetmikoBaseException as e:
-            print(f"Netmiko error connecting to {device_info.hostname}: {e}")
+            print(f"✗ Netmiko error connecting to {device_info.hostname}: {e}")
             return False
         except Exception as e:
-            print(f"Unexpected error connecting to {device_info.hostname}: {e}")
+            print(f"✗ Unexpected error connecting to {device_info.hostname}: {e}")
+            import traceback
+            traceback.print_exc()
             return False
+
 
     def execute_command(self, device_ip: str, port: int, command: str) -> tuple[bool, str]:
         """Execute command on connected device"""

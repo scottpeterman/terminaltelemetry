@@ -255,6 +255,16 @@ class TerminalTabWidget(QTabWidget):
         """Create a new terminal tab."""
         session_id = connection_data.get('uuid', str(uuid.uuid4()))
 
+        # ADD DEBUG LOGGING:
+        print(f"\n{'=' * 70}")
+        print(f"TERMINAL_TABS: create_terminal() called")
+        print(f"{'=' * 70}")
+        print(f"connection_data = {connection_data}")
+        if 'key_path' in connection_data:
+            print(f"✓ key_path present: {connection_data['key_path']}")
+        else:
+            print(f"⚠️  key_path NOT present in connection_data")
+
         try:
             # Test socket connection first
             host = connection_data['host']
@@ -283,6 +293,79 @@ class TerminalTabWidget(QTabWidget):
                 "log_filename": f"./logs/session_{connection_data['host']}.log",
                 "theme": self.get_mapped_terminal_theme(self.current_term_theme)
             }
+
+            # ============================================================
+            # ADD THIS BLOCK - Pass key_path to hostinfo
+            # ============================================================
+            if 'key_path' in connection_data and connection_data['key_path']:
+                hostinfo['key_path'] = connection_data['key_path']
+                print(f"✓ Added key_path to hostinfo: {connection_data['key_path']}")
+            else:
+                print(f"ℹ️  No key_path in connection_data - will use password or auto-detect")
+
+            print(f"hostinfo = {hostinfo}")
+            print(f"{'=' * 70}\n")
+            # ============================================================
+
+            terminal = Ui_Terminal(hostinfo, parent=tab_container)
+            layout.addWidget(terminal)
+
+            # Theme will be applied when terminal is ready
+            if hasattr(terminal, 'view'):
+                self.apply_theme_to_terminal(terminal, self.current_term_theme)
+
+            # Add to tab widget
+            display_name = connection_data.get('display_name') or connection_data['host']
+            index = self.addTab(tab_container, display_name)
+            self.setCurrentIndex(index)
+
+            # Store session
+            self.sessions[session_id] = tab_container
+            return session_id
+
+        except Exception as e:
+            logger.error(f"Failed to create terminal: {e}")
+            raise
+
+    # ============================================================
+    # CLEAN VERSION (without debug prints)
+    # ============================================================
+    def create_terminal_clean(self, connection_data: Dict) -> str:
+        """Create a new terminal tab."""
+        session_id = connection_data.get('uuid', str(uuid.uuid4()))
+
+        try:
+            # Test socket connection first
+            host = connection_data['host']
+            port = connection_data.get('port', '22')
+
+            success, error_message = self.test_socket_connection(host, port)
+            if not success:
+                QMessageBox.critical(
+                    self,
+                    "Connection Failed",
+                    f"Failed to connect to {host}:{port}\nError: {error_message}"
+                )
+                return None
+
+            # Create tab container
+            tab_container = QWidget()
+            layout = QVBoxLayout(tab_container)
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            # Create Ui_Terminal instance
+            hostinfo = {
+                "host": connection_data['host'],
+                "port": connection_data.get('port', '22'),
+                "username": connection_data.get('username'),
+                "password": connection_data.get('password'),
+                "log_filename": f"./logs/session_{connection_data['host']}.log",
+                "theme": self.get_mapped_terminal_theme(self.current_term_theme)
+            }
+
+            # Pass key_path if present
+            if 'key_path' in connection_data and connection_data['key_path']:
+                hostinfo['key_path'] = connection_data['key_path']
 
             terminal = Ui_Terminal(hostinfo, parent=tab_container)
             layout.addWidget(terminal)
