@@ -23,6 +23,7 @@ recursive-include termtel/static/css *
 recursive-include termtel/static/js *
 recursive-include termtel/themes *.json
 
+
 # Frontend assets (if still used)
 recursive-include termtel/termtelng **/*
 

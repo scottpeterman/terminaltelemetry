@@ -11,7 +11,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="TerminalTelemetry",
-    version="1.0.0",
+    version="1.1.0",
     author="Scott Peterman",
     author_email="scottpeterman@gmail.com",
     description="A PyQt6 terminal emulator with SSH and telemetry capabilities",
@@ -31,7 +31,6 @@ setup(
     python_requires=">=3.12",
     install_requires=requirements,
 
-    # Critical: This ensures package data is included
     include_package_data=True,
     zip_safe=False,  # Important for accessing package data files
 
@@ -47,17 +46,22 @@ setup(
             "static/*.wasm",
             "static/*.sav",
 
-            # TextFSM templates - CRITICAL for your use case
+            # TextFSM templates
             "templates/textfsm/*.textfsm",
             "templates/**/*",
 
-            # Platform configuration - CRITICAL
-            # Handle both development and packaged structures
+            # Widgets with web content
+            "widgets/**/*.html",
+            "widgets/**/*.css",
+            "widgets/**/*.js",
+            "widgets/**/*.json",
+
+            # Platform configuration
             "config/*.json",
             "config/platforms/*.json",
             "config/platforms/platforms.json",
 
-            # Frontend assets (if termtelng is still used)
+            # Frontend assets
             "termtelng/frontend/**/*",
 
             # Icons and logos
@@ -72,7 +76,6 @@ setup(
             "*.html",
             "themes/*.json",
         ],
-        # If you have package data in termtelwidgets subdirectory
         "termtel.termtelwidgets": [
             "*.py",
         ],
