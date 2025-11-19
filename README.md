@@ -435,7 +435,7 @@ TerminalTelemetry is licensed under the GPLv3 License. See the LICENSE file for 
 - **GitHub Repository**: https://github.com/scottpeterman/terminaltelemetry
 - **Documentation**: Comprehensive guides and API reference  
 - **Template Library**: Community-contributed TextFSM templates
-- **Portable Builds**: [Windows executables on Google Drive](https://drive.google.com/file/d/1ao4y1Lt_9HGJRk291MbYLqHHglfNouT7/view)
+- **Portable Builds**: [Windows executables on Google Drive](https://drive.google.com/uc?export=download&id=1ao4y1Lt_9HGJRk291MbYLqHHglfNouT7)
 
 ---
 
