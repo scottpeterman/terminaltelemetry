@@ -29,7 +29,7 @@ TerminalTelemetry provides two launcher commands:
 ### 🚀 Quick Start - Portable Version
 
 **Download pre-built Windows package:**
-- 📥 [**TerminalTelemetry Portable Builds**](https://drive.google.com/drive/folders/1ST4DUCxRH13yUB6GZjcNoiIF1ekSaCZu) (Google Drive)
+- 📥 [**TerminalTelemetry Portable Builds**](https://drive.google.com/uc?export=download&id=1ao4y1Lt_9HGJRk291MbYLqHHglfNouT7) (Google Drive)
 - 💾 **Size:** ~522 MB (ZIP) / ~547 MB (extracted)
 - ✅ **No Python installation required**
 - ✅ **No pip, no virtual environments, no hassle**
