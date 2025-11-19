@@ -22,7 +22,89 @@ TerminalTelemetry provides two launcher commands:
 
 ---
 
-**Windows & macOS:**
+## 📦 Portable Windows Build (No Python Required!)
+
+**Don't want to install Python?** We've got you covered with a standalone Windows build.
+
+### 🚀 Quick Start - Portable Version
+
+**Download pre-built Windows package:**
+- 📥 [**TerminalTelemetry Portable Builds**](https://drive.google.com/drive/folders/1ST4DUCxRH13yUB6GZjcNoiIF1ekSaCZu) (Google Drive)
+- 💾 **Size:** ~522 MB (ZIP) / ~547 MB (extracted)
+- ✅ **No Python installation required**
+- ✅ **No pip, no virtual environments, no hassle**
+- ✅ **All dependencies bundled** - just extract and run
+
+### Installation Steps
+
+1. **Download** the latest `TerminalTelemetry-v1.x.x-win32.zip` from Google Drive
+2. **Extract** the ZIP file to your preferred location (e.g., `C:\Apps\TerminalTelemetry\`)
+3. **Run** `TerminalTelemetry.exe` from the extracted folder
+4. **First launch** - App will download latest themes automatically (one-time setup)
+5. **Optional:** Create a desktop shortcut to `TerminalTelemetry.exe` for easy access
+
+**That's it!** No Python, no pip, no dependencies to install.
+
+### What's Included in the Portable Build?
+
+✅ **Native executable** - `TerminalTelemetry.exe` (125 MB)  
+✅ **Complete Python runtime** - Compiled into native code  
+✅ **200+ TextFSM templates** - All network device parsers (`termtel/templates/`)  
+✅ **All Python dependencies** - netmiko, paramiko, PyQt6, cryptography bundled  
+✅ **PyQt6 WebEngine** - Complete browser engine for xterm.js terminal  
+✅ **Platform configurations** - Cisco, Arista, Juniper support (`termtel/config/`)  
+✅ **Static web assets** - xterm.js terminal interface  
+✅ **316 files total** - Everything needed to run standalone
+
+### Build Structure
+
+```
+TerminalTelemetry.dist/
+├── TerminalTelemetry.exe        # Main executable (125 MB)
+├── termtel/                     # Application package data
+│   ├── templates/               # 200+ TextFSM templates
+│   ├── config/                  # Platform configurations
+│   ├── static/                  # xterm.js assets
+│   └── ...
+├── themes/                      # Included themes (auto-updates on first run)
+├── PyQt6/                       # Qt framework
+├── qt6*.dll                     # Qt6 libraries (~60 DLLs)
+├── python312.dll                # Python runtime
+├── ntc_templates/               # Community templates
+├── [cryptography, bcrypt, etc.] # Security libraries
+└── [200+ other dependencies]    # All bundled libraries
+```
+
+### System Requirements
+
+**Windows:**
+- Windows 10 or 11 (64-bit)
+- 4 GB RAM minimum (8 GB recommended for large configs)
+- 600 MB free disk space (for extraction)
+- No additional software required
+
+**Note:** First launch may take a few seconds as Windows Defender scans the executable (normal for unsigned applications).
+
+### Portable vs pip Install
+
+| Feature | Portable Build | pip Install |
+|---------|---------------|-------------|
+| **Python Required** | ❌ No | ✅ Yes (3.12+) |
+| **Installation Time** | 🚀 2 minutes (download + extract) | ⏱️ 5-10 minutes (pip + dependencies) |
+| **Disk Space** | 📦 547 MB | 📦 ~300 MB |
+| **File Count** | 316 files in folder | Varies by environment |
+| **Updates** | 🔄 Manual (download new version) | 🔄 `pip install --upgrade` |
+| **Startup Time** | ⚡ Instant (no decompression) | ⚡ Instant |
+| **Theme Updates** | 🔄 Auto-download on first launch | 🔄 Included in package |
+| **Best For** | Windows users, quick deployment, no Python | Developers, Linux/macOS, latest updates |
+
+### Building Your Own Portable Version
+
+Want to create your own portable builds or build for Linux/macOS? See the [**Build Documentation**](BUILD_README.md) for detailed instructions on using our Nuitka-based build system.
+
+---
+
+**Windows & macOS (pip install):**
 ```bash
 pip install TerminalTelemetry
 termtel
@@ -122,7 +204,7 @@ termtel
 
 ---
 
-## 🏗️ Architecture Highlights
+## 🗃️ Architecture Highlights
 
 ### **SSH-Only Monitoring**
 - Works with any SSH-accessible device
@@ -149,7 +231,16 @@ termtel
 
 ## 🎯 Getting Started
 
-### Quick Start
+### Quick Start (Portable Build)
+1. **Download**: Get the portable ZIP from [Google Drive](https://drive.google.com/drive/folders/1ST4DUCxRH13yUB6GZjcNoiIF1ekSaCZu)
+2. **Extract**: Unzip to any folder
+3. **Launch**: Run `TerminalTelemetry.exe`
+4. **Create SSH sessions** via File → Open Sessions or use Quick Connect
+5. **Open Telemetry Dashboard** via Tools → Telemetry Dashboard
+6. **Connect to devices** and view real-time monitoring data
+7. **Customize themes** via View → Theme menu and Theme Editor
+
+### Quick Start (pip Install)
 1. **Install via pip**: `pip install TerminalTelemetry`
 2. **Launch**: `termtel`
 3. **Create SSH sessions** via File → Open Sessions or use Quick Connect
@@ -157,7 +248,7 @@ termtel
 5. **Connect to devices** and view real-time monitoring data
 6. **Customize themes** via View → Theme menu and Theme Editor
 
-**Note for Windows users:** After installation, you can create a desktop shortcut to `venv\Scripts\termtel.exe` for easier access.
+**Note for Windows pip users:** After installation, you can create a desktop shortcut to `venv\Scripts\termtel.exe` for easier access.
 
 ### First Device Connection
 1. Click **"Quick Connect"** in the bottom panel
@@ -344,6 +435,7 @@ TerminalTelemetry is licensed under the GPLv3 License. See the LICENSE file for 
 - **GitHub Repository**: https://github.com/scottpeterman/terminaltelemetry
 - **Documentation**: Comprehensive guides and API reference  
 - **Template Library**: Community-contributed TextFSM templates
+- **Portable Builds**: [Windows executables on Google Drive](https://drive.google.com/drive/folders/1ST4DUCxRH13yUB6GZjcNoiIF1ekSaCZu)
 
 ---
 
@@ -358,6 +450,7 @@ TerminalTelemetry is licensed under the GPLv3 License. See the LICENSE file for 
 - ✅ **Enhanced platform support** with JSON configuration
 - ✅ **Threaded telemetry collection** for responsive UI
 - ✅ **Improved error handling** and connection management
+- ✅ **Portable Windows builds** - No Python installation required
 
 ---
 
